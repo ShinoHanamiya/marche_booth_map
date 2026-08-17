@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f8eef3">
-  <title>Marche Booth Map Editor v1.5.1</title>
+  <title>Marche Booth Map Editor v1.6</title>
   <link rel="stylesheet" href="css/editor.css">
 </head>
 <body>
 <header class="editor-header">
   <div>
     <p class="eyebrow">MAP EDITOR</p>
-    <h1>Marche Booth Map Editor <span>v1.5.1</span></h1>
+    <h1>Marche Booth Map Editor <span>v1.6</span></h1>
     <p class="sub">可変会場サイズ・自動フィット・自動拡張・複数選択・整列・行列生成に対応した会場レイアウトエディタです。</p>
   </div>
   <div class="header-actions">
@@ -23,6 +23,10 @@
 <main class="editor-shell">
   <section class="toolbar panel">
     <div class="toolbar-group">
+      <button id="undoBtn" class="btn ghost" title="Ctrl+Z">↶ Undo</button>
+      <button id="redoBtn" class="btn ghost" title="Ctrl+Y / Ctrl+Shift+Z">↷ Redo</button>
+      <button id="copyBtn" class="btn ghost" title="Ctrl+C">コピー</button>
+      <button id="pasteBtn" class="btn ghost" title="Ctrl+V">貼り付け</button>
       <button id="loadCurrentBtn" class="btn">現在のdataを再読込</button>
       <label class="file-btn btn ghost">venue.json読込<input id="venueFileInput" type="file" accept="application/json,.json"></label>
       <label class="file-btn btn ghost">exhibitors.json読込<input id="exhibitorFileInput" type="file" accept="application/json,.json"></label>
@@ -69,6 +73,29 @@
         <div class="row-actions">
           <button id="applyVenueSizeBtn" class="btn primary">会場サイズを適用</button>
           <button id="fitVenueBtn" class="btn ghost">配置物に自動フィット</button>
+        </div>
+      </section>
+
+
+      <section class="panel form-panel">
+        <div class="section-title"><h2>背景画像</h2><span id="backgroundBadge" class="badge">未読込</span></div>
+        <p class="hint">PNG/JPG/WebPを会場図の下敷きとして表示します。画像データはvenue.jsonには保存されません。</p>
+        <label class="file-btn btn ghost bg-file-btn">背景画像を読み込む<input id="backgroundFileInput" type="file" accept="image/png,image/jpeg,image/webp"></label>
+        <div class="form-grid two compact-top">
+          <label>透明度<input id="backgroundOpacity" type="range" min="0" max="1" step="0.05" value="0.45"></label>
+          <label>表示方法<select id="backgroundFit"><option value="stretch">会場全体に合わせる</option><option value="contain">縦横比を保持</option></select></label>
+        </div>
+        <div class="row-actions"><button id="clearBackgroundBtn" class="btn ghost danger-text">背景画像を解除</button></div>
+      </section>
+
+      <section class="panel form-panel">
+        <div class="section-title"><h2>レイヤー</h2></div>
+        <p class="hint">非表示レイヤーは編集マップから隠れ、ロック中レイヤーは選択・移動・削除できません。</p>
+        <div class="layer-list">
+          <div><span>背景</span><label><input class="layer-visible" data-layer="background" type="checkbox" checked>表示</label><label><input class="layer-lock" data-layer="background" type="checkbox" checked>ロック</label></div>
+          <div><span>通路</span><label><input class="layer-visible" data-layer="aisles" type="checkbox" checked>表示</label><label><input class="layer-lock" data-layer="aisles" type="checkbox">ロック</label></div>
+          <div><span>設備</span><label><input class="layer-visible" data-layer="facilities" type="checkbox" checked>表示</label><label><input class="layer-lock" data-layer="facilities" type="checkbox">ロック</label></div>
+          <div><span>ブース</span><label><input class="layer-visible" data-layer="booths" type="checkbox" checked>表示</label><label><input class="layer-lock" data-layer="booths" type="checkbox">ロック</label></div>
         </div>
       </section>
 
@@ -129,7 +156,7 @@
     <section class="center-column">
       <section class="panel map-panel">
         <div class="section-title map-title">
-          <div><h2>会場マップ編集</h2><p>ドラッグ＝移動 / 右下ハンドル＝サイズ変更 / Ctrl・⌘＋クリック＝ブース複数選択</p></div>
+          <div><h2>会場マップ編集</h2><p>ドラッグ＝移動 / 右下ハンドル＝サイズ変更 / 空白ドラッグ＝範囲選択 / Ctrl・⌘＋クリック＝複数選択</p></div>
           <div class="map-tools">
             <button id="snapToggleBtn" class="mini-btn active">10pxスナップ ON</button>
             <button id="selectAllBoothsBtn" class="mini-btn">全ブース選択</button>
@@ -139,7 +166,9 @@
         <div id="selectionInfo" class="selection-info">何も選択されていません</div>
         <div id="editorMapViewport" class="editor-map-viewport" tabindex="0">
           <svg id="editorVenueMap" viewBox="0 0 1000 700" aria-label="会場マップ編集画面">
+            <g id="editorBackgroundLayer"></g>
             <g id="editorMapContent"></g>
+            <g id="editorOverlayLayer"></g>
           </svg>
         </div>
       </section>

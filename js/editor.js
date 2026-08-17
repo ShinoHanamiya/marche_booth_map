@@ -12,7 +12,18 @@
     snap: true,
     dirty: false,
     action: null,
-    autoExpand: true
+    autoExpand: true,
+    history: [],
+    future: [],
+    clipboard: null,
+    background: { src: "", opacity: 0.45, fit: "stretch" },
+    layers: {
+      background: { visible: true, locked: true },
+      aisles: { visible: true, locked: false },
+      facilities: { visible: true, locked: false },
+      booths: { visible: true, locked: false }
+    },
+    formCheckpointActive: false
   };
   const els = {};
 
@@ -20,7 +31,7 @@
 
   async function init() {
     Object.assign(els, {
-      saveState: $("saveState"), map: $("editorVenueMap"), mapContent: $("editorMapContent"), viewport: $("editorMapViewport"), selectionInfo: $("selectionInfo"),
+      saveState: $("saveState"), map: $("editorVenueMap"), mapContent: $("editorMapContent"), backgroundLayer: $("editorBackgroundLayer"), overlayLayer: $("editorOverlayLayer"), viewport: $("editorMapViewport"), selectionInfo: $("selectionInfo"),
       eventId: $("eventId"), eventName: $("eventNameInput"), eventDate: $("eventDate"), eventTime: $("eventTime"), eventVenue: $("eventVenue"),
       venueWidth: $("venueWidth"), venueHeight: $("venueHeight"), venueOriginX: $("venueOriginX"), venueOriginY: $("venueOriginY"), venueSizeBadge: $("venueSizeBadge"), fitMargin: $("fitMargin"), autoExpandToggle: $("autoExpandToggle"),
       boothList: $("boothList"), boothCount: $("boothCount"), boothId: $("boothId"), boothNewId: $("boothNewId"), boothX: $("boothX"), boothY: $("boothY"), boothWidth: $("boothWidth"), boothHeight: $("boothHeight"), boothBadge: $("selectedBoothBadge"),
@@ -28,7 +39,7 @@
       facilityList: $("facilityList"), facilityBadge: $("selectedFacilityBadge"), facilityType: $("facilityType"), facilityLabel: $("facilityLabel"), facilityX: $("facilityX"), facilityY: $("facilityY"), facilityWidth: $("facilityWidth"), facilityHeight: $("facilityHeight"),
       aisleList: $("aisleList"), aisleBadge: $("selectedAisleBadge"), aisleX: $("aisleX"), aisleY: $("aisleY"), aisleWidth: $("aisleWidth"), aisleHeight: $("aisleHeight"),
       gridPrefix: $("gridPrefix"), gridStartNo: $("gridStartNo"), gridRows: $("gridRows"), gridCols: $("gridCols"), gridWidth: $("gridWidth"), gridHeight: $("gridHeight"), gridGapX: $("gridGapX"), gridGapY: $("gridGapY"), gridStartX: $("gridStartX"), gridStartY: $("gridStartY"),
-      multiCountBadge: $("multiCountBadge"), validation: $("validationResult"), toast: $("toast")
+      multiCountBadge: $("multiCountBadge"), validation: $("validationResult"), toast: $("toast"), backgroundBadge: $("backgroundBadge"), backgroundFileInput: $("backgroundFileInput"), backgroundOpacity: $("backgroundOpacity"), backgroundFit: $("backgroundFit")
     });
     bindEvents();
     await loadCurrent();
@@ -43,6 +54,7 @@
       if (!vr.ok || !er.ok) throw new Error("dataファイルを読み込めませんでした");
       state.venue = normalizeVenue(await vr.json());
       state.exhibitors = await er.json();
+      state.history = []; state.future = []; state.clipboard = null;
       resetToFirstBooth();
       state.dirty = false;
       renderAll();
@@ -68,6 +80,20 @@
   }
 
   function bindEvents() {
+    $("undoBtn").addEventListener("click", undo);
+    $("redoBtn").addEventListener("click", redo);
+    $("copyBtn").addEventListener("click", copySelection);
+    $("pasteBtn").addEventListener("click", pasteSelection);
+    els.backgroundFileInput.addEventListener("change", loadBackgroundImage);
+    els.backgroundOpacity.addEventListener("input", () => { state.background.opacity = Number(els.backgroundOpacity.value); renderBackground(); });
+    els.backgroundFit.addEventListener("change", () => { state.background.fit = els.backgroundFit.value; renderBackground(); });
+    $("clearBackgroundBtn").addEventListener("click", () => { state.background.src = ""; renderBackground(); renderLayerControls(); toast("背景画像を解除しました"); });
+    document.querySelectorAll(".layer-visible").forEach(el => el.addEventListener("change", () => { state.layers[el.dataset.layer].visible = el.checked; renderMap(); renderBackground(); }));
+    document.querySelectorAll(".layer-lock").forEach(el => el.addEventListener("change", () => { state.layers[el.dataset.layer].locked = el.checked; if (el.checked) clearLockedSelection(el.dataset.layer); renderAll(); }));
+    document.addEventListener("keydown", handleGlobalShortcuts);
+    document.addEventListener("focusin", handleFormFocusIn);
+    document.addEventListener("focusout", () => { state.formCheckpointActive = false; });
+    els.viewport.addEventListener("pointerdown", startMarqueeSelection);
     $("loadCurrentBtn").addEventListener("click", loadCurrent);
     $("venueFileInput").addEventListener("change", e => readJsonFile(e.target.files[0], data => {
       state.venue = normalizeVenue(data); resetToFirstBooth(); markDirty(); renderAll();
@@ -138,7 +164,7 @@
     renderEventForm(); renderVenueSizeForm(); renderMap(); renderBoothList(); renderBoothForm();
     renderExhibitorSelect(); renderExhibitorForm(); renderFacilityList(); renderFacilityForm();
     renderAisleList(); renderAisleForm(); renderSnapButton(); renderSelectionInfo();
-    renderMultiTools(); validateData();
+    renderMultiTools(); renderBackground(); renderLayerControls(); renderHistoryButtons(); validateData();
   }
 
   function renderEventForm() {
@@ -160,6 +186,7 @@
   }
 
   function applyVenueSize() {
+    checkpoint();
     const x = num(els.venueOriginX.value, 0), y = num(els.venueOriginY.value, 0);
     const w = Math.max(300, num(els.venueWidth.value, 1000)), h = Math.max(300, num(els.venueHeight.value, 700));
     const bounds = getObjectBounds();
@@ -170,6 +197,7 @@
   }
 
   function fitVenueToObjects() {
+    checkpoint();
     const bounds = getObjectBounds();
     if (!bounds) return toast("配置物がありません");
     const margin = Math.max(0, num(els.fitMargin.value, 80));
@@ -209,7 +237,7 @@
     g.innerHTML = "";
     g.appendChild(svg("rect", { x: vb[0] + 20, y: vb[1] + 12, width: Math.max(100, vb[2] - 40), height: Math.max(100, vb[3] - 35), rx: 30, class: "venue-bg" }));
 
-    v.aisles.forEach((a, i) => {
+    if (state.layers.aisles.visible) v.aisles.forEach((a, i) => {
       const n = svg("g", { class: "edit-aisle" + (isPrimary("aisle", i) ? " selected" : ""), "data-index": i });
       n.appendChild(svg("rect", { x: a.x, y: a.y, width: a.width, height: a.height }));
       const t = svg("text", { x: a.x + a.width / 2, y: a.y + a.height / 2 }); t.textContent = "通路"; n.appendChild(t);
@@ -218,7 +246,7 @@
       g.appendChild(n);
     });
 
-    v.facilities.forEach((f, i) => {
+    if (state.layers.facilities.visible) v.facilities.forEach((f, i) => {
       const cls = "edit-facility " + (f.type === "entrance" ? "entrance " : "") + (isPrimary("facility", i) ? "selected" : "");
       const n = svg("g", { class: cls, "data-index": i });
       n.appendChild(svg("rect", { x: f.x, y: f.y, width: f.width, height: f.height }));
@@ -228,7 +256,7 @@
       g.appendChild(n);
     });
 
-    v.booths.forEach(b => {
+    if (state.layers.booths.visible) v.booths.forEach(b => {
       const multi = state.multiBooths.has(b.id);
       const primary = isPrimary("booth", b.id);
       const cls = `edit-booth${multi ? " multi-selected" : ""}${primary ? " selected primary-selected" : ""}`;
@@ -248,9 +276,12 @@
         g.appendChild(svg("rect", { x: minX - 8, y: minY - 8, width: maxX - minX + 16, height: maxY - minY + 16, rx: 14, class: "multi-outline" }));
       }
     }
+    renderMarquee();
   }
 
   function attachSelectable(node, kind, key) {
+    const layer = kind === "booth" ? "booths" : kind === "facility" ? "facilities" : "aisles";
+    if (state.layers[layer].locked) { node.classList.add("layer-locked"); return; }
     node.addEventListener("pointerdown", e => {
       if (e.target.classList.contains("resize-handle")) return;
       if (kind === "booth" && (e.ctrlKey || e.metaKey)) {
@@ -392,6 +423,8 @@
   }
 
   function addBooth() {
+    if (state.layers.booths.locked) return toast("ブースレイヤーはロックされています");
+    checkpoint();
     const id = nextUniqueId("N", 1);
     state.venue.booths.push({ id, x: 100, y: 100, width: 130, height: 95 });
     selectSingleBooth(id); markDirty(); renderAll(); toast(`${id} を追加しました`);
@@ -403,11 +436,14 @@
   }
 
   function addAisle() {
+    if (state.layers.aisles.locked) return toast("通路レイヤーはロックされています");
+    checkpoint();
     const i = state.venue.aisles.push({ x: 200, y: 120, width: 300, height: 60 }) - 1;
     selectOther("aisle", i); markDirty(); renderAll(); toast("通路を追加しました");
   }
 
   function generateBoothGrid() {
+    checkpoint();
     const prefix = (els.gridPrefix.value.trim() || "N").replace(/\s+/g, "_");
     const startNo = Math.max(1, int(els.gridStartNo.value, 1));
     const rows = clamp(int(els.gridRows.value, 1), 1, 30), cols = clamp(int(els.gridCols.value, 1), 1, 30);
@@ -431,6 +467,7 @@
   }
 
   function duplicateBooth() {
+    checkpoint();
     const b = getBooth(); if (!b) return;
     const id = nextDuplicateId(b.id); const copy = { ...deepCopy(b), id, x: b.x + 20, y: b.y + 20 };
     state.venue.booths.push(copy);
@@ -439,12 +476,14 @@
   }
 
   function duplicateFacility() {
+    checkpoint();
     const f = getFacility(); if (!f) return;
     const i = state.venue.facilities.push({ ...deepCopy(f), x: f.x + 20, y: f.y + 20 }) - 1;
     selectOther("facility", i); markDirty(); renderAll();
   }
 
   function duplicateAisle() {
+    checkpoint();
     const a = getAisle(); if (!a) return;
     const i = state.venue.aisles.push({ ...deepCopy(a), x: a.x + 20, y: a.y + 20 }) - 1;
     selectOther("aisle", i); markDirty(); renderAll();
@@ -454,6 +493,7 @@
     const targets = state.multiBooths.size > 1 ? [...state.multiBooths] : (getBooth() ? [getBooth().id] : []);
     if (!targets.length) return;
     if (!confirm(`${targets.length}件のブースを削除しますか？\n該当する出店者情報も削除します。`)) return;
+    checkpoint();
     const set = new Set(targets);
     state.venue.booths = state.venue.booths.filter(b => !set.has(b.id));
     state.exhibitors = state.exhibitors.filter(e => !set.has(e.booth_id));
@@ -462,15 +502,18 @@
 
   function deleteFacility() {
     const f = getFacility(); if (!f || !confirm(`${f.label || "設備"} を削除しますか？`)) return;
+    checkpoint();
     state.venue.facilities.splice(state.selection.index, 1); clearSelection(false); markDirty(); renderAll();
   }
 
   function deleteAisle() {
     const a = getAisle(); if (!a || !confirm(`通路 ${state.selection.index + 1} を削除しますか？`)) return;
+    checkpoint();
     state.venue.aisles.splice(state.selection.index, 1); clearSelection(false); markDirty(); renderAll();
   }
 
   function renameBooth() {
+    checkpoint();
     const b = getBooth(); if (!b) return;
     const newId = els.boothNewId.value.trim();
     if (!newId) return toast("新しい番号を入力してください");
@@ -483,12 +526,14 @@
   }
 
   function addExhibitor() {
+    checkpoint();
     const b = getBooth(); if (!b) return toast("先にブースを選択してください");
     if (getExhibitor()) return toast("このブースには既に出店者があります");
     state.exhibitors.push(blankExhibitor(b.id)); markDirty(); renderAll();
   }
 
   function deleteExhibitor() {
+    checkpoint();
     const b = getBooth(), e = getExhibitor(); if (!b || !e) return;
     if (!confirm(`${b.id} の出店者情報を削除しますか？`)) return;
     state.exhibitors = state.exhibitors.filter(x => x.booth_id !== b.id); markDirty(); renderAll();
@@ -560,6 +605,7 @@
   }
 
   function startMove(e, kind, key) {
+    checkpoint();
     e.preventDefault(); e.stopPropagation();
     if (kind === "booth") {
       if (!state.multiBooths.has(key)) selectSingleBooth(key);
@@ -578,6 +624,7 @@
   }
 
   function startResize(e, kind, key) {
+    checkpoint();
     e.preventDefault(); e.stopPropagation();
     if (kind === "booth") selectSingleBooth(key); else selectOther(kind, key);
     const o = getSelectedObject(); if (!o) return;
@@ -589,6 +636,7 @@
   function mapPointerMove(e) {
     if (!state.action) return;
     const pt = clientToSvg(e.clientX, e.clientY), dx = pt.x - state.action.startX, dy = pt.y - state.action.startY;
+    if (state.action.mode === "marquee") { state.action.x = pt.x; state.action.y = pt.y; renderMarquee(); return; }
     if (state.action.mode === "move-multi") {
       state.action.origins.forEach(origin => {
         const b = state.venue.booths.find(x => x.id === origin.id); if (!b) return;
@@ -610,11 +658,13 @@
 
   function endPointerAction() {
     if (!state.action) return;
+    if (state.action.mode === "marquee") { finishMarquee(); return; }
     state.action = null; markDirty(); validateData(); renderAll();
   }
 
   function moveSelectionByKey(e) {
     if (!state.selection || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+    checkpoint();
     e.preventDefault(); const d = e.shiftKey ? 10 : 1; const dx = e.key === "ArrowLeft" ? -d : e.key === "ArrowRight" ? d : 0; const dy = e.key === "ArrowUp" ? -d : e.key === "ArrowDown" ? d : 0;
     if (state.selection.kind === "booth" && state.multiBooths.size > 1) getMultiBooths().forEach(b => { b.x += dx; b.y += dy; });
     else { const o = getSelectedObject(); if (!o) return; o.x += dx; o.y += dy; }
@@ -625,6 +675,172 @@
 
   function renderCurrentFormsAndLists() {
     renderBoothList(); renderBoothForm(); renderFacilityList(); renderFacilityForm(); renderAisleList(); renderAisleForm(); renderSelectionInfo();
+  }
+
+  function snapshotState() {
+    return deepCopy({ venue: state.venue, exhibitors: state.exhibitors });
+  }
+
+  function checkpoint() {
+    if (!state.venue) return;
+    const snap = snapshotState();
+    const last = state.history[state.history.length - 1];
+    if (!last || JSON.stringify(last) !== JSON.stringify(snap)) {
+      state.history.push(snap);
+      if (state.history.length > 80) state.history.shift();
+    }
+    state.future = [];
+    renderHistoryButtons();
+  }
+
+  function restoreSnapshot(snap) {
+    if (!snap) return;
+    state.venue = normalizeVenue(deepCopy(snap.venue));
+    state.exhibitors = deepCopy(snap.exhibitors || []);
+    clearSelection(false);
+    renderAll(); markDirty();
+  }
+
+  function undo() {
+    if (!state.history.length) return toast("戻せる操作がありません");
+    state.future.push(snapshotState());
+    restoreSnapshot(state.history.pop());
+    toast("Undoしました");
+  }
+
+  function redo() {
+    if (!state.future.length) return toast("やり直せる操作がありません");
+    state.history.push(snapshotState());
+    restoreSnapshot(state.future.pop());
+    toast("Redoしました");
+  }
+
+  function renderHistoryButtons() {
+    const u = $("undoBtn"), r = $("redoBtn");
+    if (u) u.disabled = !state.history.length;
+    if (r) r.disabled = !state.future.length;
+    const c = $("copyBtn"), p = $("pasteBtn");
+    if (c) c.disabled = !state.selection;
+    if (p) p.disabled = !state.clipboard;
+  }
+
+  function copySelection() {
+    if (!state.selection) return toast("コピーするオブジェクトを選択してください");
+    if (state.selection.kind === "booth") {
+      const ids = state.multiBooths.size ? [...state.multiBooths] : [state.selection.id];
+      state.clipboard = { kind: "booths", items: ids.map(id => {
+        const booth = state.venue.booths.find(b => b.id === id);
+        const exhibitor = state.exhibitors.find(e => e.booth_id === id);
+        return { booth: deepCopy(booth), exhibitor: exhibitor ? deepCopy(exhibitor) : null };
+      }).filter(x => x.booth) };
+    } else if (state.selection.kind === "facility") state.clipboard = { kind: "facility", item: deepCopy(getFacility()) };
+    else if (state.selection.kind === "aisle") state.clipboard = { kind: "aisle", item: deepCopy(getAisle()) };
+    renderHistoryButtons(); toast("コピーしました");
+  }
+
+  function pasteSelection() {
+    if (!state.clipboard) return toast("クリップボードが空です");
+    checkpoint();
+    if (state.clipboard.kind === "booths") {
+      const ids = [];
+      state.clipboard.items.forEach(entry => {
+        const id = nextDuplicateId(entry.booth.id);
+        state.venue.booths.push({ ...deepCopy(entry.booth), id, x: entry.booth.x + 30, y: entry.booth.y + 30 });
+        if (entry.exhibitor) state.exhibitors.push({ ...deepCopy(entry.exhibitor), booth_id: id });
+        ids.push(id);
+      });
+      state.multiBooths = new Set(ids); state.selection = ids[0] ? { kind: "booth", id: ids[0] } : null;
+    } else if (state.clipboard.kind === "facility" && state.clipboard.item) {
+      const f = state.clipboard.item; const i = state.venue.facilities.push({ ...deepCopy(f), x: f.x + 30, y: f.y + 30 }) - 1; selectOther("facility", i);
+    } else if (state.clipboard.kind === "aisle" && state.clipboard.item) {
+      const a = state.clipboard.item; const i = state.venue.aisles.push({ ...deepCopy(a), x: a.x + 30, y: a.y + 30 }) - 1; selectOther("aisle", i);
+    }
+    markDirty(); renderAll(); toast("貼り付けました");
+  }
+
+  function handleGlobalShortcuts(e) {
+    const tag = document.activeElement?.tagName?.toLowerCase();
+    const editingText = ["input","textarea","select"].includes(tag);
+    const mod = e.ctrlKey || e.metaKey;
+    if (mod && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+    if (mod && e.key.toLowerCase() === "y") { e.preventDefault(); redo(); return; }
+    if (!editingText && mod && e.key.toLowerCase() === "c") { e.preventDefault(); copySelection(); return; }
+    if (!editingText && mod && e.key.toLowerCase() === "v") { e.preventDefault(); pasteSelection(); return; }
+    if (!editingText && (e.key === "Delete" || e.key === "Backspace")) { e.preventDefault(); deleteSelectionByKey(); }
+  }
+
+  function deleteSelectionByKey() {
+    if (!state.selection) return;
+    const layer = selectionLayer();
+    if (layer && state.layers[layer].locked) return toast("このレイヤーはロックされています");
+    if (state.selection.kind === "booth") deleteBooth();
+    else if (state.selection.kind === "facility") deleteFacility();
+    else if (state.selection.kind === "aisle") deleteAisle();
+  }
+
+  function handleFormFocusIn(e) {
+    if (!e.target.matches("input,textarea,select")) return;
+    if (!state.formCheckpointActive) { checkpoint(); state.formCheckpointActive = true; }
+  }
+
+  function loadBackgroundImage(e) {
+    const file = e.target.files?.[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => { state.background.src = String(reader.result || ""); renderBackground(); renderLayerControls(); toast("背景画像を読み込みました"); };
+    reader.readAsDataURL(file); e.target.value = "";
+  }
+
+  function renderBackground() {
+    if (!els.backgroundLayer || !state.venue) return;
+    els.backgroundLayer.innerHTML = "";
+    els.backgroundOpacity.value = state.background.opacity;
+    els.backgroundFit.value = state.background.fit;
+    els.backgroundBadge.textContent = state.background.src ? "読込済" : "未読込";
+    if (!state.background.src || !state.layers.background.visible) return;
+    const [x,y,w,h] = state.venue.viewBox;
+    const image = svg("image", { x, y, width:w, height:h, href: state.background.src, opacity: state.background.opacity, class:"background-image", preserveAspectRatio: state.background.fit === "contain" ? "xMidYMid meet" : "none" });
+    els.backgroundLayer.appendChild(image);
+  }
+
+  function renderLayerControls() {
+    document.querySelectorAll(".layer-visible").forEach(el => el.checked = state.layers[el.dataset.layer]?.visible !== false);
+    document.querySelectorAll(".layer-lock").forEach(el => el.checked = !!state.layers[el.dataset.layer]?.locked);
+  }
+
+  function selectionLayer() {
+    if (!state.selection) return null;
+    return state.selection.kind === "booth" ? "booths" : state.selection.kind === "facility" ? "facilities" : "aisles";
+  }
+
+  function clearLockedSelection(layer) {
+    if (selectionLayer() === layer) clearSelection(false);
+    if (layer === "booths") state.multiBooths.clear();
+  }
+
+  function startMarqueeSelection(e) {
+    if (e.button !== 0 || state.layers.booths.locked || !state.layers.booths.visible) return;
+    if (e.target.closest(".edit-booth,.edit-facility,.edit-aisle,.resize-handle")) return;
+    const pt = clientToSvg(e.clientX,e.clientY);
+    state.action = { mode:"marquee", startX:pt.x, startY:pt.y, x:pt.x, y:pt.y, additive:e.ctrlKey||e.metaKey };
+    els.viewport.classList.add("selecting");
+    e.preventDefault();
+  }
+
+  function renderMarquee() {
+    if (!els.overlayLayer) return;
+    els.overlayLayer.innerHTML = "";
+    if (!state.action || state.action.mode !== "marquee") return;
+    const a=state.action, x=Math.min(a.startX,a.x), y=Math.min(a.startY,a.y), w=Math.abs(a.x-a.startX), h=Math.abs(a.y-a.startY);
+    els.overlayLayer.appendChild(svg("rect",{x,y,width:w,height:h,class:"selection-marquee"}));
+  }
+
+  function finishMarquee() {
+    const a=state.action; if (!a || a.mode!=="marquee") return;
+    const x1=Math.min(a.startX,a.x), y1=Math.min(a.startY,a.y), x2=Math.max(a.startX,a.x), y2=Math.max(a.startY,a.y);
+    const ids=state.venue.booths.filter(b => b.x >= x1 && b.y >= y1 && b.x+b.width <= x2 && b.y+b.height <= y2).map(b=>b.id);
+    if (!a.additive) state.multiBooths.clear(); ids.forEach(id=>state.multiBooths.add(id));
+    const first=ids[0] || [...state.multiBooths][0]; state.selection=first?{kind:"booth",id:first}:null;
+    state.action=null; els.viewport.classList.remove("selecting"); renderAll();
   }
 
   function validateData() {
