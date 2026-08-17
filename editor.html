@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f8eef3">
-  <title>Marche Booth Map Editor v1.5</title>
+  <title>Marche Booth Map Editor v1.5.1</title>
   <link rel="stylesheet" href="css/editor.css">
 </head>
 <body>
 <header class="editor-header">
   <div>
     <p class="eyebrow">MAP EDITOR</p>
-    <h1>Marche Booth Map Editor <span>v1.5</span></h1>
+    <h1>Marche Booth Map Editor <span>v1.5.1</span></h1>
     <p class="sub">可変会場サイズ・自動フィット・自動拡張・複数選択・整列・行列生成に対応した会場レイアウトエディタです。</p>
   </div>
   <div class="header-actions">
@@ -177,7 +177,7 @@
           <label>カテゴリ（カンマ区切り）<input id="categories" type="text" placeholder="ドール, ハンドメイド"></label>
           <label>検索キーワード（カンマ区切り）<input id="keywords" type="text" placeholder="ドール服, リボン"></label>
           <label>説明<textarea id="description" rows="5"></textarea></label>
-          <label>Instagram URL<input id="instagramUrl" type="url" placeholder="https://..."></label>
+          <label>Instagram URL（1行1URL）<textarea id="instagramUrl" rows="4" placeholder="https://www.instagram.com/account_a/&#10;https://www.instagram.com/account_b/"></textarea><small class="hint">同じブースに複数アカウントがある場合は、1行に1URLずつ入力してください。</small></label>
           <label>ショップ URL<input id="shopUrl" type="url" placeholder="https://..."></label>
           <label>メモ<textarea id="note" rows="3"></textarea></label>
         </div>

@@ -291,11 +291,22 @@
     els.exhibitorSelect.innerHTML = '<option value="">-- ブースを選択 --</option>' + state.venue.booths.map(b => `<option value="${esc(b.id)}" ${b.id === selected ? "selected" : ""}>${esc(b.id)}${state.exhibitors.some(e => e.booth_id === b.id) ? " - 登録済" : ""}</option>`).join("");
   }
 
+
+  function getInstagramUrls(e) {
+    if (!e) return [];
+    if (Array.isArray(e.instagram_urls)) return e.instagram_urls.map(x => String(x || "").trim()).filter(Boolean);
+    return e.instagram_url ? [String(e.instagram_url).trim()].filter(Boolean) : [];
+  }
+
+  function splitLines(value) {
+    return String(value || "").split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+  }
+
   function renderExhibitorForm() {
     const e = getExhibitor(), disabled = !getBooth();
     [els.shopName, els.categories, els.keywords, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(x => x.disabled = disabled);
     els.shopName.value = e?.shop_name || ""; els.categories.value = (e?.categories || []).join(", "); els.keywords.value = (e?.keywords || []).join(", ");
-    els.description.value = e?.description || ""; els.instagramUrl.value = e?.instagram_url || ""; els.shopUrl.value = e?.shop_url || ""; els.note.value = e?.note || "";
+    els.description.value = e?.description || ""; els.instagramUrl.value = getInstagramUrls(e).join("\n"); els.shopUrl.value = e?.shop_url || ""; els.note.value = e?.note || "";
   }
 
   function renderFacilityList() {
@@ -376,7 +387,7 @@
     const b = getBooth(); if (!b) return;
     let e = getExhibitor(); if (!e) { e = blankExhibitor(b.id); state.exhibitors.push(e); }
     e.shop_name = els.shopName.value.trim(); e.categories = splitCsv(els.categories.value); e.keywords = splitCsv(els.keywords.value); e.description = els.description.value;
-    e.instagram_url = els.instagramUrl.value.trim(); e.shop_url = els.shopUrl.value.trim(); e.note = els.note.value;
+    e.instagram_urls = splitLines(els.instagramUrl.value); e.instagram_url = e.instagram_urls[0] || ""; e.shop_url = els.shopUrl.value.trim(); e.note = els.note.value;
     markDirty(); validateData(); renderExhibitorSelect();
   }
 
@@ -669,7 +680,7 @@
   function getExhibitor() { const b = getBooth(); return b ? state.exhibitors.find(e => e.booth_id === b.id) || null : null; }
   function isPrimary(kind, key) { if (!state.selection || state.selection.kind !== kind) return false; return kind === "booth" ? state.selection.id === key : state.selection.index === key; }
   function pruneMultiSelection() { const ids = new Set(state.venue.booths.map(b => b.id)); state.multiBooths = new Set([...state.multiBooths].filter(id => ids.has(id))); }
-  function blankExhibitor(id) { return { booth_id: id, shop_name: "", categories: [], description: "", keywords: [], instagram_url: "", shop_url: "", note: "" }; }
+  function blankExhibitor(id) { return { booth_id: id, shop_name: "", categories: [], description: "", keywords: [], instagram_urls: [], instagram_url: "", shop_url: "", note: "" }; }
 
   function nextUniqueId(prefix, start) {
     const used = new Set(state.venue.booths.map(b => b.id)); let n = start, id;

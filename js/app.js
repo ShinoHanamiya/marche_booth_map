@@ -6,6 +6,21 @@
   const escapeHtml = (v="") => String(v).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
   const normalize = (v="") => String(v).toLowerCase().normalize("NFKC");
   const urlOk = (u) => /^https?:\/\//i.test(u || "");
+  function instagramUrls(e) {
+    const raw = Array.isArray(e?.instagram_urls) ? e.instagram_urls : (e?.instagram_url ? [e.instagram_url] : []);
+    return [...new Set(raw.map(x => String(x || "").trim()).filter(urlOk))];
+  }
+  function instagramLabel(url, index) {
+    try {
+      const u = new URL(url);
+      const name = u.pathname.split("/").filter(Boolean)[0];
+      return name ? `Instagram @${escapeHtml(name)}` : `Instagram ${index + 1}`;
+    } catch (_) { return `Instagram ${index + 1}`; }
+  }
+  function instagramLinks(e, compact=false) {
+    return instagramUrls(e).map((url, i) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${instagramLabel(url, i)} ↗</a>`).join("");
+  }
+
 
   function loadSet(key) {
     try { return new Set(JSON.parse(localStorage.getItem(key) || "[]")); }
@@ -129,7 +144,7 @@
         <div class="exhibitor-top"><div><div class="booth-label">${escapeHtml(e.booth_id)}</div><h3 class="exhibitor-name">${escapeHtml(e.shop_name)}</h3>${statusBadges(e.booth_id)}</div><div class="quick-state-actions"><button class="favorite-button ${fav?"active":""}" data-fav="${escapeHtml(e.booth_id)}" type="button" aria-label="行きたい切替">${fav?"♥":"♡"}</button><button class="visited-button ${visited?"active":""}" data-visited="${escapeHtml(e.booth_id)}" type="button" aria-label="訪問済み切替">${visited?"✓":"○"}</button></div></div>
         <p class="exhibitor-desc">${escapeHtml(e.description)}</p>
         <div class="tags">${(e.categories||[]).map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join("")}</div>
-        <div class="item-actions"><button data-locate="${escapeHtml(e.booth_id)}" type="button">マップで見る</button><button data-detail="${escapeHtml(e.booth_id)}" type="button">詳細</button>${urlOk(e.instagram_url)?`<a href="${escapeHtml(e.instagram_url)}" target="_blank" rel="noopener noreferrer">Instagram ↗</a>`:""}</div>
+        <div class="item-actions"><button data-locate="${escapeHtml(e.booth_id)}" type="button">マップで見る</button><button data-detail="${escapeHtml(e.booth_id)}" type="button">詳細</button>${instagramLinks(e, true)}</div>
       </article>`;
     }).join("");
     els.exhibitorList.querySelectorAll("[data-locate]").forEach(b=>b.addEventListener("click",()=>selectBooth(b.dataset.locate,true,true)));
@@ -178,7 +193,7 @@
       <div class="tags">${(e.categories||[]).map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join("")}</div>
       <p class="detail-description">${escapeHtml(e.description)}</p>${e.note?`<p><strong>メモ：</strong>${escapeHtml(e.note)}</p>`:""}
       <div class="detail-links favorite-actions"><button id="detailFavBtn" class="${fav?"primary":""}" type="button">${fav?"♥ 行きたい登録済み":"♡ 行きたい"}</button><button id="detailVisitedBtn" class="${visited?"visited-primary":""}" type="button">${visited?"✓ 行った":"○ 行ったにする"}</button></div>
-      <div class="detail-links"><button id="detailLocateBtn" type="button">マップで見る</button>${urlOk(e.instagram_url)?`<a href="${escapeHtml(e.instagram_url)}" target="_blank" rel="noopener noreferrer">Instagram ↗</a>`:""}${urlOk(e.shop_url)?`<a href="${escapeHtml(e.shop_url)}" target="_blank" rel="noopener noreferrer">ショップ ↗</a>`:""}</div>`;
+      <div class="detail-links"><button id="detailLocateBtn" type="button">マップで見る</button>${instagramLinks(e, true)}${urlOk(e.shop_url)?`<a href="${escapeHtml(e.shop_url)}" target="_blank" rel="noopener noreferrer">ショップ ↗</a>`:""}</div>`;
     els.detailSheet.hidden=false; els.detailBackdrop.hidden=false;
     $("detailFavBtn").addEventListener("click",()=>{toggleFavorite(e.booth_id,false); showDetail(e);});
     $("detailVisitedBtn").addEventListener("click",()=>{toggleVisited(e.booth_id,false); showDetail(e);});
