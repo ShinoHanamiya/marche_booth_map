@@ -207,7 +207,17 @@
     els.mapViewport.addEventListener("pointerdown", pointerDown); els.mapViewport.addEventListener("pointermove", pointerMove); els.mapViewport.addEventListener("pointerup", pointerUp); els.mapViewport.addEventListener("pointercancel", pointerUp);
     window.addEventListener("resize",()=>{ clampTransform(); applyTransform(); });
   }
-  function pointerDown(e){ els.mapViewport.setPointerCapture(e.pointerId); state.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(state.pointers.size===1){state.dragStart={x:e.clientX,y:e.clientY,tx:state.tx,ty:state.ty}; els.mapViewport.classList.add("dragging");} if(state.pointers.size===2){const p=[...state.pointers.values()]; state.pinchStart={dist:Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y),scale:state.scale};} }
+  function pointerDown(e){
+    // v1.5.1: Do not capture pointer events that start on a booth.
+    // Capturing them at mapViewport can cause the browser to dispatch the
+    // subsequent click to the viewport instead of the booth, so booth details
+    // may not open on desktop browsers (including GitHub Pages deployments).
+    if (e.target.closest && e.target.closest(".booth")) return;
+    els.mapViewport.setPointerCapture(e.pointerId);
+    state.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(state.pointers.size===1){state.dragStart={x:e.clientX,y:e.clientY,tx:state.tx,ty:state.ty}; els.mapViewport.classList.add("dragging");}
+    if(state.pointers.size===2){const p=[...state.pointers.values()]; state.pinchStart={dist:Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y),scale:state.scale};}
+  }
   function pointerMove(e){ if(!state.pointers.has(e.pointerId))return; state.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(state.pointers.size===1&&state.dragStart){state.tx=state.dragStart.tx+(e.clientX-state.dragStart.x);state.ty=state.dragStart.ty+(e.clientY-state.dragStart.y);clampTransform();applyTransform();} else if(state.pointers.size===2&&state.pinchStart){const p=[...state.pointers.values()];const dist=Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y);const centerX=(p[0].x+p[1].x)/2-els.mapViewport.getBoundingClientRect().left;const centerY=(p[0].y+p[1].y)/2-els.mapViewport.getBoundingClientRect().top;const target=state.pinchStart.scale*(dist/state.pinchStart.dist);zoomTo(target,centerX,centerY);} }
   function pointerUp(e){state.pointers.delete(e.pointerId); if(state.pointers.size<2)state.pinchStart=null; if(state.pointers.size===0){state.dragStart=null;els.mapViewport.classList.remove("dragging");} else {const p=[...state.pointers.values()][0];state.dragStart={x:p.x,y:p.y,tx:state.tx,ty:state.ty};}}
   function zoomAt(factor,cx,cy){ const rect=els.mapViewport.getBoundingClientRect(); zoomTo(state.scale*factor, cx??rect.width/2, cy??rect.height/2); }
