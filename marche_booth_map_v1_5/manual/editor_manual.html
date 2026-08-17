@@ -1,0 +1,70 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Marche Booth Map v1.5 編集者マニュアル</title><style>body{font-family:"Yu Gothic UI","Meiryo",sans-serif;line-height:1.85;color:#433840;background:#fffafc;margin:0}.wrap{max-width:1000px;margin:auto;padding:36px 20px 70px}h1,h2,h3{color:#7c4d60}h1{border-bottom:3px solid #efd4df;padding-bottom:12px}h2{margin-top:38px;border-left:5px solid #d883a5;padding-left:12px}code,pre{font-family:Consolas,monospace;background:#f7eff3}code{padding:2px 5px;border-radius:5px}pre{padding:14px;overflow:auto;border-radius:12px;border:1px solid #eadde4}table{width:100%;border-collapse:collapse}th,td{border:1px solid #e3d4dc;padding:9px;vertical-align:top}th{background:#f8eaf0}.note{background:#fff1f6;border:1px solid #efc9d8;padding:14px;border-radius:12px}.ok{background:#f1f7f4;border:1px solid #cfe4da;padding:14px;border-radius:12px}.step{background:white;border:1px solid #eadde4;border-radius:14px;padding:15px;margin:12px 0}a{color:#a34c70}</style></head><body><div class="wrap">
+<h1>Marche Booth Map v1.5 編集者マニュアル</h1>
+<p>イベント主催者・マップ作成者向けの編集手順です。v1.5では、v1.2のブース・設備・通路GUI編集に加えて、直接リサイズ、複数ブース選択、整列・等間隔配置、行列ブース一括生成に対応しました。</p>
+<div class="ok"><strong>v1.5のポイント：</strong>会場図作成時に座標を1件ずつ入力する作業を減らし、マウス操作と一括配置で短時間にレイアウトを作れるようにしています。</div>
+
+<h2>1. 起動方法</h2>
+<div class="step"><strong>Windows:</strong> <code>start_editor.bat</code> をダブルクリックします。PythonのローカルHTTPサーバーが起動し、<code>http://localhost:8000/editor.html</code> が開きます。</div>
+<p>HTMLを直接ダブルクリックするとJSONの読み込みがブラウザに制限される場合があるため、BATから起動してください。</p>
+
+<h2>2. 画面構成</h2>
+<table><tr><th>領域</th><th>用途</th></tr><tr><td>左</td><td>イベント情報、配置パレット、ブース一括生成、ブース一覧・詳細編集</td></tr><tr><td>中央</td><td>会場マップ、複数ブース整列、データ確認</td></tr><tr><td>右</td><td>出店者情報、設備、通路の詳細編集</td></tr><tr><td>上</td><td>JSON読込、自動保存復元、JSON書出</td></tr></table>
+
+<h2>3. 基本のオブジェクト操作</h2>
+<table><tr><th>操作</th><th>動作</th></tr><tr><td>クリック</td><td>ブース・設備・通路を単一選択</td></tr><tr><td>ドラッグ</td><td>選択物を移動</td></tr><tr><td>右下の小さい四角をドラッグ</td><td>選択物の幅・高さを直接変更</td></tr><tr><td>矢印キー</td><td>選択物を1px移動</td></tr><tr><td>Shift + 矢印</td><td>選択物を10px移動</td></tr><tr><td>10pxスナップ ON</td><td>ドラッグ移動・リサイズ・整列結果を10px単位へ吸着</td></tr></table>
+<div class="note">直接リサイズはブース・設備・通路に対応しています。選択したオブジェクトの右下に表示されるハンドルをドラッグしてください。</div>
+
+<h2>4. ブースを1件ずつ作る</h2>
+<ol><li>「□ ブース」を押します。</li><li>新規ブースが会場左上付近へ追加されます。</li><li>ドラッグして配置し、右下ハンドルで大きさを調整します。</li><li>必要ならX/Y/幅/高さを数値入力します。</li><li>「新しい番号」を入力し「番号変更」でA01などに変更します。</li></ol>
+<p>ブース番号変更時は、そのブースに紐づく出店者の <code>booth_id</code> も連動変更します。</p>
+
+<h2>5. 行列ブースを一括生成する</h2>
+<p>左側の「ブース一括生成」で、同じ大きさのブースを行×列でまとめて作れます。</p>
+<table><tr><th>項目</th><th>意味</th><th>初期値</th></tr><tr><td>接頭辞</td><td>ブース番号の先頭文字。CならC01、C02…</td><td>C</td></tr><tr><td>開始番号</td><td>最初に使用する番号</td><td>1</td></tr><tr><td>行数 / 列数</td><td>生成する行・列。各1～30</td><td>2 / 4</td></tr><tr><td>ブース幅 / 高さ</td><td>各ブースのSVG上のサイズ</td><td>130 / 95</td></tr><tr><td>横間隔 / 縦間隔</td><td>ブース間の空き</td><td>20 / 25</td></tr><tr><td>開始X / Y</td><td>左上ブースを置く開始座標</td><td>100 / 100</td></tr></table>
+<ol><li>各値を入力します。</li><li>「行列を生成」を押します。</li><li>生成されたブースはすべて複数選択状態になります。</li><li>そのままドラッグしてブロック全体を好きな位置へ移動できます。</li></ol>
+<p>既存ブース番号と重複する場合は、重複しない次の番号を自動的に探します。</p>
+
+<h2>6. 複数ブースを選択する</h2>
+<p><code>Ctrl</code>（macOSでは<code>⌘</code>）を押しながらブースをクリックすると、選択へ追加・解除できます。「全ブース選択」も利用できます。</p>
+<p>複数選択中に選択ブースをドラッグすると、選択されたブースすべてをまとめて移動します。矢印キーによる移動もまとめて適用されます。</p>
+<div class="note">設備・通路は単一選択です。複数選択と整列機能はブースを対象にしています。</div>
+
+<h2>7. ブースを整列・等間隔配置する</h2>
+<p>2件以上のブースを複数選択すると、中央下部の「複数ブース整列」を使用できます。</p>
+<table><tr><th>ボタン</th><th>動作</th></tr><tr><td>左揃え / 右揃え</td><td>選択ブースの左右端を揃える</td></tr><tr><td>左右中央</td><td>選択範囲の中央線へ各ブース中心を揃える</td></tr><tr><td>上揃え / 下揃え</td><td>選択ブースの上下端を揃える</td></tr><tr><td>上下中央</td><td>選択範囲の中央線へ各ブース中心を揃える</td></tr><tr><td>横に等間隔 / 縦に等間隔</td><td>3件以上を中心位置基準で等間隔に並べる</td></tr><tr><td>同じサイズ</td><td>選択中の主ブースと同じ幅・高さへ統一する</td></tr></table>
+
+<h2>8. 設備と通路を作る</h2>
+<p>配置パレットから入口・受付・WC・休憩所・通路を追加できます。追加後はドラッグ移動、右下ハンドルで直接リサイズ、右側フォームで数値調整、複製・削除ができます。</p>
+<p>横通路は幅を大きく・高さを小さく、縦通路は幅を小さく・高さを大きくすると作りやすいです。</p>
+
+<h2>9. 出店者情報を編集する</h2>
+<p>ブースを選択して右側の出店者編集フォームを入力します。ショップ名、カテゴリ、検索キーワード、説明、Instagram URL、ショップURL、メモを登録できます。</p>
+<p>カテゴリと検索キーワードは「ドール, アクセサリー」のようにカンマ区切りで入力します。</p>
+
+<h2>10. 自動保存</h2>
+<p>編集中データはブラウザのlocalStorageへ自動保存されます。「自動保存を復元」から復元できます。</p>
+<div class="note">自動保存はバックアップです。公開用データは必ずJSONとして保存してください。バージョンごとに保存キーは分離されています。</div>
+
+<h2>11. JSONを書き出す</h2>
+<p>上部の「venue.json保存」「exhibitors.json保存」または「両方保存」を使用します。ダウンロードしたファイルをプロジェクトの <code>data/venue.json</code> と <code>data/exhibitors.json</code> へ上書きします。</p>
+
+<h2>12. GitHub Pagesへ反映する</h2>
+<ol><li>編集画面からJSONを保存します。</li><li><code>data/</code> 内のJSONを置き換えます。</li><li><code>start_local_server.bat</code> で閲覧画面を確認します。</li><li>Gitでcommit/pushします。</li><li>GitHub Pagesの公開URLを確認します。</li></ol>
+
+<h2>13. データ形式</h2>
+<p><code>venue.json</code> はイベント、<code>viewBox</code>、設備、通路、ブースを保持します。<code>exhibitors.json</code> は出店者情報を保持し、<code>booth_id</code> でブースに紐づきます。</p>
+<pre>{
+  "id": "A01",
+  "x": 235,
+  "y": 165,
+  "width": 130,
+  "height": 95
+}</pre>
+
+<h2>14. トラブル対処</h2>
+<table><tr><th>症状</th><th>対処</th></tr><tr><td>JSONを読み込めない</td><td><code>start_editor.bat</code> から起動し、dataフォルダにJSONがあるか確認</td></tr><tr><td>複数選択できない</td><td>Ctrlまたは⌘を押したままブースをクリック。設備・通路は複数選択対象外</td></tr><tr><td>等間隔ボタンが押せない</td><td>3件以上のブースを選択する</td></tr><tr><td>リサイズできない</td><td>対象を単一選択し、右下に表示される小さい四角をドラッグする</td></tr><tr><td>編集が公開ページへ反映されない</td><td>保存したJSONをdataフォルダへ上書きし、GitHubへpushしたか確認</td></tr><tr><td>ブースを押しても出店者が出ない</td><td>ブース番号と出店者のbooth_idが一致しているか「データ確認」で確認</td></tr></table>
+
+<p><a href="../editor.html">← 編集画面へ戻る</a> / <a href="viewer_manual.html">閲覧者マニュアル</a></p>
+</div>
+<section><h2>会場サイズの変更（v1.5）</h2><p>編集画面の「会場サイズ」から、会場幅・会場高さ・開始X・開始Yを変更できます。小 1000×700、中 1600×1000、大 2200×1400 のプリセットも利用できます。</p><ul><li><strong>会場サイズを適用</strong>：入力値をviewBoxへ反映します。</li><li><strong>配置物に自動フィット</strong>：ブース・設備・通路を囲む最小範囲へ会場を調整します。余白も指定できます。</li><li><strong>端で自動拡張</strong>：ONの場合、配置物を会場端へドラッグすると100単位を目安に自動で会場を広げます。</li></ul><p>会場サイズは画像ピクセル数ではなくSVG内部座標です。SVGのため会場を広げても図形自体の画質は劣化しません。</p></section>
+</body></html>
