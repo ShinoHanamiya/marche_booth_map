@@ -35,7 +35,7 @@
       eventId: $("eventId"), eventName: $("eventNameInput"), eventDate: $("eventDate"), eventTime: $("eventTime"), eventVenue: $("eventVenue"),
       venueWidth: $("venueWidth"), venueHeight: $("venueHeight"), venueOriginX: $("venueOriginX"), venueOriginY: $("venueOriginY"), venueSizeBadge: $("venueSizeBadge"), fitMargin: $("fitMargin"), autoExpandToggle: $("autoExpandToggle"),
       boothList: $("boothList"), boothCount: $("boothCount"), boothId: $("boothId"), boothNewId: $("boothNewId"), boothX: $("boothX"), boothY: $("boothY"), boothWidth: $("boothWidth"), boothHeight: $("boothHeight"), boothBadge: $("selectedBoothBadge"),
-      exhibitorSelect: $("exhibitorSelect"), shopName: $("shopName"), categories: $("categories"), keywords: $("keywords"), description: $("description"), instagramUrl: $("instagramUrl"), shopUrl: $("shopUrl"), note: $("note"),
+      exhibitorSelect: $("exhibitorSelect"), shopName: $("shopName"), categories: $("categories"), keywords: $("keywords"), tags: $("tags"), description: $("description"), instagramUrl: $("instagramUrl"), shopUrl: $("shopUrl"), note: $("note"),
       facilityList: $("facilityList"), facilityBadge: $("selectedFacilityBadge"), facilityType: $("facilityType"), facilityLabel: $("facilityLabel"), facilityX: $("facilityX"), facilityY: $("facilityY"), facilityWidth: $("facilityWidth"), facilityHeight: $("facilityHeight"),
       aisleList: $("aisleList"), aisleBadge: $("selectedAisleBadge"), aisleX: $("aisleX"), aisleY: $("aisleY"), aisleWidth: $("aisleWidth"), aisleHeight: $("aisleHeight"),
       gridPrefix: $("gridPrefix"), gridStartNo: $("gridStartNo"), gridRows: $("gridRows"), gridCols: $("gridCols"), gridWidth: $("gridWidth"), gridHeight: $("gridHeight"), gridGapX: $("gridGapX"), gridGapY: $("gridGapY"), gridStartX: $("gridStartX"), gridStartY: $("gridStartY"),
@@ -146,7 +146,7 @@
       if (id) selectSingleBooth(id); else clearSelection();
       renderAll();
     });
-    [els.shopName, els.categories, els.keywords, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(el => el.addEventListener("input", syncExhibitorForm));
+    [els.shopName, els.categories, els.keywords, els.tags, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(el => el.addEventListener("input", syncExhibitorForm));
 
     els.map.addEventListener("pointermove", mapPointerMove);
     els.map.addEventListener("click", e => {
@@ -335,8 +335,8 @@
 
   function renderExhibitorForm() {
     const e = getExhibitor(), disabled = !getBooth();
-    [els.shopName, els.categories, els.keywords, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(x => x.disabled = disabled);
-    els.shopName.value = e?.shop_name || ""; els.categories.value = (e?.categories || []).join(", "); els.keywords.value = (e?.keywords || []).join(", ");
+    [els.shopName, els.categories, els.keywords, els.tags, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(x => x.disabled = disabled);
+    els.shopName.value = e?.shop_name || ""; els.categories.value = (e?.categories || []).join(", "); els.keywords.value = (e?.keywords || []).join(", "); els.tags.value = (e?.tags || []).join(", ");
     els.description.value = e?.description || ""; els.instagramUrl.value = getInstagramUrls(e).join("\n"); els.shopUrl.value = e?.shop_url || ""; els.note.value = e?.note || "";
   }
 
@@ -417,7 +417,7 @@
   function syncExhibitorForm() {
     const b = getBooth(); if (!b) return;
     let e = getExhibitor(); if (!e) { e = blankExhibitor(b.id); state.exhibitors.push(e); }
-    e.shop_name = els.shopName.value.trim(); e.categories = splitCsv(els.categories.value); e.keywords = splitCsv(els.keywords.value); e.description = els.description.value;
+    e.shop_name = els.shopName.value.trim(); e.categories = splitCsv(els.categories.value); e.keywords = splitCsv(els.keywords.value); e.tags = splitCsv(els.tags.value); e.description = els.description.value;
     e.instagram_urls = splitLines(els.instagramUrl.value); e.instagram_url = e.instagram_urls[0] || ""; e.shop_url = els.shopUrl.value.trim(); e.note = els.note.value;
     markDirty(); validateData(); renderExhibitorSelect();
   }
@@ -896,7 +896,7 @@
   function getExhibitor() { const b = getBooth(); return b ? state.exhibitors.find(e => e.booth_id === b.id) || null : null; }
   function isPrimary(kind, key) { if (!state.selection || state.selection.kind !== kind) return false; return kind === "booth" ? state.selection.id === key : state.selection.index === key; }
   function pruneMultiSelection() { const ids = new Set(state.venue.booths.map(b => b.id)); state.multiBooths = new Set([...state.multiBooths].filter(id => ids.has(id))); }
-  function blankExhibitor(id) { return { booth_id: id, shop_name: "", categories: [], description: "", keywords: [], instagram_urls: [], instagram_url: "", shop_url: "", note: "" }; }
+  function blankExhibitor(id) { return { booth_id: id, shop_name: "", categories: [], description: "", keywords: [], tags: [], instagram_urls: [], instagram_url: "", shop_url: "", note: "" }; }
 
   function nextUniqueId(prefix, start) {
     const used = new Set(state.venue.booths.map(b => b.id)); let n = start, id;

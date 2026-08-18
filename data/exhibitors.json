@@ -18,6 +18,10 @@
     "instagram_urls": [
       "https://www.instagram.com/dolly_ribbon_main/",
       "https://www.instagram.com/dolly_ribbon_sub/"
+    ],
+    "tags": [
+      "限定品あり",
+      "ドール撮影OK"
     ]
   },
   {
@@ -38,6 +42,10 @@
     "note": "ぬい撮り歓迎",
     "instagram_urls": [
       "https://www.instagram.com/"
+    ],
+    "tags": [
+      "ぬい撮りOK",
+      "キャッシュレス"
     ]
   },
   {
@@ -58,6 +66,10 @@
     "note": "新作あり",
     "instagram_urls": [
       "https://www.instagram.com/"
+    ],
+    "tags": [
+      "新作あり",
+      "ギフト向け"
     ]
   },
   {
@@ -77,6 +89,9 @@
     "note": "数量限定",
     "instagram_urls": [
       "https://www.instagram.com/"
+    ],
+    "tags": [
+      "数量限定"
     ]
   },
   {
@@ -97,6 +112,10 @@
     "note": "展示作品あり",
     "instagram_urls": [
       "https://www.instagram.com/"
+    ],
+    "tags": [
+      "写真作品",
+      "通販あり"
     ]
   },
   {
@@ -117,6 +136,10 @@
     "note": "試着見本あり",
     "instagram_urls": [
       "https://www.instagram.com/"
+    ],
+    "tags": [
+      "試着見本あり",
+      "ドール"
     ]
   },
   {
@@ -137,6 +160,10 @@
     "note": "休憩のおともに",
     "instagram_urls": [
       "https://www.instagram.com/"
+    ],
+    "tags": [
+      "テイクアウト",
+      "キャッシュレス"
     ]
   },
   {
@@ -157,6 +184,10 @@
     "note": "随時受付",
     "instagram_urls": [
       "https://www.instagram.com/"
+    ],
+    "tags": [
+      "ワークショップ",
+      "随時受付"
     ]
   }
 ]

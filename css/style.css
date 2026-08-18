@@ -131,3 +131,21 @@ h1 { margin:0; font-size:clamp(22px,3vw,34px); }
   .favorite-mode-bar { display:grid; grid-template-columns:1fr 1fr; }
   .mode-chip { width:100%; }
 }
+
+/* v1.7 share / tag filter / map rotation */
+.tag-filter-section { margin-top:12px; padding-top:12px; border-top:1px dashed var(--line); }
+.filter-label { display:block; color:var(--muted); font-size:11px; margin-bottom:7px; }
+.tag-filters { display:flex; gap:7px; flex-wrap:wrap; }
+.tag-filter-chip { border:1px solid #d9c7d0; background:#fff; color:#735966; padding:7px 10px; border-radius:999px; cursor:pointer; font-size:11px; }
+.tag-filter-chip.active { background:#785c6b; color:#fff; border-color:#785c6b; }
+.filter-empty { color:var(--muted); font-size:11px; }
+.feature-tag { background:#f3eff8; border-color:#d8cde6; color:#68557a; }
+.map-action-stack { display:flex; align-items:center; gap:9px; flex-wrap:wrap; justify-content:flex-end; }
+.rotation-controls { display:flex; gap:4px; padding:3px; border:1px solid var(--line); border-radius:12px; background:#faf7f8; }
+.rotation-controls button { min-width:42px; height:32px; border:0; border-radius:8px; background:transparent; color:var(--muted); cursor:pointer; font-size:11px; font-weight:700; }
+.rotation-controls button.active { background:#745565; color:#fff; box-shadow:0 2px 8px rgba(72,48,61,.12); }
+@media (max-width: 560px) {
+  .map-action-stack { width:100%; justify-content:flex-start; }
+  .rotation-controls { order:2; width:100%; }
+  .rotation-controls button { flex:1; }
+}

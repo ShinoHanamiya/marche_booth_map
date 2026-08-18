@@ -6,6 +6,7 @@
   const escapeHtml = (v="") => String(v).replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
   const normalize = (v="") => String(v).toLowerCase().normalize("NFKC");
   const urlOk = (u) => /^https?:\/\//i.test(u || "");
+
   function instagramUrls(e) {
     const raw = Array.isArray(e?.instagram_urls) ? e.instagram_urls : (e?.instagram_url ? [e.instagram_url] : []);
     return [...new Set(raw.map(x => String(x || "").trim()).filter(urlOk))];
@@ -17,10 +18,12 @@
       return name ? `Instagram @${escapeHtml(name)}` : `Instagram ${index + 1}`;
     } catch (_) { return `Instagram ${index + 1}`; }
   }
-  function instagramLinks(e, compact=false) {
+  function instagramLinks(e) {
     return instagramUrls(e).map((url, i) => `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${instagramLabel(url, i)} ↗</a>`).join("");
   }
-
+  function tagList(e) {
+    return Array.isArray(e?.tags) ? e.tags.map(x => String(x || "").trim()).filter(Boolean) : [];
+  }
 
   function loadSet(key) {
     try { return new Set(JSON.parse(localStorage.getItem(key) || "[]")); }
@@ -34,15 +37,16 @@
   }
 
   const state = {
-    exhibitors: [], venue: null, filtered: [], category: "すべて", query: "",
+    exhibitors: [], venue: null, filtered: [], category: "すべて", query: "", selectedTags: new Set(),
     viewMode: "all", favorites: migrateFavorites(), visited: loadSet(cfg.visitedStorageKey),
-    selectedBooth: null, scale: 1, tx: 0, ty: 0, pointers: new Map(), dragStart: null, pinchStart: null
+    selectedBooth: null, rotation: 0,
+    scale: 1, tx: 0, ty: 0, pointers: new Map(), dragStart: null, pinchStart: null
   };
 
   async function init() {
     Object.assign(els, {
-      eventName: $("eventName"), eventMeta: $("eventMeta"), searchInput: $("searchInput"), categoryFilters: $("categoryFilters"),
-      resultCount: $("resultCount"), clearFiltersBtn: $("clearFiltersBtn"), exhibitorList: $("exhibitorList"), mapContent: $("mapContent"),
+      eventName: $("eventName"), eventMeta: $("eventMeta"), searchInput: $("searchInput"), categoryFilters: $("categoryFilters"), tagFilters: $("tagFilters"),
+      resultCount: $("resultCount"), clearFiltersBtn: $("clearFiltersBtn"), exhibitorList: $("exhibitorList"), mapContent: $("mapContent"), mapRotationLayer: $("mapRotationLayer"),
       venueMap: $("venueMap"), mapViewport: $("mapViewport"), zoomInBtn: $("zoomInBtn"), zoomOutBtn: $("zoomOutBtn"), resetViewBtn: $("resetViewBtn"),
       favoriteCount: $("favoriteCount"), visitedCount: $("visitedCount"), listModeLabel: $("listModeLabel"), detailSheet: $("detailSheet"),
       detailBackdrop: $("detailBackdrop"), detailContent: $("detailContent"), closeDetailBtn: $("closeDetailBtn"), toast: $("toast")
@@ -53,8 +57,9 @@
       state.venue = await venueRes.json();
       state.exhibitors = await exhibitorRes.json();
       cleanStoredState(); validateData();
-      renderHeader(); renderMap(); renderCategories(); bindEvents(); updateSummary(); applyFilters(); resetView();
+      renderHeader(); renderMap(); renderCategories(); renderTags(); bindEvents(); updateSummary(); applyFilters(); resetView();
       document.title = `${cfg.name} ${cfg.version}`;
+      requestAnimationFrame(openBoothFromUrl);
     } catch (err) {
       console.error(err);
       els.exhibitorList.innerHTML = `<div class="empty-state"><strong>データを読み込めませんでした。</strong><br>ローカルでは start_local_server.bat から起動してください。<br><small>${escapeHtml(err.message)}</small></div>`;
@@ -85,11 +90,36 @@
     Object.entries(attrs).forEach(([k,v]) => el.setAttribute(k, v));
     return el;
   }
+
+  function originalViewBox() { return state.venue.viewBox || [0,0,1000,700]; }
+  function rotatedSize() {
+    const [, , w, h] = originalViewBox();
+    return state.rotation % 180 === 0 ? [w, h] : [h, w];
+  }
+  function rotationMatrix() {
+    const [, , w, h] = originalViewBox();
+    if (state.rotation === 90) return `matrix(0 1 -1 0 ${h} 0)`;
+    if (state.rotation === 180) return `matrix(-1 0 0 -1 ${w} ${h})`;
+    if (state.rotation === 270) return `matrix(0 -1 1 0 0 ${w})`;
+    return "matrix(1 0 0 1 0 0)";
+  }
+  function rotatePoint(x, y) {
+    const [vx, vy, w, h] = originalViewBox();
+    const nx = x - vx, ny = y - vy;
+    if (state.rotation === 90) return { x: h - ny, y: nx };
+    if (state.rotation === 180) return { x: w - nx, y: h - ny };
+    if (state.rotation === 270) return { x: ny, y: w - nx };
+    return { x: nx, y: ny };
+  }
+
   function renderMap() {
     const g = els.mapContent; g.innerHTML = "";
-    const [x,y,w,h] = state.venue.viewBox || [0,0,1000,700];
-    els.venueMap.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
-    g.appendChild(svgEl("rect", {x:x+20,y:y+12,width:Math.max(100,w-40),height:Math.max(100,h-35),rx:30,class:"venue-bg"}));
+    const [vx,vy,w,h] = originalViewBox();
+    const [rw,rh] = rotatedSize();
+    els.venueMap.setAttribute("viewBox", `0 0 ${rw} ${rh}`);
+    els.mapRotationLayer.setAttribute("transform", rotationMatrix());
+    g.setAttribute("transform", `translate(${-vx} ${-vy})`);
+    g.appendChild(svgEl("rect", {x:vx+20,y:vy+12,width:Math.max(100,w-40),height:Math.max(100,h-35),rx:30,class:"venue-bg"}));
     (state.venue.aisles || []).forEach(a => g.appendChild(svgEl("rect", {...a, rx:16, class:"aisle"})));
     (state.venue.facilities || []).forEach(f => {
       g.appendChild(svgEl("rect", {x:f.x,y:f.y,width:f.width,height:f.height,rx:16,class:f.type === "entrance" ? "entrance" : "facility"}));
@@ -104,11 +134,23 @@
       booth.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); selectBooth(b.id, true); } });
       g.appendChild(booth);
     });
+    updateRotationButtons();
   }
+
   function renderCategories() {
     const cats = [...new Set(state.exhibitors.flatMap(e => e.categories || []))].sort((a,b)=>a.localeCompare(b,"ja"));
     els.categoryFilters.innerHTML = ["すべて", ...cats].map(c => `<button class="category-chip${c === state.category ? " active" : ""}" type="button" data-category="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join("");
     els.categoryFilters.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => { state.category = btn.dataset.category; renderCategories(); applyFilters(); }));
+  }
+  function renderTags() {
+    const tags = [...new Set(state.exhibitors.flatMap(tagList))].sort((a,b)=>a.localeCompare(b,"ja"));
+    if (!tags.length) { els.tagFilters.innerHTML = '<span class="filter-empty">タグは登録されていません</span>'; return; }
+    els.tagFilters.innerHTML = tags.map(t => `<button class="tag-filter-chip${state.selectedTags.has(t) ? " active" : ""}" type="button" data-tag="${escapeHtml(t)}"># ${escapeHtml(t)}</button>`).join("");
+    els.tagFilters.querySelectorAll("button").forEach(btn => btn.addEventListener("click", () => {
+      const tag = btn.dataset.tag;
+      if (state.selectedTags.has(tag)) state.selectedTags.delete(tag); else state.selectedTags.add(tag);
+      renderTags(); applyFilters();
+    }));
   }
   function modeMatch(id) {
     if (state.viewMode === "favorites") return state.favorites.has(id);
@@ -116,14 +158,15 @@
     if (state.viewMode === "visited") return state.visited.has(id);
     return true;
   }
-  function modeLabel() {
-    return ({all:"すべて", favorites:"行きたいブース", unvisited:"行きたい・未訪問", visited:"訪問済み"})[state.viewMode] || "すべて";
-  }
+  function modeLabel() { return ({all:"すべて", favorites:"行きたいブース", unvisited:"行きたい・未訪問", visited:"訪問済み"})[state.viewMode] || "すべて"; }
+
   function applyFilters() {
     const q = normalize(state.query);
     state.filtered = state.exhibitors.filter(e => {
-      const text = normalize([e.booth_id,e.shop_name,e.description,...(e.categories||[]),...(e.keywords||[]),e.note].join(" "));
-      return (!q || text.includes(q)) && (state.category === "すべて" || (e.categories || []).includes(state.category)) && modeMatch(e.booth_id);
+      const tags = tagList(e);
+      const text = normalize([e.booth_id,e.shop_name,e.description,...(e.categories||[]),...(e.keywords||[]),...tags,e.note].join(" "));
+      const tagMatch = !state.selectedTags.size || tags.some(t => state.selectedTags.has(t));
+      return (!q || text.includes(q)) && (state.category === "すべて" || (e.categories || []).includes(state.category)) && tagMatch && modeMatch(e.booth_id);
     });
     els.resultCount.textContent = `${state.filtered.length}件`;
     els.listModeLabel.textContent = modeLabel();
@@ -136,6 +179,9 @@
     if (state.visited.has(id)) badges.push('<span class="status-badge visited">✓ 行った</span>');
     return badges.join("");
   }
+  function visualTags(e) {
+    return `${(e.categories||[]).map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join("")}${tagList(e).map(t=>`<span class="tag feature-tag"># ${escapeHtml(t)}</span>`).join("")}`;
+  }
   function renderList() {
     if (!state.filtered.length) { els.exhibitorList.innerHTML = `<div class="empty-state">条件に合う出店者がありません。<br>検索条件やお気に入り状態を変えてみてください。</div>`; return; }
     els.exhibitorList.innerHTML = state.filtered.map(e => {
@@ -143,12 +189,13 @@
       return `<article class="exhibitor-item ${visited?"is-visited":""}" data-list-booth="${escapeHtml(e.booth_id)}">
         <div class="exhibitor-top"><div><div class="booth-label">${escapeHtml(e.booth_id)}</div><h3 class="exhibitor-name">${escapeHtml(e.shop_name)}</h3>${statusBadges(e.booth_id)}</div><div class="quick-state-actions"><button class="favorite-button ${fav?"active":""}" data-fav="${escapeHtml(e.booth_id)}" type="button" aria-label="行きたい切替">${fav?"♥":"♡"}</button><button class="visited-button ${visited?"active":""}" data-visited="${escapeHtml(e.booth_id)}" type="button" aria-label="訪問済み切替">${visited?"✓":"○"}</button></div></div>
         <p class="exhibitor-desc">${escapeHtml(e.description)}</p>
-        <div class="tags">${(e.categories||[]).map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join("")}</div>
-        <div class="item-actions"><button data-locate="${escapeHtml(e.booth_id)}" type="button">マップで見る</button><button data-detail="${escapeHtml(e.booth_id)}" type="button">詳細</button>${instagramLinks(e, true)}</div>
+        <div class="tags">${visualTags(e)}</div>
+        <div class="item-actions"><button data-locate="${escapeHtml(e.booth_id)}" type="button">マップで見る</button><button data-detail="${escapeHtml(e.booth_id)}" type="button">詳細</button><button data-share="${escapeHtml(e.booth_id)}" type="button">共有</button>${instagramLinks(e)}</div>
       </article>`;
     }).join("");
     els.exhibitorList.querySelectorAll("[data-locate]").forEach(b=>b.addEventListener("click",()=>selectBooth(b.dataset.locate,true,true)));
     els.exhibitorList.querySelectorAll("[data-detail]").forEach(b=>b.addEventListener("click",()=>selectBooth(b.dataset.detail,true,false)));
+    els.exhibitorList.querySelectorAll("[data-share]").forEach(b=>b.addEventListener("click",()=>shareBooth(b.dataset.share)));
     els.exhibitorList.querySelectorAll("[data-fav]").forEach(b=>b.addEventListener("click",()=>toggleFavorite(b.dataset.fav)));
     els.exhibitorList.querySelectorAll("[data-visited]").forEach(b=>b.addEventListener("click",()=>toggleVisited(b.dataset.visited)));
   }
@@ -161,7 +208,7 @@
     const visible = new Set(state.filtered.map(e=>e.booth_id));
     document.querySelectorAll(".booth").forEach(node => {
       const id=node.dataset.boothId;
-      const hasFilter = state.query || state.category !== "すべて" || state.viewMode !== "all";
+      const hasFilter = state.query || state.category !== "すべて" || state.selectedTags.size || state.viewMode !== "all";
       node.classList.toggle("filtered-out", hasFilter && !visible.has(id));
       node.classList.toggle("match", hasFilter && visible.has(id));
       node.classList.toggle("favorite", state.favorites.has(id));
@@ -179,10 +226,14 @@
   }
   function focusBooth(id) {
     const b = (state.venue.booths||[]).find(x=>x.id===id); if (!b) return;
-    const rect=els.mapViewport.getBoundingClientRect(); const [vx,vy,svgW,svgH]=state.venue.viewBox || [0,0,1000,700];
+    const rect=els.mapViewport.getBoundingClientRect(); const [svgW,svgH]=rotatedSize();
+    const p=rotatePoint(b.x+b.width/2,b.y+b.height/2);
     state.scale=Math.max(1.25, Math.min(2.2, rect.width/520));
-    const sx=rect.width/svgW*state.scale, sy=rect.height/svgH*state.scale;
-    state.tx=rect.width/2-(b.x+b.width/2-vx)*sx; state.ty=rect.height/2-(b.y+b.height/2-vy)*sy;
+    // SVGのpreserveAspectRatio="xMidYMid meet"による余白も含めてフォーカス位置を計算する。
+    const baseScale=Math.min(rect.width/svgW, rect.height/svgH);
+    const offsetX=(rect.width-svgW*baseScale)/2, offsetY=(rect.height-svgH*baseScale)/2;
+    state.tx=rect.width/2-state.scale*(offsetX+p.x*baseScale);
+    state.ty=rect.height/2-state.scale*(offsetY+p.y*baseScale);
     clampTransform(); applyTransform();
     if (window.innerWidth < 921) els.mapViewport.scrollIntoView({behavior:"smooth", block:"center"});
   }
@@ -190,16 +241,41 @@
     const fav = state.favorites.has(e.booth_id), visited = state.visited.has(e.booth_id);
     els.detailContent.innerHTML = `<div class="detail-booth">BOOTH ${escapeHtml(e.booth_id)}</div><h2 class="detail-title">${escapeHtml(e.shop_name)}</h2>
       <div class="detail-status">${statusBadges(e.booth_id) || '<span class="status-badge neutral">未登録</span>'}</div>
-      <div class="tags">${(e.categories||[]).map(c=>`<span class="tag">${escapeHtml(c)}</span>`).join("")}</div>
+      <div class="tags">${visualTags(e)}</div>
       <p class="detail-description">${escapeHtml(e.description)}</p>${e.note?`<p><strong>メモ：</strong>${escapeHtml(e.note)}</p>`:""}
       <div class="detail-links favorite-actions"><button id="detailFavBtn" class="${fav?"primary":""}" type="button">${fav?"♥ 行きたい登録済み":"♡ 行きたい"}</button><button id="detailVisitedBtn" class="${visited?"visited-primary":""}" type="button">${visited?"✓ 行った":"○ 行ったにする"}</button></div>
-      <div class="detail-links"><button id="detailLocateBtn" type="button">マップで見る</button>${instagramLinks(e, true)}${urlOk(e.shop_url)?`<a href="${escapeHtml(e.shop_url)}" target="_blank" rel="noopener noreferrer">ショップ ↗</a>`:""}</div>`;
+      <div class="detail-links"><button id="detailLocateBtn" type="button">マップで見る</button><button id="detailShareBtn" type="button">共有URL</button>${instagramLinks(e)}${urlOk(e.shop_url)?`<a href="${escapeHtml(e.shop_url)}" target="_blank" rel="noopener noreferrer">ショップ ↗</a>`:""}</div>`;
     els.detailSheet.hidden=false; els.detailBackdrop.hidden=false;
     $("detailFavBtn").addEventListener("click",()=>{toggleFavorite(e.booth_id,false); showDetail(e);});
     $("detailVisitedBtn").addEventListener("click",()=>{toggleVisited(e.booth_id,false); showDetail(e);});
     $("detailLocateBtn").addEventListener("click",()=>focusBooth(e.booth_id));
+    $("detailShareBtn").addEventListener("click",()=>shareBooth(e.booth_id));
   }
   function closeDetail(){ els.detailSheet.hidden=true; els.detailBackdrop.hidden=true; }
+
+  function boothUrl(id) {
+    const u = new URL(window.location.href);
+    u.searchParams.set("booth", id);
+    u.hash = "";
+    return u.toString();
+  }
+  async function shareBooth(id) {
+    const e = state.exhibitors.find(x=>x.booth_id===id);
+    const url = boothUrl(id);
+    if (navigator.share && e) {
+      try { await navigator.share({ title: `${e.shop_name} / ${id}`, text: `${id} ${e.shop_name}`, url }); return; }
+      catch (err) { if (err?.name === "AbortError") return; }
+    }
+    try { await navigator.clipboard.writeText(url); toast("ブース共有URLをコピーしました"); }
+    catch (_) { window.prompt("このURLをコピーしてください", url); }
+  }
+  function openBoothFromUrl() {
+    const id = new URL(window.location.href).searchParams.get("booth");
+    if (!id) return;
+    if (state.exhibitors.some(e=>e.booth_id===id)) selectBooth(id, true, true);
+    else toast(`ブース ${id} は見つかりませんでした`);
+  }
+
   function toggleFavorite(id, refreshDetail=true) {
     if (state.favorites.has(id)) { state.favorites.delete(id); toast("行きたいから外しました"); }
     else { state.favorites.add(id); toast("行きたいに追加しました ♡"); }
@@ -212,10 +288,21 @@
     savePersonalState(); applyFilters();
     if (refreshDetail && !els.detailSheet.hidden) { const e=state.exhibitors.find(x=>x.booth_id===id); if(e) showDetail(e); }
   }
+
+  function setRotation(angle) {
+    state.rotation = [0,90,180,270].includes(angle) ? angle : 0;
+    renderMap(); resetView(); updateMapState();
+    toast(`地図を ${state.rotation}° にしました`);
+  }
+  function updateRotationButtons() {
+    document.querySelectorAll("[data-rotation]").forEach(btn => btn.classList.toggle("active", Number(btn.dataset.rotation) === state.rotation));
+  }
+
   function bindEvents() {
     els.searchInput.addEventListener("input", e=>{ state.query=e.target.value; applyFilters(); });
-    els.clearFiltersBtn.addEventListener("click",()=>{ state.query=""; state.category="すべて"; state.viewMode="all"; els.searchInput.value=""; renderCategories(); applyFilters(); });
+    els.clearFiltersBtn.addEventListener("click",()=>{ state.query=""; state.category="すべて"; state.selectedTags.clear(); state.viewMode="all"; els.searchInput.value=""; renderCategories(); renderTags(); applyFilters(); });
     document.querySelectorAll("[data-view-mode]").forEach(btn=>btn.addEventListener("click",()=>{state.viewMode=btn.dataset.viewMode; applyFilters();}));
+    document.querySelectorAll("[data-rotation]").forEach(btn=>btn.addEventListener("click",()=>setRotation(Number(btn.dataset.rotation))));
     els.closeDetailBtn.addEventListener("click", closeDetail); els.detailBackdrop.addEventListener("click", closeDetail);
     els.zoomInBtn.addEventListener("click",()=>zoomAt(1.2)); els.zoomOutBtn.addEventListener("click",()=>zoomAt(1/1.2)); els.resetViewBtn.addEventListener("click",resetView);
     els.mapViewport.addEventListener("wheel", e=>{ e.preventDefault(); const rect=els.mapViewport.getBoundingClientRect(); zoomAt(e.deltaY<0?1.12:1/1.12, e.clientX-rect.left, e.clientY-rect.top); }, {passive:false});
@@ -223,10 +310,6 @@
     window.addEventListener("resize",()=>{ clampTransform(); applyTransform(); });
   }
   function pointerDown(e){
-    // v1.5.1: Do not capture pointer events that start on a booth.
-    // Capturing them at mapViewport can cause the browser to dispatch the
-    // subsequent click to the viewport instead of the booth, so booth details
-    // may not open on desktop browsers (including GitHub Pages deployments).
     if (e.target.closest && e.target.closest(".booth")) return;
     els.mapViewport.setPointerCapture(e.pointerId);
     state.pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
@@ -240,6 +323,6 @@
   function clampTransform(){ const rect=els.mapViewport.getBoundingClientRect(); const contentW=rect.width*state.scale, contentH=rect.height*state.scale; const pad=80; state.tx=Math.min(pad,Math.max(rect.width-contentW-pad,state.tx)); state.ty=Math.min(pad,Math.max(rect.height-contentH-pad,state.ty)); }
   function applyTransform(){ els.venueMap.style.transform=`translate(${state.tx}px, ${state.ty}px) scale(${state.scale})`; }
   function resetView(){ state.scale=1; state.tx=0; state.ty=0; applyTransform(); }
-  function toast(msg){ els.toast.textContent=msg; els.toast.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>els.toast.classList.remove("show"),1500); }
+  function toast(msg){ els.toast.textContent=msg; els.toast.classList.add("show"); clearTimeout(toast.t); toast.t=setTimeout(()=>els.toast.classList.remove("show"),1700); }
   document.addEventListener("DOMContentLoaded", init);
 })();
