@@ -1,0 +1,20 @@
+[
+  {
+    "template_id": "standard_hall",
+    "name": "標準ホール",
+    "description": "1000×700。サンプル会場を基にした標準レイアウト。",
+    "file": "standard_hall.json"
+  },
+  {
+    "template_id": "wide_hall",
+    "name": "横長ホール",
+    "description": "1600×900。横方向に広い会場向け。",
+    "file": "wide_hall.json"
+  },
+  {
+    "template_id": "compact_space",
+    "name": "小規模スペース",
+    "description": "800×600。小規模イベント・屋内スペース向け。",
+    "file": "compact_space.json"
+  }
+]

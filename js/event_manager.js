@@ -24,7 +24,8 @@
       openLayoutBtn: $("openLayoutBtn"), openViewBtn: $("openViewBtn"), validationResult: $("validationResult"), newEventDialog: $("newEventDialog"), newEventId: $("newEventId"), newEventName: $("newEventName"), newEventMode: $("newEventMode"), newEventTemplate: $("newEventTemplate"), venueTemplateSelect: $("venueTemplateSelect"), templateDescription: $("templateDescription"), toast: $("toast")
     });
     bindEvents();
-    await loadPublished();
+    const restored = await restoreProjectFolder();
+    if (!restored) await loadPublished();
   }
 
   function bindEvents() {
@@ -79,6 +80,31 @@
     }
   }
 
+  async function restoreProjectFolder() {
+    if (!window.ProjectHandleStore) return false;
+    try {
+      const handle = await ProjectHandleStore.getHandle();
+      if (!handle) return false;
+      const granted = await ProjectHandleStore.queryPermission(handle, "readwrite");
+      if (!granted) {
+        setFolderStatus(false);
+        els.modeDescription.textContent = `保存済み接続先「${handle.name}」があります。再接続するには「プロジェクトフォルダを接続」を押してください。`;
+        return false;
+      }
+      await ProjectHandleStore.readJson(handle, ["data", "events.json"]);
+      state.rootHandle = handle;
+      state.directMode = true;
+      if (window.ProjectHandleStore) await ProjectHandleStore.putHandle(handle);
+      setFolderStatus(true, handle.name);
+      await loadFromFolder();
+      toast("前回のプロジェクトフォルダ接続を復元しました");
+      return true;
+    } catch (err) {
+      console.warn("プロジェクトフォルダ接続の復元に失敗", err);
+      return false;
+    }
+  }
+
   async function connectProjectFolder() {
     if (!("showDirectoryPicker" in window)) {
       alert("このブラウザはフォルダ直接編集に対応していません。Chrome / Edge の新しいバージョンを使用するか、JSONダウンロード方式を利用してください。");
@@ -97,7 +123,7 @@
       toast("プロジェクトフォルダを接続しました");
     } catch (err) {
       if (err?.name === "AbortError") return;
-      alert("フォルダを接続できませんでした。\n\n" + err.message + "\n\nmarche_booth_map_v1_11 フォルダそのものを選択してください。");
+      alert("フォルダを接続できませんでした。\n\n" + err.message + "\n\nmarche_booth_map_v1_11_1 フォルダそのものを選択してください。");
     }
   }
 

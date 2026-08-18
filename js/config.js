@@ -9,7 +9,7 @@
 
   window.APP_CONFIG = {
     name: "Marche Booth Map",
-    version: "v1.11",
+    version: "v1.11.1",
     eventsFile: "data/events.json",
     venueTemplatesFile: "data/venue_templates.json",
     venueTemplatesBasePath: "data/venue_templates",

@@ -25,7 +25,11 @@
       facilities: { visible: true, locked: false },
       booths: { visible: true, locked: false }
     },
-    formCheckpointActive: false
+    formCheckpointActive: false,
+    rootHandle: null,
+    directMode: false,
+    sourceMode: "checking",
+    fileLoadStatus: {}
   };
   const els = {};
 
@@ -33,7 +37,7 @@
 
   async function init() {
     Object.assign(els, {
-      saveState: $("saveState"), map: $("editorVenueMap"), mapContent: $("editorMapContent"), backgroundLayer: $("editorBackgroundLayer"), overlayLayer: $("editorOverlayLayer"), viewport: $("editorMapViewport"), selectionInfo: $("selectionInfo"),
+      saveState: $("saveState"), dataSourceStatus: $("dataSourceStatus"), fileLoadStatus: $("fileLoadStatus"), map: $("editorVenueMap"), mapContent: $("editorMapContent"), backgroundLayer: $("editorBackgroundLayer"), overlayLayer: $("editorOverlayLayer"), viewport: $("editorMapViewport"), selectionInfo: $("selectionInfo"),
       eventId: $("eventId"), eventName: $("eventNameInput"), eventDate: $("eventDate"), eventEndDate: $("eventEndDate"), eventTime: $("eventTime"), eventStatus: $("eventStatus"), eventVenue: $("eventVenue"), eventOfficialUrl: $("eventOfficialUrl"), eventDescription: $("eventDescription"),
       venueWidth: $("venueWidth"), venueHeight: $("venueHeight"), venueOriginX: $("venueOriginX"), venueOriginY: $("venueOriginY"), venueSizeBadge: $("venueSizeBadge"), fitMargin: $("fitMargin"), autoExpandToggle: $("autoExpandToggle"),
       boothList: $("boothList"), boothCount: $("boothCount"), boothId: $("boothId"), boothNewId: $("boothNewId"), boothX: $("boothX"), boothY: $("boothY"), boothWidth: $("boothWidth"), boothHeight: $("boothHeight"), boothBadge: $("selectedBoothBadge"),
@@ -48,27 +52,186 @@
   }
 
   async function loadCurrent() {
+    setSourceStatus("読み込み元を確認中...", "");
+    renderFileStatus({});
+
+    // v1.11.2: HTTP読込を先行させる。IndexedDB / permission API が応答しない場合でも
+    // Editor全体を待たせない。ローカルHTTPを基本読込経路として確実に起動する。
+    let httpBundle = null;
+    let httpError = null;
     try {
-      const [mr, vr, er] = await Promise.all([
-        fetch(cfg.eventFile, { cache: "no-store" }),
-        fetch(cfg.venueFile, { cache: "no-store" }),
-        fetch(cfg.dataFile, { cache: "no-store" })
-      ]);
-      if (!mr.ok || !vr.ok || !er.ok) throw new Error("イベントデータを読み込めませんでした");
-      state.eventMeta = normalizeEventMeta(await mr.json());
-      state.venue = normalizeVenue(await vr.json());
-      state.exhibitors = normalizeExhibitors(await er.json());
-      state.history = []; state.future = []; state.clipboard = null;
-      resetToFirstBooth();
-      state.dirty = false;
-      const viewLink = $("viewCurrentEventLink");
-      if (viewLink) viewLink.href = `index.html?event=${encodeURIComponent(cfg.editorEventId)}`;
-      document.title = `${state.eventMeta.name || cfg.editorEventId} - Marche Booth Map Editor ${cfg.version}`;
-      renderAll();
-      setSaveState(`${cfg.editorEventId} を読み込みました`);
+      httpBundle = await withTimeout(loadFromHttp(), 4000, "HTTP読込がタイムアウトしました");
+      applyLoadedBundle(httpBundle.eventMeta, httpBundle.venue, httpBundle.exhibitors);
+      state.directMode = false;
+      setSourceStatus(`HTTP読込: ${location.origin}/${cfg.eventsBasePath}/${cfg.editorEventId}/（接続フォルダ確認中）`, "fallback");
+      setSaveState(`${cfg.editorEventId} をHTTP経由で読み込みました`);
     } catch (err) {
-      setSaveState("読込失敗: " + err.message, true);
+      httpError = err;
+      console.warn("HTTP読込に失敗", err);
     }
+
+    // 保存済みフォルダ接続の復元はタイムアウト付きで試行する。
+    // 成功すれば直接モードへ切り替えるが、失敗・無応答でもHTTP表示は維持する。
+    let directError = null;
+    try {
+      const direct = await withTimeout(tryLoadFromSavedProjectFolder(), 1800, "接続フォルダ確認がタイムアウトしました");
+      if (direct) {
+        applyLoadedBundle(direct.eventMeta, direct.venue, direct.exhibitors);
+        setSourceStatus(`接続フォルダ: ${state.rootHandle.name} / 直接読込`, "direct");
+        setSaveState(`${cfg.editorEventId} を接続フォルダから読み込みました`);
+        return;
+      }
+    } catch (err) {
+      directError = err;
+      console.warn("接続フォルダからの直接読込に失敗", err);
+    }
+
+    if (httpBundle) {
+      const reason = directError ? ` / 直接接続: ${directError.message}` : " / 直接接続なし";
+      setSourceStatus(`HTTPフォールバック: ${location.origin}/${cfg.eventsBasePath}/${cfg.editorEventId}/${reason}`, "fallback");
+      return;
+    }
+
+    // HTTPも失敗していた場合のみエラーにする。
+    state.directMode = false;
+    const parts = [];
+    if (directError) parts.push(`直接読込: ${directError.message}`);
+    if (httpError) parts.push(`HTTP読込: ${httpError.message}`);
+    setSourceStatus("データ読込に失敗しました", "error");
+    setSaveState("読込失敗: " + (parts.join(" / ") || "原因不明"), true);
+  }
+
+  function withTimeout(promise, ms, message) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(message)), ms);
+    });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+  }
+
+  async function tryLoadFromSavedProjectFolder() {
+    if (!window.ProjectHandleStore) return null;
+    const handle = await ProjectHandleStore.getHandle();
+    if (!handle) return null;
+    state.rootHandle = handle;
+    const granted = await ProjectHandleStore.queryPermission(handle, "readwrite");
+    if (!granted) {
+      setSourceStatus(`保存済み接続先: ${handle.name} / 権限の再許可が必要です`, "fallback");
+      return null;
+    }
+    return await loadBundleFromFolder(handle);
+  }
+
+  async function reconnectProjectFolder() {
+    if (!("showDirectoryPicker" in window) && !window.ProjectHandleStore) {
+      alert("このブラウザはプロジェクトフォルダの直接接続に対応していません。");
+      return;
+    }
+    try {
+      let handle = window.ProjectHandleStore ? await ProjectHandleStore.getHandle() : null;
+      let granted = handle ? await ProjectHandleStore.requestPermission(handle, "readwrite") : false;
+      if (!granted) {
+        if (!("showDirectoryPicker" in window)) throw new Error("フォルダ選択機能を利用できません");
+        handle = await window.showDirectoryPicker({ mode: "readwrite" });
+        granted = window.ProjectHandleStore ? await ProjectHandleStore.requestPermission(handle, "readwrite") : true;
+      }
+      if (!granted) throw new Error("フォルダへの読み書き権限がありません");
+      await ProjectHandleStore.readJson(handle, ["data", "events.json"]);
+      await ProjectHandleStore.putHandle(handle);
+      state.rootHandle = handle;
+      state.directMode = true;
+      const bundle = await loadBundleFromFolder(handle);
+      applyLoadedBundle(bundle.eventMeta, bundle.venue, bundle.exhibitors);
+      setSourceStatus(`接続フォルダ: ${handle.name} / 直接読込`, "direct");
+      setSaveState(`${cfg.editorEventId} を接続フォルダから読み込みました`);
+      toast("プロジェクトフォルダへ再接続しました");
+    } catch (err) {
+      if (err?.name === "AbortError") return;
+      setSourceStatus("プロジェクトフォルダへの再接続に失敗しました", "error");
+      alert("プロジェクトフォルダへ接続できませんでした。\n\n" + err.message);
+    }
+  }
+
+  async function loadBundleFromFolder(handle) {
+    const base = ["data", "events", cfg.editorEventId];
+    const names = ["event.json", "venue.json", "exhibitors.json"];
+    const status = {};
+    const result = {};
+    for (const name of names) {
+      try {
+        result[name] = await ProjectHandleStore.readJson(handle, [...base, name]);
+        status[name] = { ok: true, message: "OK" };
+      } catch (err) {
+        status[name] = { ok: false, message: err.message || "読込失敗" };
+      }
+      renderFileStatus(status);
+    }
+    const failures = Object.entries(status).filter(([,v]) => !v.ok);
+    if (failures.length) {
+      throw new Error(failures.map(([name,v]) => `${name}: ${v.message}`).join(" / "));
+    }
+    state.fileLoadStatus = status;
+    state.rootHandle = handle;
+    state.directMode = true;
+    state.sourceMode = "direct";
+    return { eventMeta: result["event.json"], venue: result["venue.json"], exhibitors: result["exhibitors.json"] };
+  }
+
+  async function loadFromHttp() {
+    const targets = [
+      ["event.json", cfg.eventFile],
+      ["venue.json", cfg.venueFile],
+      ["exhibitors.json", cfg.dataFile]
+    ];
+    const status = {};
+    const result = {};
+    for (const [name, url] of targets) {
+      try {
+        const response = await fetch(url, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        result[name] = await response.json();
+        status[name] = { ok: true, message: "OK" };
+      } catch (err) {
+        status[name] = { ok: false, message: err.message || "読込失敗" };
+      }
+      renderFileStatus(status);
+    }
+    const failures = Object.entries(status).filter(([,v]) => !v.ok);
+    if (failures.length) {
+      throw new Error(failures.map(([name,v]) => `${name}: ${v.message}`).join(" / "));
+    }
+    state.fileLoadStatus = status;
+    state.sourceMode = "http";
+    return { eventMeta: result["event.json"], venue: result["venue.json"], exhibitors: result["exhibitors.json"] };
+  }
+
+  function applyLoadedBundle(eventMeta, venue, exhibitors) {
+    state.eventMeta = normalizeEventMeta(eventMeta);
+    state.venue = normalizeVenue(venue);
+    state.exhibitors = normalizeExhibitors(exhibitors);
+    state.history = []; state.future = []; state.clipboard = null;
+    resetToFirstBooth();
+    state.dirty = false;
+    const viewLink = $("viewCurrentEventLink");
+    if (viewLink) viewLink.href = `index.html?event=${encodeURIComponent(cfg.editorEventId)}`;
+    document.title = `${state.eventMeta.name || cfg.editorEventId} - Marche Booth Map Editor ${cfg.version}`;
+    renderAll();
+  }
+
+  function setSourceStatus(text, kind = "") {
+    if (!els.dataSourceStatus) return;
+    els.dataSourceStatus.textContent = text;
+    els.dataSourceStatus.className = `data-source-status ${kind}`.trim();
+  }
+
+  function renderFileStatus(status) {
+    if (!els.fileLoadStatus) return;
+    const names = ["event.json", "venue.json", "exhibitors.json"];
+    els.fileLoadStatus.innerHTML = names.map(name => {
+      const item = status[name];
+      if (!item) return `<span class="file-status-chip warn">${name}: 未確認</span>`;
+      return `<span class="file-status-chip ${item.ok ? "ok" : "error"}" title="${esc(item.message || "")}">${name}: ${item.ok ? "OK" : "NG"}</span>`;
+    }).join("");
   }
 
   function normalizeVenue(v) {
@@ -126,6 +289,7 @@
     document.addEventListener("focusout", () => { state.formCheckpointActive = false; });
     els.viewport.addEventListener("pointerdown", startMarqueeSelection);
     $("loadCurrentBtn").addEventListener("click", loadCurrent);
+    $("reconnectFolderBtn").addEventListener("click", reconnectProjectFolder);
     $("eventFileInput").addEventListener("change", e => readJsonFile(e.target.files[0], data => {
       state.eventMeta = normalizeEventMeta(data); markDirty(); renderAll();
     }, "event.json"));
@@ -137,14 +301,10 @@
       state.exhibitors = normalizeExhibitors(data); markDirty(); renderAll();
     }, "exhibitors.json"));
 
-    $("downloadEventBtn").addEventListener("click", () => downloadJson("event.json", state.eventMeta));
-    $("downloadVenueBtn").addEventListener("click", () => downloadJson("venue.json", state.venue));
-    $("downloadExhibitorsBtn").addEventListener("click", () => downloadJson("exhibitors.json", state.exhibitors));
-    $("downloadBothBtn").addEventListener("click", () => {
-      downloadJson("event.json", state.eventMeta);
-      setTimeout(() => downloadJson("venue.json", state.venue), 180);
-      setTimeout(() => downloadJson("exhibitors.json", state.exhibitors), 360);
-    });
+    $("downloadEventBtn").addEventListener("click", () => saveJsonTarget("event.json", state.eventMeta));
+    $("downloadVenueBtn").addEventListener("click", () => saveJsonTarget("venue.json", state.venue));
+    $("downloadExhibitorsBtn").addEventListener("click", () => saveJsonTarget("exhibitors.json", state.exhibitors));
+    $("downloadBothBtn").addEventListener("click", saveAllJsonTargets);
     $("restoreDraftBtn").addEventListener("click", restoreDraft);
     $("clearDraftBtn").addEventListener("click", () => { localStorage.removeItem(cfg.editorDraftKey); toast("自動保存を削除しました"); });
 
@@ -966,6 +1126,48 @@
       const d = JSON.parse(raw); state.eventMeta = normalizeEventMeta(d.eventMeta || {}); state.venue = normalizeVenue(d.venue); state.exhibitors = normalizeExhibitors(d.exhibitors || []); resetToFirstBooth(); state.dirty = true; renderAll(); toast("自動保存を復元しました");
     } catch { toast("自動保存の復元に失敗しました"); }
   }
+  async function saveJsonTarget(name, data) {
+    if (!data) return;
+    if (!validateData() && name === "venue.json") toast("エラーがあります。データ確認を見てください");
+    if (state.directMode && state.rootHandle && window.ProjectHandleStore) {
+      try {
+        await ProjectHandleStore.writeJson(state.rootHandle, ["data", "events", cfg.editorEventId, name], data, true);
+        state.dirty = false;
+        setSaveState(`${name} を接続フォルダへ保存しました`);
+        setSourceStatus(`接続フォルダ: ${state.rootHandle.name} / 直接読込・直接保存`, "direct");
+        toast(`${name} をプロジェクトへ保存しました`);
+        return;
+      } catch (err) {
+        toast(`直接保存に失敗しました。ダウンロードへ切り替えます: ${err.message}`);
+        state.directMode = false;
+        setSourceStatus(`直接保存失敗 / ダウンロード方式へ切替: ${err.message}`, "fallback");
+      }
+    }
+    downloadJson(name, data);
+  }
+
+  async function saveAllJsonTargets() {
+    if (state.directMode && state.rootHandle && window.ProjectHandleStore) {
+      try {
+        await ProjectHandleStore.writeJson(state.rootHandle, ["data", "events", cfg.editorEventId, "event.json"], state.eventMeta, true);
+        await ProjectHandleStore.writeJson(state.rootHandle, ["data", "events", cfg.editorEventId, "venue.json"], state.venue, true);
+        await ProjectHandleStore.writeJson(state.rootHandle, ["data", "events", cfg.editorEventId, "exhibitors.json"], state.exhibitors, true);
+        state.dirty = false;
+        setSaveState("3ファイルを接続フォルダへ保存しました");
+        setSourceStatus(`接続フォルダ: ${state.rootHandle.name} / 直接読込・直接保存`, "direct");
+        toast("3ファイルをプロジェクトへ保存しました");
+        return;
+      } catch (err) {
+        toast(`直接保存に失敗しました。ダウンロードへ切り替えます: ${err.message}`);
+        state.directMode = false;
+        setSourceStatus(`直接保存失敗 / ダウンロード方式へ切替: ${err.message}`, "fallback");
+      }
+    }
+    downloadJson("event.json", state.eventMeta);
+    setTimeout(() => downloadJson("venue.json", state.venue), 180);
+    setTimeout(() => downloadJson("exhibitors.json", state.exhibitors), 360);
+  }
+
   function downloadJson(name, data) {
     if (!validateData() && name === "venue.json") toast("エラーがあります。データ確認を見てください");
     const blob = new Blob([JSON.stringify(data, null, 2) + "\n"], { type: "application/json;charset=utf-8" });

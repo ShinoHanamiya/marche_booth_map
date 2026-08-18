@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Marche Booth Map v1.11 編集者マニュアル</title>
+<title>Marche Booth Map v1.11.2 編集者マニュアル</title>
 <style>body{font-family:"Yu Gothic UI","Meiryo",sans-serif;line-height:1.85;color:#433840;background:#fffafc;margin:0}.wrap{max-width:1000px;margin:auto;padding:36px 20px 70px}h1,h2,h3{color:#7c4d60}h1{border-bottom:3px solid #efd4df;padding-bottom:12px}h2{margin-top:38px;border-left:5px solid #d883a5;padding-left:12px}code,pre{font-family:Consolas,monospace;background:#f7eff3}code{padding:2px 5px;border-radius:5px}pre{padding:14px;overflow:auto;border-radius:12px;border:1px solid #eadde4}table{width:100%;border-collapse:collapse}th,td{border:1px solid #e3d4dc;padding:9px;vertical-align:top}th{background:#f8eaf0}.note{background:#fff1f6;border:1px solid #efc9d8;padding:14px;border-radius:12px}.ok{background:#f1f7f4;border:1px solid #cfe4da;padding:14px;border-radius:12px}.step{background:white;border:1px solid #eadde4;border-radius:14px;padding:15px;margin:12px 0}a{color:#a34c70}</style></head>
 <body><div class="wrap">
-<h1>Marche Booth Map v1.11 編集者マニュアル</h1>
+<h1>Marche Booth Map v1.11.2 編集者マニュアル</h1>
 <p>複数マルシェの管理と、各会場レイアウト・出店者情報の編集方法を説明します。</p>
 <div class="note"><strong>公開時の注意：</strong>本アプリは有志が作成した非商用アプリです。掲載しているお店情報・リンク等には誤りや変更が含まれる場合があります。最新・正確な情報は各出店者・主催者の公式情報をご確認ください。</div>
 
@@ -11,12 +11,12 @@
 <div class="step"><code>start_editor.bat</code> をダブルクリックします。通常は <code>http://localhost:8000/event_manager.html</code> が開きます。</div>
 <p>JSONを読み込むため、HTMLファイルの直接ダブルクリックではなくローカルHTTPサーバーから利用してください。</p>
 
-<h2>2. v1.11の編集フロー</h2>
+<h2>2. v1.11.2の編集フロー</h2>
 <ol><li>イベント管理画面を開く</li><li>プロジェクトフォルダを接続する（推奨）</li><li>イベントを新規作成・複製・選択する</li><li>イベント情報を編集する</li><li>「会場レイアウト編集」からEditorを開く</li><li>ブース・設備・出店者を編集する</li><li>ローカル表示を確認する</li><li>GitHubへcommit / pushする</li></ol>
 
 <h2>3. プロジェクトフォルダ接続</h2>
 <p>Chrome / Edgeでは、イベント管理画面の「プロジェクトフォルダを接続」からローカルファイルへ直接保存できます。</p>
-<ol><li>ボタンを押します。</li><li>展開した <code>marche_booth_map_v1_11</code> フォルダそのものを選択します。</li><li>ブラウザのアクセス許可を承認します。</li><li>表示が「接続中」になれば完了です。</li></ol>
+<ol><li>ボタンを押します。</li><li>展開した <code>marche_booth_map_v1_11_1</code> フォルダそのものを選択します。</li><li>ブラウザのアクセス許可を承認します。</li><li>表示が「接続中」になれば完了です。</li></ol>
 <div class="note">対応していないブラウザではJSONダウンロード方式を利用できます。GitHub Pages上のファイルを直接書き換える機能ではありません。編集対象はユーザーが選択したローカルフォルダです。</div>
 
 <h2>4. 新規イベント</h2>
@@ -41,15 +41,18 @@
 
 <h2>8. 過去イベント・状態の自動更新</h2>
 <p>Event Managerの「日付から状態を自動更新」を使うと、ブラウザの現在日付と開始日・終了日を比較して <code>upcoming / ongoing / past</code> を更新できます。フォルダ接続中は各 <code>event.json</code> と <code>events.json</code> に保存されます。</p>
-<h2>9. 会場Editorを開く</h2>
+<h2>9. 会場Editorを開く・接続を引き継ぐ</h2>
 <p>イベント管理画面の「会場レイアウト編集」を押すと、次の形式で対象イベントが開きます。</p>
 <pre>editor.html?event=sample_flower_marche_2026</pre>
 <p>v1.8以前のように <code>config.js</code> をイベントごとに書き換える必要はありません。</p>
+<div class="ok"><strong>v1.11.2:</strong> Event Managerで接続したプロジェクトフォルダはIndexedDBへ保存され、Editorで自動復元されます。Editor上部の「読み込み元」に <code>接続フォルダ: ... / 直接読込</code> と表示されれば、ローカル実ファイルを直接読んでいます。</div>
+<p>権限が再度必要な場合はEditor上部の「プロジェクト再接続」を押してください。直接読込できない場合はHTTPへ自動フォールバックし、その旨が「読み込み元」に表示されます。</p>
 
 <h2>10. EditorのJSON</h2>
 <p>上部から以下の3ファイルを読み込み・保存できます。</p>
 <ul><li><code>event.json</code>：イベント情報</li><li><code>venue.json</code>：会場レイアウト</li><li><code>exhibitors.json</code>：出店者情報</li></ul>
-<p>「3ファイル保存」では3ファイルを順番にダウンロードします。</p>
+<p>フォルダ接続中は「保存」で接続中プロジェクトの <code>data/events/&lt;event_id&gt;/</code> へ直接書き込みます。未接続または直接保存に失敗した場合は、従来どおりJSONダウンロード方式へ切り替わります。</p>
+<p>Editor上部には3ファイルそれぞれの読込状態が <code>OK / NG</code> で表示されます。NGの場合は、どのファイルで失敗したかを確認できます。</p>
 
 <h2>11. ブース編集</h2>
 <table><tr><th>操作</th><th>動作</th></tr><tr><td>クリック</td><td>単一選択</td></tr><tr><td>ドラッグ</td><td>移動</td></tr><tr><td>右下ハンドル</td><td>リサイズ</td></tr><tr><td>Ctrl / ⌘＋クリック</td><td>複数選択</td></tr><tr><td>空白ドラッグ</td><td>範囲選択</td></tr><tr><td>Delete / Backspace</td><td>選択物を削除</td></tr><tr><td>Ctrl+C / Ctrl+V</td><td>コピー / 貼り付け</td></tr><tr><td>Ctrl+Z / Ctrl+Y</td><td>Undo / Redo</td></tr></table>
@@ -63,7 +66,7 @@
 
 
 <h2>14. 位置不定ブース / 出店者</h2>
-<p>v1.11では出店場所を3種類から選べます。</p>
+<p>v1.11.2では出店場所を3種類から選べます。</p>
 <table><tr><th>状態</th><th>用途</th><th>View</th></tr>
 <tr><td><code>fixed</code></td><td>A01など位置が確定した通常ブース</td><td>ブース位置へ移動</td></tr>
 <tr><td><code>area</code></td><td>キッチンカーエリア等、エリアのみ確定</td><td>同名の設備エリアを強調して移動</td></tr>
@@ -87,7 +90,7 @@ data/events/&lt;event_id&gt;/exhibitors.json</pre>
 <ol><li>ローカルファイルを編集</li><li><code>start_local_server.bat</code> でViewを確認</li><li>GitHubへcommit / push</li><li>公開URLをCtrl+F5等で再読込して確認</li></ol>
 
 <h2>18. トラブル対処</h2>
-<table><tr><th>症状</th><th>対処</th></tr><tr><td>フォルダ接続できない</td><td>Chrome / Edgeを使用し、プロジェクトルートを選択してください。</td></tr><tr><td>新しいイベントがViewに出ない</td><td><code>data/events.json</code> に登録されているか確認してください。フォルダ接続中は保存時に自動更新します。</td></tr><tr><td>Editorで別イベントが開く</td><td>URLの <code>?event=...</code> を確認してください。</td></tr><tr><td>出店者詳細が出ない</td><td>固定ブースの場合はvenue.jsonのブースIDとexhibitors.jsonのbooth_idを一致させてください。area / undecided は物理ブース不要です。</td></tr><tr><td>GitHubへ反映されない</td><td>ローカル変更をcommit / pushしたか、ブラウザキャッシュが残っていないか確認してください。</td></tr></table>
+<table><tr><th>症状</th><th>対処</th></tr><tr><td>フォルダ接続できない</td><td>Chrome / Edgeを使用し、プロジェクトルートを選択してください。</td></tr><tr><td>新しいイベントがViewに出ない</td><td><code>data/events.json</code> に登録されているか確認してください。フォルダ接続中は保存時に自動更新します。</td></tr><tr><td>Editorで別イベントが開く</td><td>URLの <code>?event=...</code> を確認してください。</td></tr><tr><td>出店者詳細が出ない</td><td>固定ブースの場合はvenue.jsonのブースIDとexhibitors.jsonのbooth_idを一致させてください。area / undecided は物理ブース不要です。</td></tr><tr><td>Editorで「データを読み込めません」</td><td>Editor上部の event.json / venue.json / exhibitors.json のOK/NG表示と「読み込み元」を確認してください。接続権限が必要なら「プロジェクト再接続」を押します。</td></tr><tr><td>Event Managerでは接続中だがEditorはHTTPフォールバックになる</td><td>ブラウザが保存済みフォルダへの権限を再要求している可能性があります。「プロジェクト再接続」で再許可してください。</td></tr><tr><td>GitHubへ反映されない</td><td>ローカル変更をcommit / pushしたか、ブラウザキャッシュが残っていないか確認してください。</td></tr></table>
 
 <p><a href="../event_manager.html">← イベント管理へ戻る</a> / <a href="viewer_manual.html">閲覧者マニュアル</a></p>
 </div></body></html>

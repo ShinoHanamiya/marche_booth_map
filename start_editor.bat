@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 > nul
 cd /d "%~dp0"
-echo Marche Booth Map v1.11 - Event Manager / Editor Server
+echo Marche Booth Map v1.11.1 - Event Manager / Editor Server
 echo.
 echo Event Manager: http://localhost:8000/event_manager.html
 echo Viewer:       http://localhost:8000/

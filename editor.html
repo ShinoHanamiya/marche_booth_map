@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f8eef3">
-  <title>Marche Booth Map Editor v1.11</title>
+  <title>Marche Booth Map Editor v1.11.2</title>
   <link rel="stylesheet" href="css/editor.css">
 </head>
 <body>
 <header class="editor-header">
   <div>
     <p class="eyebrow">MAP EDITOR</p>
-    <h1>Marche Booth Map Editor <span>v1.11</span></h1>
+    <h1>Marche Booth Map Editor <span>v1.11.2</span></h1>
     <p class="sub">イベントをURLで切り替え、event.json・venue.json・exhibitors.jsonをまとめて編集できる会場レイアウトエディタです。</p>
   </div>
   <div class="header-actions">
@@ -29,6 +29,7 @@
       <button id="copyBtn" class="btn ghost" title="Ctrl+C">コピー</button>
       <button id="pasteBtn" class="btn ghost" title="Ctrl+V">貼り付け</button>
       <button id="loadCurrentBtn" class="btn">現在のdataを再読込</button>
+      <button id="reconnectFolderBtn" class="btn ghost">プロジェクト再接続</button>
       <label class="file-btn btn ghost">event.json読込<input id="eventFileInput" type="file" accept="application/json,.json"></label>
       <label class="file-btn btn ghost">venue.json読込<input id="venueFileInput" type="file" accept="application/json,.json"></label>
       <label class="file-btn btn ghost">exhibitors.json読込<input id="exhibitorFileInput" type="file" accept="application/json,.json"></label>
@@ -41,7 +42,11 @@
       <button id="downloadExhibitorsBtn" class="btn primary">exhibitors.json保存</button>
       <button id="downloadBothBtn" class="btn primary strong">3ファイル保存</button>
     </div>
-    <div id="saveState" class="save-state">読込中...</div>
+    <div class="source-status-wrap">
+      <div id="saveState" class="save-state">読込中...</div>
+      <div id="dataSourceStatus" class="data-source-status">読み込み元を確認中...</div>
+      <div id="fileLoadStatus" class="file-load-status"></div>
+    </div>
   </section>
 
   <section class="editor-grid">
@@ -268,6 +273,7 @@
 </main>
 <div id="toast" class="toast"></div>
 <script src="js/config.js"></script>
+<script src="js/project_handle.js"></script>
 <script src="js/editor.js"></script>
 </body>
 </html>

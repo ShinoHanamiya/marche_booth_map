@@ -1,0 +1,20 @@
+{
+  "viewBox": [
+    0,
+    0,
+    1000,
+    700
+  ],
+  "facilities": [
+    {
+      "type": "entrance",
+      "label": "入口",
+      "x": 430,
+      "y": 22,
+      "width": 140,
+      "height": 55
+    }
+  ],
+  "aisles": [],
+  "booths": []
+}
