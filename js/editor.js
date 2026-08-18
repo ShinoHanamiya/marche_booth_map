@@ -5,6 +5,7 @@
   const $ = id => document.getElementById(id);
   const deepCopy = obj => JSON.parse(JSON.stringify(obj));
   const state = {
+    eventMeta: null,
     venue: null,
     exhibitors: [],
     selection: null,
@@ -32,7 +33,7 @@
   async function init() {
     Object.assign(els, {
       saveState: $("saveState"), map: $("editorVenueMap"), mapContent: $("editorMapContent"), backgroundLayer: $("editorBackgroundLayer"), overlayLayer: $("editorOverlayLayer"), viewport: $("editorMapViewport"), selectionInfo: $("selectionInfo"),
-      eventId: $("eventId"), eventName: $("eventNameInput"), eventDate: $("eventDate"), eventTime: $("eventTime"), eventVenue: $("eventVenue"),
+      eventId: $("eventId"), eventName: $("eventNameInput"), eventDate: $("eventDate"), eventEndDate: $("eventEndDate"), eventTime: $("eventTime"), eventStatus: $("eventStatus"), eventVenue: $("eventVenue"), eventOfficialUrl: $("eventOfficialUrl"), eventDescription: $("eventDescription"),
       venueWidth: $("venueWidth"), venueHeight: $("venueHeight"), venueOriginX: $("venueOriginX"), venueOriginY: $("venueOriginY"), venueSizeBadge: $("venueSizeBadge"), fitMargin: $("fitMargin"), autoExpandToggle: $("autoExpandToggle"),
       boothList: $("boothList"), boothCount: $("boothCount"), boothId: $("boothId"), boothNewId: $("boothNewId"), boothX: $("boothX"), boothY: $("boothY"), boothWidth: $("boothWidth"), boothHeight: $("boothHeight"), boothBadge: $("selectedBoothBadge"),
       exhibitorSelect: $("exhibitorSelect"), shopName: $("shopName"), categories: $("categories"), keywords: $("keywords"), tags: $("tags"), description: $("description"), instagramUrl: $("instagramUrl"), shopUrl: $("shopUrl"), note: $("note"),
@@ -47,18 +48,23 @@
 
   async function loadCurrent() {
     try {
-      const [vr, er] = await Promise.all([
+      const [mr, vr, er] = await Promise.all([
+        fetch(cfg.eventFile, { cache: "no-store" }),
         fetch(cfg.venueFile, { cache: "no-store" }),
         fetch(cfg.dataFile, { cache: "no-store" })
       ]);
-      if (!vr.ok || !er.ok) throw new Error("dataファイルを読み込めませんでした");
+      if (!mr.ok || !vr.ok || !er.ok) throw new Error("イベントデータを読み込めませんでした");
+      state.eventMeta = normalizeEventMeta(await mr.json());
       state.venue = normalizeVenue(await vr.json());
       state.exhibitors = await er.json();
       state.history = []; state.future = []; state.clipboard = null;
       resetToFirstBooth();
       state.dirty = false;
+      const viewLink = $("viewCurrentEventLink");
+      if (viewLink) viewLink.href = `index.html?event=${encodeURIComponent(cfg.editorEventId)}`;
+      document.title = `${state.eventMeta.name || cfg.editorEventId} - Marche Booth Map Editor ${cfg.version}`;
       renderAll();
-      setSaveState("現在のdataを読み込みました");
+      setSaveState(`${cfg.editorEventId} を読み込みました`);
     } catch (err) {
       setSaveState("読込失敗: " + err.message, true);
     }
@@ -71,6 +77,20 @@
     v.viewBox = Array.isArray(v.viewBox) && v.viewBox.length === 4 ? v.viewBox : [0, 0, 1000, 700];
     v.event = v.event || {};
     return v;
+  }
+
+  function normalizeEventMeta(m) {
+    return {
+      event_id: m?.event_id || cfg.editorEventId,
+      name: m?.name || cfg.editorEventId,
+      date_start: m?.date_start || "",
+      date_end: m?.date_end || m?.date_start || "",
+      time: m?.time || "",
+      venue_name: m?.venue_name || "",
+      status: ["upcoming", "ongoing", "past"].includes(m?.status) ? m.status : "upcoming",
+      official_url: m?.official_url || "",
+      description: m?.description || ""
+    };
   }
 
   function resetToFirstBooth() {
@@ -95,6 +115,9 @@
     document.addEventListener("focusout", () => { state.formCheckpointActive = false; });
     els.viewport.addEventListener("pointerdown", startMarqueeSelection);
     $("loadCurrentBtn").addEventListener("click", loadCurrent);
+    $("eventFileInput").addEventListener("change", e => readJsonFile(e.target.files[0], data => {
+      state.eventMeta = normalizeEventMeta(data); markDirty(); renderAll();
+    }, "event.json"));
     $("venueFileInput").addEventListener("change", e => readJsonFile(e.target.files[0], data => {
       state.venue = normalizeVenue(data); resetToFirstBooth(); markDirty(); renderAll();
     }, "venue.json"));
@@ -103,11 +126,13 @@
       state.exhibitors = data; markDirty(); renderAll();
     }, "exhibitors.json"));
 
+    $("downloadEventBtn").addEventListener("click", () => downloadJson("event.json", state.eventMeta));
     $("downloadVenueBtn").addEventListener("click", () => downloadJson("venue.json", state.venue));
     $("downloadExhibitorsBtn").addEventListener("click", () => downloadJson("exhibitors.json", state.exhibitors));
     $("downloadBothBtn").addEventListener("click", () => {
-      downloadJson("venue.json", state.venue);
-      setTimeout(() => downloadJson("exhibitors.json", state.exhibitors), 250);
+      downloadJson("event.json", state.eventMeta);
+      setTimeout(() => downloadJson("venue.json", state.venue), 180);
+      setTimeout(() => downloadJson("exhibitors.json", state.exhibitors), 360);
     });
     $("restoreDraftBtn").addEventListener("click", restoreDraft);
     $("clearDraftBtn").addEventListener("click", () => { localStorage.removeItem(cfg.editorDraftKey); toast("自動保存を削除しました"); });
@@ -137,7 +162,8 @@
     $("resetSelectionBtn").addEventListener("click", clearSelection);
     $("validateBtn").addEventListener("click", validateData);
 
-    [els.eventId, els.eventName, els.eventDate, els.eventTime, els.eventVenue].forEach(el => el.addEventListener("input", syncEventForm));
+    [els.eventName, els.eventDate, els.eventEndDate, els.eventTime, els.eventStatus, els.eventVenue, els.eventOfficialUrl, els.eventDescription].forEach(el => el.addEventListener("input", syncEventForm));
+    els.eventStatus.addEventListener("change", syncEventForm);
     [els.boothX, els.boothY, els.boothWidth, els.boothHeight].forEach(el => el.addEventListener("input", syncBoothForm));
     [els.facilityType, els.facilityLabel, els.facilityX, els.facilityY, els.facilityWidth, els.facilityHeight].forEach(el => el.addEventListener("input", syncFacilityForm));
     [els.aisleX, els.aisleY, els.aisleWidth, els.aisleHeight].forEach(el => el.addEventListener("input", syncAisleForm));
@@ -168,9 +194,10 @@
   }
 
   function renderEventForm() {
-    const e = state.venue.event || {};
-    els.eventId.value = e.id || ""; els.eventName.value = e.name || ""; els.eventDate.value = e.date || "";
-    els.eventTime.value = e.time || ""; els.eventVenue.value = e.venue || "";
+    const e = state.eventMeta || normalizeEventMeta({});
+    els.eventId.value = e.event_id || cfg.editorEventId; els.eventName.value = e.name || ""; els.eventDate.value = e.date_start || ""; els.eventEndDate.value = e.date_end || e.date_start || "";
+    els.eventTime.value = e.time || ""; els.eventStatus.value = e.status || "upcoming"; els.eventVenue.value = e.venue_name || "";
+    els.eventOfficialUrl.value = e.official_url || ""; els.eventDescription.value = e.description || "";
   }
 
   function renderVenueSizeForm() {
@@ -390,7 +417,12 @@
   }
 
   function syncEventForm() {
-    state.venue.event = { id: els.eventId.value.trim(), name: els.eventName.value.trim(), date: els.eventDate.value, time: els.eventTime.value.trim(), venue: els.eventVenue.value.trim() };
+    state.eventMeta = normalizeEventMeta({
+      event_id: cfg.editorEventId, name: els.eventName.value.trim(), date_start: els.eventDate.value, date_end: els.eventEndDate.value || els.eventDate.value,
+      time: els.eventTime.value.trim(), status: els.eventStatus.value, venue_name: els.eventVenue.value.trim(), official_url: els.eventOfficialUrl.value.trim(), description: els.eventDescription.value
+    });
+    // 旧venue.eventも閲覧互換用に最低限同期
+    state.venue.event = { id: cfg.editorEventId, name: state.eventMeta.name, date: state.eventMeta.date_start, time: state.eventMeta.time, venue: state.eventMeta.venue_name };
     markDirty();
   }
 
@@ -678,7 +710,7 @@
   }
 
   function snapshotState() {
-    return deepCopy({ venue: state.venue, exhibitors: state.exhibitors });
+    return deepCopy({ eventMeta: state.eventMeta, venue: state.venue, exhibitors: state.exhibitors });
   }
 
   function checkpoint() {
@@ -695,6 +727,7 @@
 
   function restoreSnapshot(snap) {
     if (!snap) return;
+    state.eventMeta = normalizeEventMeta(deepCopy(snap.eventMeta || state.eventMeta || {}));
     state.venue = normalizeVenue(deepCopy(snap.venue));
     state.exhibitors = deepCopy(snap.exhibitors || []);
     clearSelection(false);
@@ -864,13 +897,13 @@
   function debounceSave() { clearTimeout(debounceSave.t); debounceSave.t = setTimeout(saveDraft, 350); }
   function saveDraft() {
     if (!state.venue) return;
-    localStorage.setItem(cfg.editorDraftKey, JSON.stringify({ venue: state.venue, exhibitors: state.exhibitors, savedAt: new Date().toISOString() }));
+    localStorage.setItem(cfg.editorDraftKey, JSON.stringify({ eventMeta: state.eventMeta, venue: state.venue, exhibitors: state.exhibitors, savedAt: new Date().toISOString() }));
     setSaveState("編集中・自動保存済み");
   }
   function restoreDraft() {
     try {
       const raw = localStorage.getItem(cfg.editorDraftKey); if (!raw) return toast("自動保存データはありません");
-      const d = JSON.parse(raw); state.venue = normalizeVenue(d.venue); state.exhibitors = d.exhibitors || []; resetToFirstBooth(); state.dirty = true; renderAll(); toast("自動保存を復元しました");
+      const d = JSON.parse(raw); state.eventMeta = normalizeEventMeta(d.eventMeta || {}); state.venue = normalizeVenue(d.venue); state.exhibitors = d.exhibitors || []; resetToFirstBooth(); state.dirty = true; renderAll(); toast("自動保存を復元しました");
     } catch { toast("自動保存の復元に失敗しました"); }
   }
   function downloadJson(name, data) {

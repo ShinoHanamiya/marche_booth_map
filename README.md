@@ -1,29 +1,31 @@
-# Marche Booth Map v1.8
+# Marche Booth Map v1.9
 
-複数のマルシェ・イベントを1つの静的Webサイトで公開できる、会場ブースマップです。
-GitHub Pages等の静的ホスティングで公開できます。
+複数のマルシェ・イベントを1つの静的Webサイトで公開できる、会場ブースマップです。GitHub Pagesなどの静的ホスティングで公開できます。
 
 > 本アプリは有志が作成した非商用アプリです。掲載しているお店情報・リンク等には、誤りや変更が含まれる場合があります。最新・正確な情報は、各出店者およびイベント主催者の公式情報をご確認ください。
 
-## v1.8 の主な変更
+## v1.9 の主な変更
 
-- 複数イベント対応
-- `data/events.json` によるイベント一覧管理
-- イベント選択画面を追加
-- イベント状態（すべて / 開催予定 / 開催中 / 過去）の表示切替
-- イベントごとに `event.json / venue.json / exhibitors.json` を分離
-- ブース共有URLを `?event=<event_id>&booth=<booth_id>` 形式へ変更
-- URLからイベントとブースを直接表示
-- 「行きたい」「行った」をイベントごとに分離保存
-- v1.7.1までの単一イベントお気に入りは既定サンプルイベントへ移行
-- v1.7.1のタグ、複数Instagram URL、4方向回転、View機能を維持
-- v1.6までのEditor機能を維持
+- `event_manager.html` を新設
+- イベント一覧をGUIで管理
+- 新規イベント作成
+- 選択イベントの複製
+- イベント削除
+- `event.json` のGUI編集
+- `events.json` の一覧情報を同期
+- `editor.html?event=<event_id>` で任意イベントを編集
+- Editorで `event.json / venue.json / exhibitors.json` の3ファイルを読込・保存
+- Chrome / Edge の File System Access API に対応し、ローカルプロジェクトフォルダへイベントファイルを直接作成・更新・削除可能
+- フォルダ接続を使用しない場合もJSONダウンロード方式で運用可能
+- v1.8までの複数イベントView、共有URL、タグ、複数Instagram URL、4方向回転、お気に入り機能を維持
+- v1.6までのEditor操作（Undo / Redo、コピー＆ペースト、範囲選択、背景、レイヤー、Delete等）を維持
 
 ## フォルダ構成
 
 ```text
-marche_booth_map_v1_8/
+marche_booth_map_v1_9/
 ├─ index.html
+├─ event_manager.html
 ├─ editor.html
 ├─ data/
 │  ├─ events.json
@@ -37,99 +39,96 @@ marche_booth_map_v1_8/
 │        ├─ venue.json
 │        └─ exhibitors.json
 ├─ css/
+│  ├─ style.css
+│  ├─ editor.css
+│  └─ event_manager.css
 ├─ js/
+│  ├─ config.js
+│  ├─ app.js
+│  ├─ editor.js
+│  └─ event_manager.js
 ├─ manual/
+│  ├─ editor_manual.html
+│  └─ viewer_manual.html
 ├─ start_local_server.bat
 └─ start_editor.bat
 ```
 
-## 新しいイベントを追加する方法
+## 推奨編集方法
 
-1. `data/events/` に半角英数字の新規フォルダを作成します。
-2. そのフォルダへ `event.json`, `venue.json`, `exhibitors.json` を配置します。
-3. `data/events.json` にイベント概要を1件追加します。
-4. ローカルサーバーで表示を確認します。
-5. GitHubへpushするとGitHub Pagesへ反映できます。
+1. `start_editor.bat` をダブルクリックします。
+2. `http://localhost:8000/event_manager.html` が開きます。
+3. Chrome / Edgeで「プロジェクトフォルダを接続」を押します。
+4. 展開した `marche_booth_map_v1_9` フォルダそのものを選択します。
+5. イベントの作成・複製・削除・情報編集を行います。
+6. 「会場レイアウト編集」から対象イベントのEditorを開きます。
+7. GitHubへcommit / pushして公開ページを更新します。
 
-例:
+### フォルダ直接編集を使わない場合
 
-```text
-data/events/takasaki_autumn_2026/
-├─ event.json
-├─ venue.json
-└─ exhibitors.json
-```
+イベント管理画面は公開中のJSONを読み込めます。編集後に `events.json`、`event.json`、`venue.json`、`exhibitors.json` をダウンロードし、対応するフォルダへ手動配置してください。
 
-`event.json` の例:
+## イベントデータ
 
-```json
-{
-  "event_id": "takasaki_autumn_2026",
-  "name": "高崎 Autumn Marche 2026",
-  "date_start": "2026-10-10",
-  "date_end": "2026-10-10",
-  "time": "10:00-16:00",
-  "venue_name": "Sample Hall",
-  "status": "upcoming",
-  "description": "イベント説明"
-}
-```
+イベントごとに以下の3ファイルを使用します。
 
-`events.json` の `event_id` とイベントフォルダ名、`event.json` の `event_id` は同じ値にしてください。
+- `event.json`: イベント名、開催日、会場名、状態、説明、公式URLなど
+- `venue.json`: 会場サイズ、ブース、設備、通路
+- `exhibitors.json`: 出店者情報、タグ、Instagram URL等
+
+イベント一覧は `data/events.json` で管理します。
 
 ## イベント状態
 
-`events.json` の `status` は以下を使用します。
-
 - `upcoming`: 開催予定
 - `ongoing`: 開催中
-- `past`: 終了 / 過去イベント
+- `past`: 過去イベント
 
-## 共有URL
+## URL
 
-イベントのみ:
-
-```text
-https://example.github.io/marche_booth_map/?event=sample_flower_marche_2026
-```
-
-特定ブース:
+イベントだけを開く:
 
 ```text
-https://example.github.io/marche_booth_map/?event=sample_flower_marche_2026&booth=A01
+?event=sample_flower_marche_2026
 ```
 
-## Editorについて
+特定ブースを直接開く:
 
-v1.8のEditorは、複数イベント管理画面ではなく「1イベントを編集する従来型Editor」を維持しています。
-初期状態では `sample_flower_marche_2026` を編集対象に設定しています。
-別イベントをEditorで編集する場合は、`js/config.js` の以下を対象イベントへ変更してください。
+```text
+?event=sample_flower_marche_2026&booth=A01
+```
 
-- `venueFile`
-- `dataFile`
-- `editorDraftKey`
+Editorでイベントを指定:
 
-イベントの新規作成・複製・削除をGUIで行う機能は次段階の拡張対象です。
+```text
+editor.html?event=sample_flower_marche_2026
+```
 
 ## ローカル起動
 
-Windowsでは `start_local_server.bat` をダブルクリックしてください。
-通常は `http://localhost:8000/` が開きます。
+- View: `start_local_server.bat`
+- Event Manager / Editor: `start_editor.bat`
 
-Editorは `start_editor.bat` から起動できます。
+HTMLを直接ダブルクリックするとブラウザのセキュリティ制限でJSONを読めない場合があります。必ずHTTPサーバー経由で開いてください。
 
 ## GitHub Pages
 
-リポジトリ直下に `index.html` が来るように全ファイルをアップロードし、Settings > Pages で `main` / `(root)` を公開元に設定してください。
+リポジトリ直下に `index.html` が来るようにアップロードし、GitHubの `Settings > Pages` で `main / (root)` を公開元に設定します。
+
+イベント管理画面やEditorは認証機能を持たないため、GitHub Pagesへ含める場合はURLを知っている人が開けます。ただし静的Web上のEditorからGitHub上のファイルを直接変更することはできません。ローカルコピーを編集してからGitHubへpushしてください。
 
 ## Change Log
 
-### v1.8
-- 複数イベントデータ構造を追加
-- イベント選択Viewを追加
-- イベント別共有URLに対応
-- イベント別お気に入り・訪問済み保存に対応
-- `event.json` を導入
+### v1.9
+- Event Managerを追加
+- 新規イベント / 複製 / 削除をGUI化
+- event.json編集をGUI化
+- events.json同期機能を追加
+- File System Access APIによるローカルプロジェクト直接編集に対応
+- Editorを `?event=` によるイベント切替へ変更
+- Editorでevent.jsonを含む3ファイルの保存に対応
 
-### v1.7.1
-- 有志制作・非商用・掲載情報に誤りの可能性がある旨をView/README/マニュアルへ追加
+### v1.8
+- 複数イベントデータ構造
+- イベント選択View
+- イベント別共有URL、お気に入り・訪問済み保存

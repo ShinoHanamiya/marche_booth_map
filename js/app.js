@@ -34,7 +34,10 @@
   function migrateLegacyState(eventId) {
     const favorites = loadSet(favoriteKey(eventId));
     const visited = loadSet(visitedKey(eventId));
-    // 旧版は単一イベントだったため、既定サンプルイベントにのみ引き継ぐ。
+    // v1.8のイベント別保存をそのまま引き継ぐ。
+    (cfg.legacyFavoriteStoragePrefixes || []).forEach(prefix => loadSet(`${prefix}${eventId}`).forEach(id => favorites.add(id)));
+    (cfg.legacyVisitedStoragePrefixes || []).forEach(prefix => loadSet(`${prefix}${eventId}`).forEach(id => visited.add(id)));
+    // さらに古い単一イベント版は既定サンプルイベントにのみ引き継ぐ。
     if (eventId === cfg.defaultEditorEventId) {
       (cfg.legacyFavoriteStorageKeys || []).forEach(key => loadSet(key).forEach(id => favorites.add(id)));
       (cfg.legacyVisitedStorageKeys || []).forEach(key => loadSet(key).forEach(id => visited.add(id)));

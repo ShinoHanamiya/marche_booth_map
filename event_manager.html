@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8eef3">
+  <title>Marche Booth Map Event Manager v1.9</title>
+  <link rel="stylesheet" href="css/event_manager.css">
+</head>
+<body>
+<header class="manager-header">
+  <div>
+    <p class="eyebrow">EVENT MANAGER</p>
+    <h1>Marche Booth Map Event Manager <span>v1.9</span></h1>
+    <p>複数マルシェの作成・複製・編集・削除と、イベント情報の管理を行います。</p>
+  </div>
+  <div class="header-actions">
+    <a class="btn ghost" href="index.html" target="_blank">閲覧画面 ↗</a>
+    <a class="btn ghost" href="manual/editor_manual.html" target="_blank">編集マニュアル</a>
+  </div>
+</header>
+
+<main class="manager-shell">
+  <section class="panel folder-panel">
+    <div>
+      <h2>編集モード</h2>
+      <p id="modeDescription">公開中のJSONを読み込んでいます。ファイルを直接保存する場合は、ローカルのプロジェクトフォルダを接続してください。</p>
+    </div>
+    <div class="folder-actions">
+      <button id="connectFolderBtn" class="btn primary">プロジェクトフォルダを接続</button>
+      <button id="reloadBtn" class="btn ghost">再読込</button>
+      <span id="folderStatus" class="status-pill">未接続</span>
+    </div>
+  </section>
+
+  <section class="manager-grid">
+    <aside class="panel event-list-panel">
+      <div class="section-title">
+        <div><h2>イベント一覧</h2><p id="eventCount">0件</p></div>
+        <button id="newEventBtn" class="btn primary">＋ 新規イベント</button>
+      </div>
+      <div class="list-filters">
+        <input id="eventSearch" type="search" placeholder="イベント名・会場・IDで検索">
+        <select id="statusFilter">
+          <option value="all">すべて</option>
+          <option value="upcoming">開催予定</option>
+          <option value="ongoing">開催中</option>
+          <option value="past">過去</option>
+        </select>
+      </div>
+      <div id="eventList" class="event-list"></div>
+    </aside>
+
+    <section class="panel editor-panel">
+      <div class="section-title">
+        <div>
+          <h2>イベント情報</h2>
+          <p id="selectedEventLabel">イベントを選択してください</p>
+        </div>
+        <div class="top-actions">
+          <button id="openLayoutBtn" class="btn ghost" disabled>会場レイアウト編集 ↗</button>
+          <button id="openViewBtn" class="btn ghost" disabled>View確認 ↗</button>
+        </div>
+      </div>
+
+      <div id="emptyState" class="empty-state">左のイベント一覧から編集するイベントを選択してください。</div>
+      <form id="eventForm" class="event-form" hidden>
+        <div class="form-grid two">
+          <label>イベントID
+            <input id="eventId" type="text" pattern="[A-Za-z0-9_-]+" required>
+            <small>英数字・_・- を推奨。フォルダ名とURLに使用します。</small>
+          </label>
+          <label>イベント名<input id="eventName" type="text" required></label>
+          <label>開始日<input id="dateStart" type="date"></label>
+          <label>終了日<input id="dateEnd" type="date"></label>
+          <label>開催時間<input id="eventTime" type="text" placeholder="10:00-16:00"></label>
+          <label>状態
+            <select id="eventStatus">
+              <option value="upcoming">開催予定</option>
+              <option value="ongoing">開催中</option>
+              <option value="past">過去</option>
+            </select>
+          </label>
+          <label class="span-2">会場名<input id="venueName" type="text"></label>
+          <label class="span-2">公式URL<input id="officialUrl" type="url" placeholder="https://..."></label>
+          <label class="span-2">説明<textarea id="eventDescription" rows="5"></textarea></label>
+        </div>
+
+        <div class="info-box">
+          <strong>データ構成</strong>
+          <code id="eventPathPreview">data/events/&lt;event_id&gt;/</code>
+          <p>event.json / venue.json / exhibitors.json の3ファイルを1イベントとして管理します。</p>
+        </div>
+
+        <div class="action-grid">
+          <button id="saveEventBtn" type="button" class="btn primary strong">イベント情報を保存</button>
+          <button id="duplicateEventBtn" type="button" class="btn ghost">イベントを複製</button>
+          <button id="downloadEventBtn" type="button" class="btn ghost">event.json保存</button>
+          <button id="downloadAllEventFilesBtn" type="button" class="btn ghost">3ファイル保存</button>
+          <button id="deleteEventBtn" type="button" class="btn danger">イベントを削除</button>
+        </div>
+      </form>
+    </section>
+  </section>
+
+  <section class="panel publish-panel">
+    <div>
+      <h2>公開データ</h2>
+      <p>イベント追加・削除後は <code>events.json</code> も更新してください。フォルダ接続中は保存時に自動更新されます。</p>
+    </div>
+    <div class="publish-actions">
+      <button id="downloadEventsBtn" class="btn ghost">events.json保存</button>
+      <button id="validateAllBtn" class="btn ghost">全イベント確認</button>
+    </div>
+    <div id="validationResult" class="validation-result"></div>
+  </section>
+</main>
+
+<dialog id="newEventDialog">
+  <form method="dialog" class="dialog-card" id="newEventForm">
+    <h2>新しいイベント</h2>
+    <label>イベントID<input id="newEventId" required pattern="[A-Za-z0-9_-]+" placeholder="takasaki_autumn_2026"></label>
+    <label>イベント名<input id="newEventName" required placeholder="高崎 Autumn Marche 2026"></label>
+    <label>作成方法
+      <select id="newEventMode">
+        <option value="blank">空の会場から作成</option>
+        <option value="duplicate">選択中イベントを複製</option>
+      </select>
+    </label>
+    <p class="dialog-hint">複製では会場レイアウトと出店者情報もコピーします。</p>
+    <div class="dialog-actions">
+      <button value="cancel" class="btn ghost">キャンセル</button>
+      <button id="confirmNewEventBtn" value="default" class="btn primary">作成</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast"></div>
+<script src="js/config.js"></script>
+<script src="js/event_manager.js"></script>
+</body>
+</html>
