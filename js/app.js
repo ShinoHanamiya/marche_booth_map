@@ -29,41 +29,98 @@
     try { return new Set(JSON.parse(localStorage.getItem(key) || "[]")); }
     catch { return new Set(); }
   }
-  function migrateFavorites() {
-    const current = loadSet(cfg.favoriteStorageKey);
-    (cfg.legacyFavoriteStorageKeys || []).forEach(key => loadSet(key).forEach(id => current.add(id)));
-    localStorage.setItem(cfg.favoriteStorageKey, JSON.stringify([...current]));
-    return current;
+  function favoriteKey(eventId) { return `${cfg.favoriteStoragePrefix}${eventId}`; }
+  function visitedKey(eventId) { return `${cfg.visitedStoragePrefix}${eventId}`; }
+  function migrateLegacyState(eventId) {
+    const favorites = loadSet(favoriteKey(eventId));
+    const visited = loadSet(visitedKey(eventId));
+    // 旧版は単一イベントだったため、既定サンプルイベントにのみ引き継ぐ。
+    if (eventId === cfg.defaultEditorEventId) {
+      (cfg.legacyFavoriteStorageKeys || []).forEach(key => loadSet(key).forEach(id => favorites.add(id)));
+      (cfg.legacyVisitedStorageKeys || []).forEach(key => loadSet(key).forEach(id => visited.add(id)));
+    }
+    localStorage.setItem(favoriteKey(eventId), JSON.stringify([...favorites]));
+    localStorage.setItem(visitedKey(eventId), JSON.stringify([...visited]));
+    return { favorites, visited };
   }
 
   const state = {
+    events: [], currentEventId: null, eventInfo: null, eventStatusFilter: "all",
     exhibitors: [], venue: null, filtered: [], category: "すべて", query: "", selectedTags: new Set(),
-    viewMode: "all", favorites: migrateFavorites(), visited: loadSet(cfg.visitedStorageKey),
+    viewMode: "all", favorites: new Set(), visited: new Set(),
     selectedBooth: null, rotation: 0,
     scale: 1, tx: 0, ty: 0, pointers: new Map(), dragStart: null, pinchStart: null
   };
 
   async function init() {
     Object.assign(els, {
+      eventPicker: $("eventPicker"), eventList: $("eventList"), appContent: $("appContent"),
       eventName: $("eventName"), eventMeta: $("eventMeta"), searchInput: $("searchInput"), categoryFilters: $("categoryFilters"), tagFilters: $("tagFilters"),
       resultCount: $("resultCount"), clearFiltersBtn: $("clearFiltersBtn"), exhibitorList: $("exhibitorList"), mapContent: $("mapContent"), mapRotationLayer: $("mapRotationLayer"),
       venueMap: $("venueMap"), mapViewport: $("mapViewport"), zoomInBtn: $("zoomInBtn"), zoomOutBtn: $("zoomOutBtn"), resetViewBtn: $("resetViewBtn"),
       favoriteCount: $("favoriteCount"), visitedCount: $("visitedCount"), listModeLabel: $("listModeLabel"), detailSheet: $("detailSheet"),
       detailBackdrop: $("detailBackdrop"), detailContent: $("detailContent"), closeDetailBtn: $("closeDetailBtn"), toast: $("toast")
     });
+    document.title = `${cfg.name} ${cfg.version}`;
     try {
-      const [venueRes, exhibitorRes] = await Promise.all([fetch(cfg.venueFile), fetch(cfg.dataFile)]);
-      if (!venueRes.ok || !exhibitorRes.ok) throw new Error("データファイルを読み込めませんでした");
-      state.venue = await venueRes.json();
-      state.exhibitors = await exhibitorRes.json();
-      cleanStoredState(); validateData();
-      renderHeader(); renderMap(); renderCategories(); renderTags(); bindEvents(); updateSummary(); applyFilters(); resetView();
-      document.title = `${cfg.name} ${cfg.version}`;
-      requestAnimationFrame(openBoothFromUrl);
+      const eventsRes = await fetch(cfg.eventsFile, { cache: "no-store" });
+      if (!eventsRes.ok) throw new Error("events.json を読み込めませんでした");
+      state.events = await eventsRes.json();
+      bindEventPicker();
+      const params = new URL(window.location.href).searchParams;
+      const eventId = params.get("event");
+      if (!eventId) { renderEventPicker(); return; }
+      await loadEvent(eventId);
     } catch (err) {
       console.error(err);
-      els.exhibitorList.innerHTML = `<div class="empty-state"><strong>データを読み込めませんでした。</strong><br>ローカルでは start_local_server.bat から起動してください。<br><small>${escapeHtml(err.message)}</small></div>`;
+      if (els.eventList) els.eventList.innerHTML = `<div class="event-empty"><strong>イベントデータを読み込めませんでした。</strong><br><small>${escapeHtml(err.message)}</small></div>`;
     }
+  }
+
+  function eventPath(eventId, file) {
+    return `${cfg.eventsBasePath}/${encodeURIComponent(eventId)}/${file}`;
+  }
+  function bindEventPicker() {
+    document.querySelectorAll("[data-event-status]").forEach(btn => btn.addEventListener("click", () => {
+      state.eventStatusFilter = btn.dataset.eventStatus;
+      document.querySelectorAll("[data-event-status]").forEach(x => x.classList.toggle("active", x === btn));
+      renderEventPicker();
+    }));
+  }
+  function statusLabel(status) {
+    return ({ upcoming:"開催予定", ongoing:"開催中", past:"終了" })[status] || "イベント";
+  }
+  function eventDateLabel(e) {
+    if (!e.date_start) return "開催日未登録";
+    return e.date_end && e.date_end !== e.date_start ? `${e.date_start} ～ ${e.date_end}` : e.date_start;
+  }
+  function renderEventPicker() {
+    els.appContent.hidden = true;
+    els.eventPicker.hidden = false;
+    const list = state.events.filter(e => state.eventStatusFilter === "all" || e.status === state.eventStatusFilter);
+    els.eventList.innerHTML = list.length ? list.map(e => {
+      const u = new URL(window.location.href); u.search = ""; u.hash = ""; u.searchParams.set("event", e.event_id);
+      return `<article class="event-card"><span class="event-status-badge">${escapeHtml(statusLabel(e.status))}</span><div class="event-date">${escapeHtml(eventDateLabel(e))}</div><h2>${escapeHtml(e.name || e.event_id)}</h2><div class="event-venue">📍 ${escapeHtml(e.venue_name || "会場未登録")}</div>${e.description?`<div class="event-description">${escapeHtml(e.description)}</div>`:""}<a class="event-open" href="${escapeHtml(u.toString())}">マップを見る</a></article>`;
+    }).join("") : '<div class="event-empty">該当するイベントはありません。</div>';
+  }
+  async function loadEvent(eventId) {
+    const registry = state.events.find(e => e.event_id === eventId);
+    if (!registry) { renderEventPicker(); throw new Error(`イベント ${eventId} は events.json に登録されていません`); }
+    const [eventRes, venueRes, exhibitorRes] = await Promise.all([
+      fetch(eventPath(eventId, "event.json"), {cache:"no-store"}),
+      fetch(eventPath(eventId, "venue.json"), {cache:"no-store"}),
+      fetch(eventPath(eventId, "exhibitors.json"), {cache:"no-store"})
+    ]);
+    if (!venueRes.ok || !exhibitorRes.ok) throw new Error("イベントの会場または出店者データを読み込めませんでした");
+    state.currentEventId = eventId;
+    state.eventInfo = eventRes.ok ? await eventRes.json() : registry;
+    state.venue = await venueRes.json();
+    state.exhibitors = await exhibitorRes.json();
+    const personal = migrateLegacyState(eventId); state.favorites = personal.favorites; state.visited = personal.visited;
+    cleanStoredState(); validateData();
+    els.eventPicker.hidden = true; els.appContent.hidden = false;
+    renderHeader(); renderMap(); renderCategories(); renderTags(); bindEvents(); updateSummary(); applyFilters(); resetView();
+    requestAnimationFrame(openBoothFromUrl);
   }
 
   function cleanStoredState() {
@@ -73,17 +130,18 @@
     savePersonalState();
   }
   function savePersonalState() {
-    localStorage.setItem(cfg.favoriteStorageKey, JSON.stringify([...state.favorites]));
-    localStorage.setItem(cfg.visitedStorageKey, JSON.stringify([...state.visited]));
+    if (!state.currentEventId) return;
+    localStorage.setItem(favoriteKey(state.currentEventId), JSON.stringify([...state.favorites]));
+    localStorage.setItem(visitedKey(state.currentEventId), JSON.stringify([...state.visited]));
   }
   function validateData() {
     const boothIds = new Set((state.venue.booths || []).map(b => b.id));
     state.exhibitors.forEach(e => { if (!boothIds.has(e.booth_id)) console.warn(`Unknown booth_id: ${e.booth_id}`); });
   }
   function renderHeader() {
-    const e = state.venue.event || {};
+    const e = state.eventInfo || {};
     els.eventName.textContent = e.name || cfg.name;
-    els.eventMeta.textContent = [e.date, e.time, e.venue].filter(Boolean).join("  ·  ");
+    els.eventMeta.textContent = [eventDateLabel(e), e.time, e.venue_name].filter(Boolean).join("  ·  ");
   }
   function svgEl(name, attrs={}) {
     const el = document.createElementNS("http://www.w3.org/2000/svg", name);
@@ -255,6 +313,7 @@
 
   function boothUrl(id) {
     const u = new URL(window.location.href);
+    u.searchParams.set("event", state.currentEventId);
     u.searchParams.set("booth", id);
     u.hash = "";
     return u.toString();
@@ -270,8 +329,9 @@
     catch (_) { window.prompt("このURLをコピーしてください", url); }
   }
   function openBoothFromUrl() {
-    const id = new URL(window.location.href).searchParams.get("booth");
-    if (!id) return;
+    const params = new URL(window.location.href).searchParams;
+    const eventId = params.get("event"), id = params.get("booth");
+    if (!id || eventId !== state.currentEventId) return;
     if (state.exhibitors.some(e=>e.booth_id===id)) selectBooth(id, true, true);
     else toast(`ブース ${id} は見つかりませんでした`);
   }
