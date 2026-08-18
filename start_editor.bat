@@ -1,7 +1,7 @@
 @echo off
 chcp 65001 > nul
 cd /d "%~dp0"
-echo Marche Booth Map v1.7 - Editor Server
+echo Marche Booth Map v1.7.1 - Editor Server
 echo.
 echo Editor: http://localhost:8000/editor.html
 echo Stop: Ctrl+C

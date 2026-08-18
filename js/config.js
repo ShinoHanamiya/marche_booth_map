@@ -1,6 +1,6 @@
 window.APP_CONFIG = {
   name: "Marche Booth Map",
-  version: "v1.7",
+  version: "v1.7.1",
   dataFile: "data/exhibitors.json",
   venueFile: "data/venue.json",
   favoriteStorageKey: "marche_booth_map_favorites",
@@ -10,5 +10,5 @@ window.APP_CONFIG = {
     "marche_booth_map_v1_3_favorites",
     "marche_booth_map_v1_2_favorites"
   ],
-  editorDraftKey: "marche_booth_map_v1_7_editor_draft"
+  editorDraftKey: "marche_booth_map_v1_7_1_editor_draft"
 };
