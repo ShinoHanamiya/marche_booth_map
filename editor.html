@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f8eef3">
-  <title>Marche Booth Map Editor v1.10</title>
+  <title>Marche Booth Map Editor v1.11</title>
   <link rel="stylesheet" href="css/editor.css">
 </head>
 <body>
 <header class="editor-header">
   <div>
     <p class="eyebrow">MAP EDITOR</p>
-    <h1>Marche Booth Map Editor <span>v1.10</span></h1>
+    <h1>Marche Booth Map Editor <span>v1.11</span></h1>
     <p class="sub">イベントをURLで切り替え、event.json・venue.json・exhibitors.jsonをまとめて編集できる会場レイアウトエディタです。</p>
   </div>
   <div class="header-actions">
@@ -204,11 +204,20 @@
 
     <aside class="right-column">
       <section class="panel form-panel">
-        <div class="section-title"><h2>出店者編集</h2><button id="addExhibitorBtn" class="mini-btn">＋追加</button></div>
+        <div class="section-title"><h2>出店者編集</h2><div><button id="addExhibitorBtn" class="mini-btn">＋固定ブース</button> <button id="addUnlocatedExhibitorBtn" class="mini-btn">＋場所未定</button></div></div>
         <label>編集するブース
           <select id="exhibitorSelect"></select>
         </label>
         <div id="exhibitorForm" class="form-grid">
+          <label>出店場所
+            <select id="locationStatus">
+              <option value="fixed">固定ブース</option>
+              <option value="area">エリアのみ</option>
+              <option value="undecided">場所未定</option>
+            </select>
+          </label>
+          <label>ブースID / 管理ID<input id="exhibitorBoothId" type="text" placeholder="A01 / KITCHEN01"></label>
+          <label id="locationAreaWrap">エリア名<input id="locationArea" type="text" list="facilityAreaList" placeholder="キッチンカーエリア"><datalist id="facilityAreaList"></datalist><small class="hint">設備の表示名と同じ名前にすると「マップで見る」でその場所へ移動できます。</small></label>
           <label>ショップ名<input id="shopName" type="text"></label>
           <label>カテゴリ（カンマ区切り）<input id="categories" type="text" placeholder="ドール, ハンドメイド"></label>
           <label>検索キーワード（カンマ区切り）<input id="keywords" type="text" placeholder="ドール服, リボン"></label>
@@ -223,7 +232,7 @@
 
       <section class="panel form-panel">
         <div class="section-title"><h2>設備編集</h2><span id="selectedFacilityBadge" class="badge">未選択</span></div>
-        <p class="hint">入口・受付・WC・休憩所などをクリックして編集できます。</p>
+        <p class="hint">入口・受付・WC・休憩所・キッチンカーエリアなどをクリックして編集できます。「エリアのみ」の出店者は設備の表示名を参照できます。</p>
         <div id="facilityList" class="object-list"></div>
         <div class="form-grid two compact-top">
           <label>種類<select id="facilityType"><option value="facility">設備</option><option value="entrance">入口</option></select></label>

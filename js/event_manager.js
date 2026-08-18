@@ -97,7 +97,7 @@
       toast("プロジェクトフォルダを接続しました");
     } catch (err) {
       if (err?.name === "AbortError") return;
-      alert("フォルダを接続できませんでした。\n\n" + err.message + "\n\nmarche_booth_map_v1_10 フォルダそのものを選択してください。");
+      alert("フォルダを接続できませんでした。\n\n" + err.message + "\n\nmarche_booth_map_v1_11 フォルダそのものを選択してください。");
     }
   }
 

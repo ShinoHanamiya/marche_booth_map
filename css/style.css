@@ -150,7 +150,7 @@ h1 { margin:0; font-size:clamp(22px,3vw,34px); }
   .rotation-controls button { flex:1; }
 }
 
-/* v1.10 non-commercial / information disclaimer */
+/* v1.11 non-commercial / information disclaimer */
 .app-disclaimer {
   display:flex;
   gap:10px 16px;
@@ -169,10 +169,14 @@ h1 { margin:0; font-size:clamp(22px,3vw,34px); }
   .app-disclaimer { margin:10px 14px 0; flex-direction:column; gap:4px; }
 }
 
-/* v1.10 multiple events */
+/* v1.11 multiple events */
 .event-picker{max-width:1120px;margin:0 auto;padding:34px 22px 60px}.event-picker-head{padding:10px 4px 22px}.event-picker-head h1{margin:2px 0 8px;font-size:clamp(28px,4vw,44px)}.event-picker-head p{margin:0;color:var(--muted,#776b71)}.event-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 18px}.event-tab{border:1px solid #e5d5dc;background:#fff;border-radius:999px;padding:9px 15px;cursor:pointer}.event-tab.active{background:#7f5368;color:#fff;border-color:#7f5368}.event-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px}.event-card{display:flex;flex-direction:column;gap:11px;padding:20px;border:1px solid #eadde3;border-radius:22px;background:#fff;box-shadow:0 10px 30px rgba(76,48,61,.07)}.event-card h2{margin:0;font-size:20px}.event-card .event-date{font-weight:700;color:#7f5368}.event-card .event-venue,.event-card .event-description{color:#6f6369}.event-card .event-description{font-size:14px;line-height:1.65}.event-card .event-open{margin-top:auto;display:inline-flex;justify-content:center;text-decoration:none;background:#7f5368;color:#fff;border-radius:14px;padding:11px 14px;font-weight:700}.event-status-badge{align-self:flex-start;font-size:12px;border-radius:999px;padding:5px 9px;background:#f7edf1;color:#7f5368}.event-empty{grid-column:1/-1;padding:35px;text-align:center;border:1px dashed #dccbd3;border-radius:20px;color:#75686e;background:#fff}.header-actions #eventListLink{white-space:nowrap}
 
-/* v1.10 event search / region / date filters */
+/* v1.11 event search / region / date filters */
 .event-search-panel{display:grid;grid-template-columns:minmax(240px,1.5fr) minmax(170px,.8fr) minmax(165px,.7fr) minmax(165px,.7fr) auto;gap:10px;align-items:end;margin:0 0 10px;padding:14px;border:1px solid #eadde3;border-radius:18px;background:#fff}
 .event-search-box{display:flex;align-items:center;gap:8px;border:1px solid #dfd0d7;border-radius:12px;padding:0 11px;background:#fff}.event-search-box input{width:100%;border:0;outline:0;padding:10px 0;background:transparent}.event-search-panel select,.date-filter input{border:1px solid #dfd0d7;border-radius:12px;padding:10px;background:#fff;color:inherit}.date-filter{display:flex;flex-direction:column;gap:4px;font-size:11px;color:#75686e}.event-clear-btn{border:1px solid #dfd0d7;background:#faf7f8;border-radius:12px;padding:10px 13px;cursor:pointer}.event-result-summary{margin:4px 2px 14px;color:#75686e;font-size:13px}.event-area{font-size:13px;color:#8b6d7b;font-weight:700}
 @media(max-width:900px){.event-search-panel{grid-template-columns:1fr 1fr}.event-search-box{grid-column:1/-1}}@media(max-width:560px){.event-search-panel{grid-template-columns:1fr}.event-search-box{grid-column:auto}}
+
+/* v1.11: position-indeterminate exhibitors */
+.location-label{font-weight:700;color:#795766}
+.facility.area-selected,.entrance.area-selected{stroke:#e45f91!important;stroke-width:8!important;filter:drop-shadow(0 0 8px rgba(228,95,145,.35))}

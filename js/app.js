@@ -24,6 +24,20 @@
   function tagList(e) {
     return Array.isArray(e?.tags) ? e.tags.map(x => String(x || "").trim()).filter(Boolean) : [];
   }
+  function locationStatus(e) { return ["fixed","area","undecided"].includes(e?.location_status) ? e.location_status : "fixed"; }
+  function locationArea(e) { return String(e?.location_area || e?.area_label || "").trim(); }
+  function locationLabel(e) {
+    const status = locationStatus(e);
+    if (status === "area") return locationArea(e) ? `📍 ${locationArea(e)}（個別位置未定）` : "📍 エリア内・個別位置未定";
+    if (status === "undecided") return "📍 出店場所未定";
+    return `📍 ${e.booth_id || "ブース未登録"}`;
+  }
+  function canLocate(e) {
+    if (locationStatus(e) === "fixed") return !!(state.venue?.booths || []).find(b => b.id === e.booth_id);
+    if (locationStatus(e) === "area") return !!findFacilityByLabel(locationArea(e));
+    return false;
+  }
+  function findFacilityByLabel(label) { return (state.venue?.facilities || []).find(f => String(f.label || "").trim() === String(label || "").trim()); }
 
   function loadSet(key) {
     try { return new Set(JSON.parse(localStorage.getItem(key) || "[]")); }
@@ -51,7 +65,7 @@
     events: [], currentEventId: null, eventInfo: null, eventStatusFilter: "all", eventQuery: "", eventPrefecture: "all", eventDateFrom: "", eventDateTo: "",
     exhibitors: [], venue: null, filtered: [], category: "すべて", query: "", selectedTags: new Set(),
     viewMode: "all", favorites: new Set(), visited: new Set(),
-    selectedBooth: null, rotation: 0,
+    selectedBooth: null, selectedArea: "", rotation: 0,
     scale: 1, tx: 0, ty: 0, pointers: new Map(), dragStart: null, pinchStart: null
   };
 
@@ -175,7 +189,10 @@
   }
   function validateData() {
     const boothIds = new Set((state.venue.booths || []).map(b => b.id));
-    state.exhibitors.forEach(e => { if (!boothIds.has(e.booth_id)) console.warn(`Unknown booth_id: ${e.booth_id}`); });
+    state.exhibitors.forEach(e => {
+      if (locationStatus(e) === "fixed" && !boothIds.has(e.booth_id)) console.warn(`Unknown fixed booth_id: ${e.booth_id}`);
+      if (locationStatus(e) === "area" && locationArea(e) && !findFacilityByLabel(locationArea(e))) console.warn(`Unknown location_area: ${locationArea(e)}`);
+    });
   }
   function renderHeader() {
     const e = state.eventInfo || {};
@@ -219,7 +236,8 @@
     g.appendChild(svgEl("rect", {x:vx+20,y:vy+12,width:Math.max(100,w-40),height:Math.max(100,h-35),rx:30,class:"venue-bg"}));
     (state.venue.aisles || []).forEach(a => g.appendChild(svgEl("rect", {...a, rx:16, class:"aisle"})));
     (state.venue.facilities || []).forEach(f => {
-      g.appendChild(svgEl("rect", {x:f.x,y:f.y,width:f.width,height:f.height,rx:16,class:f.type === "entrance" ? "entrance" : "facility"}));
+      const fr = svgEl("rect", {x:f.x,y:f.y,width:f.width,height:f.height,rx:16,class:f.type === "entrance" ? "entrance" : "facility", "data-facility-label":f.label || ""});
+      g.appendChild(fr);
       const t = svgEl("text", {x:f.x+f.width/2,y:f.y+f.height/2,class:"facility-text"}); t.textContent=f.label; g.appendChild(t);
     });
     (state.venue.booths || []).forEach(b => {
@@ -227,8 +245,8 @@
       booth.appendChild(svgEl("rect", {x:b.x,y:b.y,width:b.width,height:b.height}));
       const text = svgEl("text", {x:b.x+b.width/2,y:b.y+b.height/2}); text.textContent=b.id; booth.appendChild(text);
       const status = svgEl("text", {x:b.x+b.width-10,y:b.y+18,class:"status-mark"}); status.textContent=""; booth.appendChild(status);
-      booth.addEventListener("click", () => selectBooth(b.id, true));
-      booth.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); selectBooth(b.id, true); } });
+      booth.addEventListener("click", () => selectLocation(b.id, true));
+      booth.addEventListener("keydown", ev => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); selectLocation(b.id, true); } });
       g.appendChild(booth);
     });
     updateRotationButtons();
@@ -282,16 +300,17 @@
   function renderList() {
     if (!state.filtered.length) { els.exhibitorList.innerHTML = `<div class="empty-state">条件に合う出店者がありません。<br>検索条件やお気に入り状態を変えてみてください。</div>`; return; }
     els.exhibitorList.innerHTML = state.filtered.map(e => {
-      const fav = state.favorites.has(e.booth_id), visited = state.visited.has(e.booth_id);
-      return `<article class="exhibitor-item ${visited?"is-visited":""}" data-list-booth="${escapeHtml(e.booth_id)}">
-        <div class="exhibitor-top"><div><div class="booth-label">${escapeHtml(e.booth_id)}</div><h3 class="exhibitor-name">${escapeHtml(e.shop_name)}</h3>${statusBadges(e.booth_id)}</div><div class="quick-state-actions"><button class="favorite-button ${fav?"active":""}" data-fav="${escapeHtml(e.booth_id)}" type="button" aria-label="行きたい切替">${fav?"♥":"♡"}</button><button class="visited-button ${visited?"active":""}" data-visited="${escapeHtml(e.booth_id)}" type="button" aria-label="訪問済み切替">${visited?"✓":"○"}</button></div></div>
+      const id=e.booth_id, fav = state.favorites.has(id), visited = state.visited.has(id);
+      const locateButton = canLocate(e) ? `<button data-locate="${escapeHtml(id)}" type="button">マップで見る</button>` : "";
+      return `<article class="exhibitor-item ${visited?"is-visited":""}" data-list-booth="${escapeHtml(id)}">
+        <div class="exhibitor-top"><div><div class="booth-label location-label">${escapeHtml(locationLabel(e))}</div><h3 class="exhibitor-name">${escapeHtml(e.shop_name)}</h3>${statusBadges(id)}</div><div class="quick-state-actions"><button class="favorite-button ${fav?"active":""}" data-fav="${escapeHtml(id)}" type="button" aria-label="行きたい切替">${fav?"♥":"♡"}</button><button class="visited-button ${visited?"active":""}" data-visited="${escapeHtml(id)}" type="button" aria-label="訪問済み切替">${visited?"✓":"○"}</button></div></div>
         <p class="exhibitor-desc">${escapeHtml(e.description)}</p>
         <div class="tags">${visualTags(e)}</div>
-        <div class="item-actions"><button data-locate="${escapeHtml(e.booth_id)}" type="button">マップで見る</button><button data-detail="${escapeHtml(e.booth_id)}" type="button">詳細</button><button data-share="${escapeHtml(e.booth_id)}" type="button">共有</button>${instagramLinks(e)}</div>
+        <div class="item-actions">${locateButton}<button data-detail="${escapeHtml(id)}" type="button">詳細</button><button data-share="${escapeHtml(id)}" type="button">共有</button>${instagramLinks(e)}</div>
       </article>`;
     }).join("");
-    els.exhibitorList.querySelectorAll("[data-locate]").forEach(b=>b.addEventListener("click",()=>selectBooth(b.dataset.locate,true,true)));
-    els.exhibitorList.querySelectorAll("[data-detail]").forEach(b=>b.addEventListener("click",()=>selectBooth(b.dataset.detail,true,false)));
+    els.exhibitorList.querySelectorAll("[data-locate]").forEach(b=>b.addEventListener("click",()=>selectLocation(b.dataset.locate,true,true)));
+    els.exhibitorList.querySelectorAll("[data-detail]").forEach(b=>b.addEventListener("click",()=>selectLocation(b.dataset.detail,true,false)));
     els.exhibitorList.querySelectorAll("[data-share]").forEach(b=>b.addEventListener("click",()=>shareBooth(b.dataset.share)));
     els.exhibitorList.querySelectorAll("[data-fav]").forEach(b=>b.addEventListener("click",()=>toggleFavorite(b.dataset.fav)));
     els.exhibitorList.querySelectorAll("[data-visited]").forEach(b=>b.addEventListener("click",()=>toggleVisited(b.dataset.visited)));
@@ -302,7 +321,7 @@
     els.visitedCount.textContent = [...state.visited].filter(id=>validIds.has(id)).length;
   }
   function updateMapState() {
-    const visible = new Set(state.filtered.map(e=>e.booth_id));
+    const visible = new Set(state.filtered.filter(e=>locationStatus(e)==="fixed").map(e=>e.booth_id));
     document.querySelectorAll(".booth").forEach(node => {
       const id=node.dataset.boothId;
       const hasFilter = state.query || state.category !== "すべて" || state.selectedTags.size || state.viewMode !== "all";
@@ -314,19 +333,33 @@
       const mark=node.querySelector(".status-mark");
       if (mark) mark.textContent = state.visited.has(id) ? "✓" : (state.favorites.has(id) ? "♥" : "");
     });
+    document.querySelectorAll("[data-facility-label]").forEach(node => node.classList.toggle("area-selected", !!state.selectedArea && node.dataset.facilityLabel === state.selectedArea));
   }
-  function selectBooth(id, openDetail=true, focusMap=false) {
+  function selectLocation(id, openDetail=true, focusMap=false) {
     const exhibitor = state.exhibitors.find(e=>e.booth_id===id); if (!exhibitor) return;
-    state.selectedBooth=id; updateMapState();
-    if (focusMap) focusBooth(id);
+    state.selectedBooth = locationStatus(exhibitor) === "fixed" ? id : null;
+    state.selectedArea = locationStatus(exhibitor) === "area" ? locationArea(exhibitor) : "";
+    updateMapState();
+    if (focusMap) focusExhibitor(exhibitor);
     if (openDetail) showDetail(exhibitor);
+  }
+  function focusExhibitor(e) {
+    if (locationStatus(e) === "fixed") return focusBooth(e.booth_id);
+    if (locationStatus(e) === "area") return focusArea(locationArea(e));
+    toast("この出店者は現在、出店場所未定です");
+  }
+  function focusArea(label) {
+    const f=findFacilityByLabel(label); if (!f) return toast("指定エリアをマップ上で見つけられませんでした");
+    focusPoint(f.x+f.width/2, f.y+f.height/2, 1.45);
   }
   function focusBooth(id) {
     const b = (state.venue.booths||[]).find(x=>x.id===id); if (!b) return;
+    focusPoint(b.x+b.width/2,b.y+b.height/2,1.55);
+  }
+  function focusPoint(x,y,minScale=1.25) {
     const rect=els.mapViewport.getBoundingClientRect(); const [svgW,svgH]=rotatedSize();
-    const p=rotatePoint(b.x+b.width/2,b.y+b.height/2);
-    state.scale=Math.max(1.25, Math.min(2.2, rect.width/520));
-    // SVGのpreserveAspectRatio="xMidYMid meet"による余白も含めてフォーカス位置を計算する。
+    const p=rotatePoint(x,y);
+    state.scale=Math.max(minScale, Math.min(2.2, rect.width/520));
     const baseScale=Math.min(rect.width/svgW, rect.height/svgH);
     const offsetX=(rect.width-svgW*baseScale)/2, offsetY=(rect.height-svgH*baseScale)/2;
     state.tx=rect.width/2-state.scale*(offsetX+p.x*baseScale);
@@ -336,16 +369,17 @@
   }
   function showDetail(e) {
     const fav = state.favorites.has(e.booth_id), visited = state.visited.has(e.booth_id);
-    els.detailContent.innerHTML = `<div class="detail-booth">BOOTH ${escapeHtml(e.booth_id)}</div><h2 class="detail-title">${escapeHtml(e.shop_name)}</h2>
+    const locateButton = canLocate(e) ? '<button id="detailLocateBtn" type="button">マップで見る</button>' : '';
+    els.detailContent.innerHTML = `<div class="detail-booth">${escapeHtml(locationLabel(e))}</div><h2 class="detail-title">${escapeHtml(e.shop_name)}</h2>
       <div class="detail-status">${statusBadges(e.booth_id) || '<span class="status-badge neutral">未登録</span>'}</div>
       <div class="tags">${visualTags(e)}</div>
       <p class="detail-description">${escapeHtml(e.description)}</p>${e.note?`<p><strong>メモ：</strong>${escapeHtml(e.note)}</p>`:""}
       <div class="detail-links favorite-actions"><button id="detailFavBtn" class="${fav?"primary":""}" type="button">${fav?"♥ 行きたい登録済み":"♡ 行きたい"}</button><button id="detailVisitedBtn" class="${visited?"visited-primary":""}" type="button">${visited?"✓ 行った":"○ 行ったにする"}</button></div>
-      <div class="detail-links"><button id="detailLocateBtn" type="button">マップで見る</button><button id="detailShareBtn" type="button">共有URL</button>${instagramLinks(e)}${urlOk(e.shop_url)?`<a href="${escapeHtml(e.shop_url)}" target="_blank" rel="noopener noreferrer">ショップ ↗</a>`:""}</div>`;
+      <div class="detail-links">${locateButton}<button id="detailShareBtn" type="button">共有URL</button>${instagramLinks(e)}${urlOk(e.shop_url)?`<a href="${escapeHtml(e.shop_url)}" target="_blank" rel="noopener noreferrer">ショップ ↗</a>`:""}</div>`;
     els.detailSheet.hidden=false; els.detailBackdrop.hidden=false;
     $("detailFavBtn").addEventListener("click",()=>{toggleFavorite(e.booth_id,false); showDetail(e);});
     $("detailVisitedBtn").addEventListener("click",()=>{toggleVisited(e.booth_id,false); showDetail(e);});
-    $("detailLocateBtn").addEventListener("click",()=>focusBooth(e.booth_id));
+    if ($("detailLocateBtn")) $("detailLocateBtn").addEventListener("click",()=>focusExhibitor(e));
     $("detailShareBtn").addEventListener("click",()=>shareBooth(e.booth_id));
   }
   function closeDetail(){ els.detailSheet.hidden=true; els.detailBackdrop.hidden=true; }
@@ -371,7 +405,7 @@
     const params = new URL(window.location.href).searchParams;
     const eventId = params.get("event"), id = params.get("booth");
     if (!id || eventId !== state.currentEventId) return;
-    if (state.exhibitors.some(e=>e.booth_id===id)) selectBooth(id, true, true);
+    if (state.exhibitors.some(e=>e.booth_id===id)) selectLocation(id, true, true);
     else toast(`ブース ${id} は見つかりませんでした`);
   }
 

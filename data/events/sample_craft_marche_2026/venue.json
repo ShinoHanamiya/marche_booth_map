@@ -37,6 +37,14 @@
       "y": 545,
       "width": 100,
       "height": 70
+    },
+    {
+      "type": "facility",
+      "label": "キッチンカーエリア",
+      "x": 760,
+      "y": 90,
+      "width": 170,
+      "height": 130
     }
   ],
   "aisles": [

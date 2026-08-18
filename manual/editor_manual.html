@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Marche Booth Map v1.10 編集者マニュアル</title>
+<title>Marche Booth Map v1.11 編集者マニュアル</title>
 <style>body{font-family:"Yu Gothic UI","Meiryo",sans-serif;line-height:1.85;color:#433840;background:#fffafc;margin:0}.wrap{max-width:1000px;margin:auto;padding:36px 20px 70px}h1,h2,h3{color:#7c4d60}h1{border-bottom:3px solid #efd4df;padding-bottom:12px}h2{margin-top:38px;border-left:5px solid #d883a5;padding-left:12px}code,pre{font-family:Consolas,monospace;background:#f7eff3}code{padding:2px 5px;border-radius:5px}pre{padding:14px;overflow:auto;border-radius:12px;border:1px solid #eadde4}table{width:100%;border-collapse:collapse}th,td{border:1px solid #e3d4dc;padding:9px;vertical-align:top}th{background:#f8eaf0}.note{background:#fff1f6;border:1px solid #efc9d8;padding:14px;border-radius:12px}.ok{background:#f1f7f4;border:1px solid #cfe4da;padding:14px;border-radius:12px}.step{background:white;border:1px solid #eadde4;border-radius:14px;padding:15px;margin:12px 0}a{color:#a34c70}</style></head>
 <body><div class="wrap">
-<h1>Marche Booth Map v1.10 編集者マニュアル</h1>
+<h1>Marche Booth Map v1.11 編集者マニュアル</h1>
 <p>複数マルシェの管理と、各会場レイアウト・出店者情報の編集方法を説明します。</p>
 <div class="note"><strong>公開時の注意：</strong>本アプリは有志が作成した非商用アプリです。掲載しているお店情報・リンク等には誤りや変更が含まれる場合があります。最新・正確な情報は各出店者・主催者の公式情報をご確認ください。</div>
 
@@ -11,12 +11,12 @@
 <div class="step"><code>start_editor.bat</code> をダブルクリックします。通常は <code>http://localhost:8000/event_manager.html</code> が開きます。</div>
 <p>JSONを読み込むため、HTMLファイルの直接ダブルクリックではなくローカルHTTPサーバーから利用してください。</p>
 
-<h2>2. v1.10の編集フロー</h2>
+<h2>2. v1.11の編集フロー</h2>
 <ol><li>イベント管理画面を開く</li><li>プロジェクトフォルダを接続する（推奨）</li><li>イベントを新規作成・複製・選択する</li><li>イベント情報を編集する</li><li>「会場レイアウト編集」からEditorを開く</li><li>ブース・設備・出店者を編集する</li><li>ローカル表示を確認する</li><li>GitHubへcommit / pushする</li></ol>
 
 <h2>3. プロジェクトフォルダ接続</h2>
 <p>Chrome / Edgeでは、イベント管理画面の「プロジェクトフォルダを接続」からローカルファイルへ直接保存できます。</p>
-<ol><li>ボタンを押します。</li><li>展開した <code>marche_booth_map_v1_10</code> フォルダそのものを選択します。</li><li>ブラウザのアクセス許可を承認します。</li><li>表示が「接続中」になれば完了です。</li></ol>
+<ol><li>ボタンを押します。</li><li>展開した <code>marche_booth_map_v1_11</code> フォルダそのものを選択します。</li><li>ブラウザのアクセス許可を承認します。</li><li>表示が「接続中」になれば完了です。</li></ol>
 <div class="note">対応していないブラウザではJSONダウンロード方式を利用できます。GitHub Pages上のファイルを直接書き換える機能ではありません。編集対象はユーザーが選択したローカルフォルダです。</div>
 
 <h2>4. 新規イベント</h2>
@@ -61,7 +61,16 @@
 <ul><li>会場サイズ：小1000×700、中1600×1000、大2200×1400のプリセット</li><li>配置物へ自動フィット</li><li>端で自動拡張</li><li>PNG/JPG/WebPを背景画像として読込</li><li>背景・通路・設備・ブースの表示/非表示・ロック</li></ul>
 <p>背景画像は編集用の下敷きで、venue.jsonには埋め込みません。</p>
 
-<h2>14. 出店者編集</h2>
+
+<h2>14. 位置不定ブース / 出店者</h2>
+<p>v1.11では出店場所を3種類から選べます。</p>
+<table><tr><th>状態</th><th>用途</th><th>View</th></tr>
+<tr><td><code>fixed</code></td><td>A01など位置が確定した通常ブース</td><td>ブース位置へ移動</td></tr>
+<tr><td><code>area</code></td><td>キッチンカーエリア等、エリアのみ確定</td><td>同名の設備エリアを強調して移動</td></tr>
+<tr><td><code>undecided</code></td><td>出店場所がまだ決まっていない</td><td>「出店場所未定」と表示</td></tr></table>
+<p>「＋場所未定」で非固定出店者を追加できます。<strong>ブースID / 管理ID</strong> はお気に入りや共有URLで識別するため、イベント内で重複しない値（例: <code>K01</code>、<code>U01</code>）を設定してください。</p>
+<p><code>area</code> を使う場合は、設備編集で「キッチンカーエリア」などの領域を作り、出店者の「エリア名」に同じ表示名を入力してください。</p>
+<h2>15. 出店者編集</h2>
 <p>ショップ名、カテゴリ、検索キーワード、タグ、説明、Instagram URL、ショップURL、メモを登録できます。Instagram URLは1行1URLで複数登録できます。</p>
 
 <h2>15. 自動保存</h2>
@@ -78,7 +87,7 @@ data/events/&lt;event_id&gt;/exhibitors.json</pre>
 <ol><li>ローカルファイルを編集</li><li><code>start_local_server.bat</code> でViewを確認</li><li>GitHubへcommit / push</li><li>公開URLをCtrl+F5等で再読込して確認</li></ol>
 
 <h2>18. トラブル対処</h2>
-<table><tr><th>症状</th><th>対処</th></tr><tr><td>フォルダ接続できない</td><td>Chrome / Edgeを使用し、プロジェクトルートを選択してください。</td></tr><tr><td>新しいイベントがViewに出ない</td><td><code>data/events.json</code> に登録されているか確認してください。フォルダ接続中は保存時に自動更新します。</td></tr><tr><td>Editorで別イベントが開く</td><td>URLの <code>?event=...</code> を確認してください。</td></tr><tr><td>出店者詳細が出ない</td><td>venue.jsonのブースIDとexhibitors.jsonのbooth_idを一致させてください。</td></tr><tr><td>GitHubへ反映されない</td><td>ローカル変更をcommit / pushしたか、ブラウザキャッシュが残っていないか確認してください。</td></tr></table>
+<table><tr><th>症状</th><th>対処</th></tr><tr><td>フォルダ接続できない</td><td>Chrome / Edgeを使用し、プロジェクトルートを選択してください。</td></tr><tr><td>新しいイベントがViewに出ない</td><td><code>data/events.json</code> に登録されているか確認してください。フォルダ接続中は保存時に自動更新します。</td></tr><tr><td>Editorで別イベントが開く</td><td>URLの <code>?event=...</code> を確認してください。</td></tr><tr><td>出店者詳細が出ない</td><td>固定ブースの場合はvenue.jsonのブースIDとexhibitors.jsonのbooth_idを一致させてください。area / undecided は物理ブース不要です。</td></tr><tr><td>GitHubへ反映されない</td><td>ローカル変更をcommit / pushしたか、ブラウザキャッシュが残っていないか確認してください。</td></tr></table>
 
 <p><a href="../event_manager.html">← イベント管理へ戻る</a> / <a href="viewer_manual.html">閲覧者マニュアル</a></p>
 </div></body></html>

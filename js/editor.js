@@ -8,6 +8,7 @@
     eventMeta: null,
     venue: null,
     exhibitors: [],
+    exhibitorIndex: null,
     selection: null,
     multiBooths: new Set(),
     snap: true,
@@ -36,7 +37,7 @@
       eventId: $("eventId"), eventName: $("eventNameInput"), eventDate: $("eventDate"), eventEndDate: $("eventEndDate"), eventTime: $("eventTime"), eventStatus: $("eventStatus"), eventVenue: $("eventVenue"), eventOfficialUrl: $("eventOfficialUrl"), eventDescription: $("eventDescription"),
       venueWidth: $("venueWidth"), venueHeight: $("venueHeight"), venueOriginX: $("venueOriginX"), venueOriginY: $("venueOriginY"), venueSizeBadge: $("venueSizeBadge"), fitMargin: $("fitMargin"), autoExpandToggle: $("autoExpandToggle"),
       boothList: $("boothList"), boothCount: $("boothCount"), boothId: $("boothId"), boothNewId: $("boothNewId"), boothX: $("boothX"), boothY: $("boothY"), boothWidth: $("boothWidth"), boothHeight: $("boothHeight"), boothBadge: $("selectedBoothBadge"),
-      exhibitorSelect: $("exhibitorSelect"), shopName: $("shopName"), categories: $("categories"), keywords: $("keywords"), tags: $("tags"), description: $("description"), instagramUrl: $("instagramUrl"), shopUrl: $("shopUrl"), note: $("note"),
+      exhibitorSelect: $("exhibitorSelect"), locationStatus: $("locationStatus"), exhibitorBoothId: $("exhibitorBoothId"), locationArea: $("locationArea"), locationAreaWrap: $("locationAreaWrap"), facilityAreaList: $("facilityAreaList"), shopName: $("shopName"), categories: $("categories"), keywords: $("keywords"), tags: $("tags"), description: $("description"), instagramUrl: $("instagramUrl"), shopUrl: $("shopUrl"), note: $("note"),
       facilityList: $("facilityList"), facilityBadge: $("selectedFacilityBadge"), facilityType: $("facilityType"), facilityLabel: $("facilityLabel"), facilityX: $("facilityX"), facilityY: $("facilityY"), facilityWidth: $("facilityWidth"), facilityHeight: $("facilityHeight"),
       aisleList: $("aisleList"), aisleBadge: $("selectedAisleBadge"), aisleX: $("aisleX"), aisleY: $("aisleY"), aisleWidth: $("aisleWidth"), aisleHeight: $("aisleHeight"),
       gridPrefix: $("gridPrefix"), gridStartNo: $("gridStartNo"), gridRows: $("gridRows"), gridCols: $("gridCols"), gridWidth: $("gridWidth"), gridHeight: $("gridHeight"), gridGapX: $("gridGapX"), gridGapY: $("gridGapY"), gridStartX: $("gridStartX"), gridStartY: $("gridStartY"),
@@ -56,7 +57,7 @@
       if (!mr.ok || !vr.ok || !er.ok) throw new Error("イベントデータを読み込めませんでした");
       state.eventMeta = normalizeEventMeta(await mr.json());
       state.venue = normalizeVenue(await vr.json());
-      state.exhibitors = await er.json();
+      state.exhibitors = normalizeExhibitors(await er.json());
       state.history = []; state.future = []; state.clipboard = null;
       resetToFirstBooth();
       state.dirty = false;
@@ -79,6 +80,15 @@
     return v;
   }
 
+  function normalizeExhibitors(list) {
+    return (Array.isArray(list) ? list : []).map((e, i) => ({
+      ...e,
+      booth_id: String(e?.booth_id || `U${String(i+1).padStart(2,"0")}`).trim(),
+      location_status: ["fixed","area","undecided"].includes(e?.location_status) ? e.location_status : "fixed",
+      location_area: String(e?.location_area || e?.area_label || "").trim()
+    }));
+  }
+
   function normalizeEventMeta(m) {
     return {
       event_id: m?.event_id || cfg.editorEventId,
@@ -97,6 +107,7 @@
     const b = state.venue?.booths?.[0];
     state.selection = b ? { kind: "booth", id: b.id } : null;
     state.multiBooths = new Set(b ? [b.id] : []);
+    state.exhibitorIndex = b ? state.exhibitors.findIndex(e => e.booth_id === b.id) : (state.exhibitors.length ? 0 : null);
   }
 
   function bindEvents() {
@@ -123,7 +134,7 @@
     }, "venue.json"));
     $("exhibitorFileInput").addEventListener("change", e => readJsonFile(e.target.files[0], data => {
       if (!Array.isArray(data)) throw new Error("出店者データは配列である必要があります");
-      state.exhibitors = data; markDirty(); renderAll();
+      state.exhibitors = normalizeExhibitors(data); markDirty(); renderAll();
     }, "exhibitors.json"));
 
     $("downloadEventBtn").addEventListener("click", () => downloadJson("event.json", state.eventMeta));
@@ -156,6 +167,7 @@
     $("duplicateAisleBtn").addEventListener("click", duplicateAisle);
     $("deleteAisleBtn").addEventListener("click", deleteAisle);
     $("addExhibitorBtn").addEventListener("click", addExhibitor);
+    $("addUnlocatedExhibitorBtn").addEventListener("click", addUnlocatedExhibitor);
     $("deleteExhibitorBtn").addEventListener("click", deleteExhibitor);
 
     $("snapToggleBtn").addEventListener("click", () => { state.snap = !state.snap; renderSnapButton(); });
@@ -168,11 +180,20 @@
     [els.facilityType, els.facilityLabel, els.facilityX, els.facilityY, els.facilityWidth, els.facilityHeight].forEach(el => el.addEventListener("input", syncFacilityForm));
     [els.aisleX, els.aisleY, els.aisleWidth, els.aisleHeight].forEach(el => el.addEventListener("input", syncAisleForm));
     els.exhibitorSelect.addEventListener("change", () => {
-      const id = els.exhibitorSelect.value;
-      if (id) selectSingleBooth(id); else clearSelection();
+      const value = els.exhibitorSelect.value;
+      if (!value) { state.exhibitorIndex = null; renderAll(); return; }
+      if (value.startsWith("e:")) {
+        state.exhibitorIndex = Number(value.slice(2));
+        const e = state.exhibitors[state.exhibitorIndex];
+        if (e && e.location_status === "fixed" && state.venue.booths.some(b => b.id === e.booth_id)) selectSingleBooth(e.booth_id, false);
+        else { state.selection = null; state.multiBooths.clear(); }
+      } else if (value.startsWith("b:")) {
+        selectSingleBooth(value.slice(2));
+      }
       renderAll();
     });
-    [els.shopName, els.categories, els.keywords, els.tags, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(el => el.addEventListener("input", syncExhibitorForm));
+    [els.locationStatus, els.exhibitorBoothId, els.locationArea, els.shopName, els.categories, els.keywords, els.tags, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(el => el.addEventListener("input", syncExhibitorForm));
+    els.locationStatus.addEventListener("change", syncExhibitorForm);
 
     els.map.addEventListener("pointermove", mapPointerMove);
     els.map.addEventListener("click", e => {
@@ -345,10 +366,14 @@
   }
 
   function renderExhibitorSelect() {
-    const selected = state.selection?.kind === "booth" ? state.selection.id : "";
-    els.exhibitorSelect.innerHTML = '<option value="">-- ブースを選択 --</option>' + state.venue.booths.map(b => `<option value="${esc(b.id)}" ${b.id === selected ? "selected" : ""}>${esc(b.id)}${state.exhibitors.some(e => e.booth_id === b.id) ? " - 登録済" : ""}</option>`).join("");
+    const existing = state.exhibitors.map((e,i) => `<option value="e:${i}" ${state.exhibitorIndex===i?"selected":""}>${esc(e.booth_id)} - ${esc(e.shop_name || "名称未入力")} [${locationStatusLabel(e.location_status)}]</option>`);
+    const used = new Set(state.exhibitors.filter(e=>e.location_status==="fixed").map(e=>e.booth_id));
+    const emptyBooths = state.venue.booths.filter(b=>!used.has(b.id)).map(b=>`<option value="b:${esc(b.id)}">${esc(b.id)} - 未登録ブース</option>`);
+    els.exhibitorSelect.innerHTML = '<option value="">-- 出店者を選択 --</option>' + existing.join("") + emptyBooths.join("");
+    if (els.facilityAreaList) els.facilityAreaList.innerHTML = state.venue.facilities.map(f=>f.label).filter(Boolean).map(x=>`<option value="${esc(x)}"></option>`).join("");
   }
 
+  function locationStatusLabel(status) { return ({fixed:"固定",area:"エリア",undecided:"未定"})[status] || "固定"; }
 
   function getInstagramUrls(e) {
     if (!e) return [];
@@ -361,10 +386,18 @@
   }
 
   function renderExhibitorForm() {
-    const e = getExhibitor(), disabled = !getBooth();
-    [els.shopName, els.categories, els.keywords, els.tags, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(x => x.disabled = disabled);
-    els.shopName.value = e?.shop_name || ""; els.categories.value = (e?.categories || []).join(", "); els.keywords.value = (e?.keywords || []).join(", "); els.tags.value = (e?.tags || []).join(", ");
-    els.description.value = e?.description || ""; els.instagramUrl.value = getInstagramUrls(e).join("\n"); els.shopUrl.value = e?.shop_url || ""; els.note.value = e?.note || "";
+    const e = getExhibitor(), disabled = !e && !getBooth();
+    [els.locationStatus, els.exhibitorBoothId, els.locationArea, els.shopName, els.categories, els.keywords, els.tags, els.description, els.instagramUrl, els.shopUrl, els.note].forEach(x => x.disabled = disabled);
+    if (!e) {
+      els.locationStatus.value = "fixed"; els.exhibitorBoothId.value = getBooth()?.id || ""; els.locationArea.value = "";
+      els.shopName.value = ""; els.categories.value = ""; els.keywords.value = ""; els.tags.value = ""; els.description.value = ""; els.instagramUrl.value = ""; els.shopUrl.value = ""; els.note.value = "";
+      if (els.locationAreaWrap) els.locationAreaWrap.hidden = true;
+      return;
+    }
+    els.locationStatus.value = e.location_status || "fixed"; els.exhibitorBoothId.value = e.booth_id || ""; els.locationArea.value = e.location_area || "";
+    if (els.locationAreaWrap) els.locationAreaWrap.hidden = e.location_status !== "area";
+    els.shopName.value = e.shop_name || ""; els.categories.value = (e.categories || []).join(", "); els.keywords.value = (e.keywords || []).join(", "); els.tags.value = (e.tags || []).join(", ");
+    els.description.value = e.description || ""; els.instagramUrl.value = getInstagramUrls(e).join("\n"); els.shopUrl.value = e.shop_url || ""; els.note.value = e.note || "";
   }
 
   function renderFacilityList() {
@@ -447,11 +480,21 @@
   }
 
   function syncExhibitorForm() {
-    const b = getBooth(); if (!b) return;
-    let e = getExhibitor(); if (!e) { e = blankExhibitor(b.id); state.exhibitors.push(e); }
+    let e = getExhibitor();
+    const b = getBooth();
+    if (!e) {
+      if (!b) return;
+      e = blankExhibitor(b.id); state.exhibitors.push(e); state.exhibitorIndex = state.exhibitors.length - 1;
+    }
+    const newId = (els.exhibitorBoothId.value || e.booth_id || nextUnlocatedId()).trim();
+    if (newId !== e.booth_id && state.exhibitors.some((x,i)=>i!==state.exhibitorIndex && x.booth_id===newId)) return toast("同じブースID / 管理IDが存在します");
+    e.booth_id = newId;
+    e.location_status = els.locationStatus.value || "fixed";
+    e.location_area = e.location_status === "area" ? els.locationArea.value.trim() : "";
     e.shop_name = els.shopName.value.trim(); e.categories = splitCsv(els.categories.value); e.keywords = splitCsv(els.keywords.value); e.tags = splitCsv(els.tags.value); e.description = els.description.value;
     e.instagram_urls = splitLines(els.instagramUrl.value); e.instagram_url = e.instagram_urls[0] || ""; e.shop_url = els.shopUrl.value.trim(); e.note = els.note.value;
-    markDirty(); validateData(); renderExhibitorSelect();
+    if (e.location_status === "fixed" && state.venue.booths.some(x=>x.id===e.booth_id)) { state.selection={kind:"booth",id:e.booth_id}; state.multiBooths=new Set([e.booth_id]); }
+    markDirty(); validateData(); renderExhibitorSelect(); renderExhibitorForm();
   }
 
   function addBooth() {
@@ -559,16 +602,29 @@
 
   function addExhibitor() {
     checkpoint();
-    const b = getBooth(); if (!b) return toast("先にブースを選択してください");
-    if (getExhibitor()) return toast("このブースには既に出店者があります");
-    state.exhibitors.push(blankExhibitor(b.id)); markDirty(); renderAll();
+    const b = getBooth();
+    if (b && state.exhibitors.some(e=>e.location_status==="fixed" && e.booth_id===b.id)) return toast("このブースには既に出店者があります");
+    const e = blankExhibitor(b ? b.id : nextUnlocatedId(), b ? "fixed" : "undecided");
+    state.exhibitors.push(e); state.exhibitorIndex = state.exhibitors.length - 1;
+    if (!b) { state.selection=null; state.multiBooths.clear(); }
+    markDirty(); renderAll(); toast(b ? `${b.id} の出店者を追加しました` : "場所未定の出店者を追加しました");
+  }
+
+  function addUnlocatedExhibitor() {
+    checkpoint();
+    const e=blankExhibitor(nextUnlocatedId(), "undecided");
+    state.exhibitors.push(e); state.exhibitorIndex=state.exhibitors.length-1; state.selection=null; state.multiBooths.clear();
+    markDirty(); renderAll(); toast("場所未定の出店者を追加しました");
   }
 
   function deleteExhibitor() {
     checkpoint();
-    const b = getBooth(), e = getExhibitor(); if (!b || !e) return;
-    if (!confirm(`${b.id} の出店者情報を削除しますか？`)) return;
-    state.exhibitors = state.exhibitors.filter(x => x.booth_id !== b.id); markDirty(); renderAll();
+    const e = getExhibitor(); if (!e) return;
+    if (!confirm(`${e.shop_name || e.booth_id} の出店者情報を削除しますか？`)) return;
+    const idx=state.exhibitorIndex;
+    if (idx!=null && state.exhibitors[idx]===e) state.exhibitors.splice(idx,1); else state.exhibitors=state.exhibitors.filter(x=>x!==e);
+    state.exhibitorIndex = state.exhibitors.length ? Math.min(idx ?? 0, state.exhibitors.length-1) : null;
+    markDirty(); renderAll();
   }
 
   function toggleMultiBooth(id) {
@@ -589,12 +645,13 @@
     renderAll();
   }
 
-  function selectSingleBooth(id) {
+  function selectSingleBooth(id, syncExhibitor = true) {
     state.selection = { kind: "booth", id }; state.multiBooths = new Set([id]);
+    if (syncExhibitor) { const i=state.exhibitors.findIndex(e=>e.location_status==="fixed" && e.booth_id===id); state.exhibitorIndex=i>=0?i:null; }
   }
 
   function selectOther(kind, index) {
-    state.selection = { kind, index }; state.multiBooths.clear();
+    state.selection = { kind, index }; state.multiBooths.clear(); state.exhibitorIndex=null;
   }
 
   function clearSelection(doRender = true) {
@@ -880,9 +937,12 @@
     if (!state.venue) return false;
     const messages = [], booths = state.venue.booths, ids = booths.map(b => b.id), dup = [...new Set(ids.filter((id, i) => ids.indexOf(id) !== i))];
     if (dup.length) messages.push(["error", `重複ブース番号: ${dup.join(", ")}`]);
-    const unknown = state.exhibitors.filter(e => !ids.includes(e.booth_id)); if (unknown.length) messages.push(["error", `存在しないブースを参照: ${unknown.map(e => e.booth_id).join(", ")}`]);
+    const unknown = state.exhibitors.filter(e => (e.location_status || "fixed") === "fixed" && !ids.includes(e.booth_id)); if (unknown.length) messages.push(["error", `固定ブースなのに存在しないブースを参照: ${unknown.map(e => e.booth_id).join(", ")}`]);
+    const duplicateExIds=[...new Set(state.exhibitors.map(e=>e.booth_id).filter((id,i,a)=>id && a.indexOf(id)!==i))]; if(duplicateExIds.length) messages.push(["error", `出店者のブースID / 管理ID重複: ${duplicateExIds.join(", ")}`]);
     const emptyShop = state.exhibitors.filter(e => !e.shop_name?.trim()); if (emptyShop.length) messages.push(["warn", `ショップ名未入力: ${emptyShop.map(e => e.booth_id).join(", ")}`]);
-    const noEx = booths.filter(b => !state.exhibitors.some(e => e.booth_id === b.id)); if (noEx.length) messages.push(["warn", `出店者未登録ブース: ${noEx.map(b => b.id).join(", ")}`]);
+    const noEx = booths.filter(b => !state.exhibitors.some(e => (e.location_status || "fixed") === "fixed" && e.booth_id === b.id)); if (noEx.length) messages.push(["warn", `出店者未登録ブース: ${noEx.map(b => b.id).join(", ")}`]);
+    const areaNames=new Set(state.venue.facilities.map(f=>String(f.label||"").trim()).filter(Boolean));
+    const unknownAreas=state.exhibitors.filter(e=>e.location_status==="area" && e.location_area && !areaNames.has(e.location_area)); if(unknownAreas.length) messages.push(["warn", `マップ上に同名設備がないエリア: ${unknownAreas.map(e=>`${e.booth_id}:${e.location_area}`).join(", ")}`]);
     const badBooths = booths.filter(b => !b.id?.trim() || b.width < 30 || b.height < 30); if (badBooths.length) messages.push(["error", `ブース番号またはサイズを確認してください: ${badBooths.length}件`]);
     const badFacilities = state.venue.facilities.filter(f => !f.label?.trim() || f.width <= 0 || f.height <= 0); if (badFacilities.length) messages.push(["warn", `設備の表示名またはサイズを確認してください: ${badFacilities.length}件`]);
     const badAisles = state.venue.aisles.filter(a => a.width <= 0 || a.height <= 0); if (badAisles.length) messages.push(["error", `通路サイズが不正です: ${badAisles.length}件`]);
@@ -903,7 +963,7 @@
   function restoreDraft() {
     try {
       const raw = localStorage.getItem(cfg.editorDraftKey); if (!raw) return toast("自動保存データはありません");
-      const d = JSON.parse(raw); state.eventMeta = normalizeEventMeta(d.eventMeta || {}); state.venue = normalizeVenue(d.venue); state.exhibitors = d.exhibitors || []; resetToFirstBooth(); state.dirty = true; renderAll(); toast("自動保存を復元しました");
+      const d = JSON.parse(raw); state.eventMeta = normalizeEventMeta(d.eventMeta || {}); state.venue = normalizeVenue(d.venue); state.exhibitors = normalizeExhibitors(d.exhibitors || []); resetToFirstBooth(); state.dirty = true; renderAll(); toast("自動保存を復元しました");
     } catch { toast("自動保存の復元に失敗しました"); }
   }
   function downloadJson(name, data) {
@@ -926,10 +986,14 @@
   function getFacility() { return state.selection?.kind === "facility" ? state.venue.facilities[state.selection.index] || null : null; }
   function getAisle() { return state.selection?.kind === "aisle" ? state.venue.aisles[state.selection.index] || null : null; }
   function getMultiBooths() { return state.venue.booths.filter(b => state.multiBooths.has(b.id)); }
-  function getExhibitor() { const b = getBooth(); return b ? state.exhibitors.find(e => e.booth_id === b.id) || null : null; }
+  function getExhibitor() {
+    if (state.exhibitorIndex != null && state.exhibitors[state.exhibitorIndex]) return state.exhibitors[state.exhibitorIndex];
+    const b = getBooth(); return b ? state.exhibitors.find(e => (e.location_status || "fixed") === "fixed" && e.booth_id === b.id) || null : null;
+  }
   function isPrimary(kind, key) { if (!state.selection || state.selection.kind !== kind) return false; return kind === "booth" ? state.selection.id === key : state.selection.index === key; }
   function pruneMultiSelection() { const ids = new Set(state.venue.booths.map(b => b.id)); state.multiBooths = new Set([...state.multiBooths].filter(id => ids.has(id))); }
-  function blankExhibitor(id) { return { booth_id: id, shop_name: "", categories: [], description: "", keywords: [], tags: [], instagram_urls: [], instagram_url: "", shop_url: "", note: "" }; }
+  function blankExhibitor(id, status="fixed") { return { booth_id: id, location_status: status, location_area: "", shop_name: "", categories: [], description: "", keywords: [], tags: [], instagram_urls: [], instagram_url: "", shop_url: "", note: "" }; }
+  function nextUnlocatedId() { const used=new Set(state.exhibitors.map(e=>e.booth_id)); let n=1,id; do{id=`U${String(n++).padStart(2,"0")}`;}while(used.has(id)); return id; }
 
   function nextUniqueId(prefix, start) {
     const used = new Set(state.venue.booths.map(b => b.id)); let n = start, id;

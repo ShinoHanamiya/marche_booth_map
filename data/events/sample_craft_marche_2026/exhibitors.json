@@ -22,7 +22,9 @@
     "tags": [
       "限定品あり",
       "ドール撮影OK"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
   },
   {
     "booth_id": "A02",
@@ -46,7 +48,9 @@
     "tags": [
       "ぬい撮りOK",
       "キャッシュレス"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
   },
   {
     "booth_id": "A03",
@@ -70,7 +74,9 @@
     "tags": [
       "新作あり",
       "ギフト向け"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
   },
   {
     "booth_id": "A04",
@@ -92,7 +98,9 @@
     ],
     "tags": [
       "数量限定"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
   },
   {
     "booth_id": "B01",
@@ -116,7 +124,9 @@
     "tags": [
       "写真作品",
       "通販あり"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
   },
   {
     "booth_id": "B02",
@@ -140,7 +150,9 @@
     "tags": [
       "試着見本あり",
       "ドール"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
   },
   {
     "booth_id": "B03",
@@ -164,7 +176,9 @@
     "tags": [
       "テイクアウト",
       "キャッシュレス"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
   },
   {
     "booth_id": "B04",
@@ -188,6 +202,53 @@
     "tags": [
       "ワークショップ",
       "随時受付"
-    ]
+    ],
+    "location_status": "fixed",
+    "location_area": ""
+  },
+  {
+    "booth_id": "K01",
+    "location_status": "area",
+    "location_area": "キッチンカーエリア",
+    "shop_name": "Sunny Crepe Truck",
+    "categories": [
+      "フード",
+      "キッチンカー"
+    ],
+    "description": "クレープとドリンクのキッチンカーです。個別の駐車位置は当日決定します。",
+    "keywords": [
+      "クレープ",
+      "ドリンク",
+      "キッチンカー"
+    ],
+    "tags": [
+      "テイクアウト"
+    ],
+    "instagram_urls": [],
+    "instagram_url": "",
+    "shop_url": "",
+    "note": "キッチンカーエリア内で営業予定"
+  },
+  {
+    "booth_id": "U01",
+    "location_status": "undecided",
+    "location_area": "",
+    "shop_name": "Mobile Coffee Stand",
+    "categories": [
+      "フード",
+      "ドリンク"
+    ],
+    "description": "コーヒースタンド。出店場所は当日決定予定です。",
+    "keywords": [
+      "コーヒー",
+      "ドリンク"
+    ],
+    "tags": [
+      "場所未定"
+    ],
+    "instagram_urls": [],
+    "instagram_url": "",
+    "shop_url": "",
+    "note": "出店場所未定"
   }
 ]
