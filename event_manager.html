@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f8eef3">
-  <title>Marche Booth Map Event Manager v1.9</title>
+  <title>Marche Booth Map Event Manager v1.10</title>
   <link rel="stylesheet" href="css/event_manager.css">
 </head>
 <body>
 <header class="manager-header">
   <div>
     <p class="eyebrow">EVENT MANAGER</p>
-    <h1>Marche Booth Map Event Manager <span>v1.9</span></h1>
+    <h1>Marche Booth Map Event Manager <span>v1.10</span></h1>
     <p>複数マルシェの作成・複製・編集・削除と、イベント情報の管理を行います。</p>
   </div>
   <div class="header-actions">
@@ -40,13 +40,14 @@
         <button id="newEventBtn" class="btn primary">＋ 新規イベント</button>
       </div>
       <div class="list-filters">
-        <input id="eventSearch" type="search" placeholder="イベント名・会場・IDで検索">
+        <input id="eventSearch" type="search" placeholder="イベント名・会場・地域・IDで検索">
         <select id="statusFilter">
           <option value="all">すべて</option>
           <option value="upcoming">開催予定</option>
           <option value="ongoing">開催中</option>
           <option value="past">過去</option>
         </select>
+        <select id="prefectureFilter"><option value="all">すべての都道府県</option></select>
       </div>
       <div id="eventList" class="event-list"></div>
     </aside>
@@ -81,6 +82,8 @@
               <option value="past">過去</option>
             </select>
           </label>
+          <label>都道府県<input id="prefecture" type="text" placeholder="群馬県"></label>
+          <label>市区町村<input id="city" type="text" placeholder="高崎市"></label>
           <label class="span-2">会場名<input id="venueName" type="text"></label>
           <label class="span-2">公式URL<input id="officialUrl" type="url" placeholder="https://..."></label>
           <label class="span-2">説明<textarea id="eventDescription" rows="5"></textarea></label>
@@ -103,12 +106,30 @@
     </section>
   </section>
 
+  <section class="panel template-panel">
+    <div class="section-title">
+      <div><h2>会場テンプレート</h2><p>よく使う会場レイアウトを再利用できます。</p></div>
+    </div>
+    <div class="template-grid">
+      <label>テンプレート
+        <select id="venueTemplateSelect"></select>
+      </label>
+      <div class="template-actions">
+        <button id="applyTemplateBtn" class="btn ghost" type="button">選択イベントへ適用</button>
+        <button id="saveTemplateBtn" class="btn ghost" type="button">現在の会場をテンプレート保存</button>
+        <button id="downloadTemplatesBtn" class="btn ghost" type="button">venue_templates.json保存</button>
+      </div>
+    </div>
+    <p id="templateDescription" class="template-description"></p>
+  </section>
+
   <section class="panel publish-panel">
     <div>
       <h2>公開データ</h2>
       <p>イベント追加・削除後は <code>events.json</code> も更新してください。フォルダ接続中は保存時に自動更新されます。</p>
     </div>
     <div class="publish-actions">
+      <button id="autoStatusBtn" class="btn ghost">日付から状態を自動更新</button>
       <button id="downloadEventsBtn" class="btn ghost">events.json保存</button>
       <button id="validateAllBtn" class="btn ghost">全イベント確認</button>
     </div>
@@ -124,9 +145,11 @@
     <label>作成方法
       <select id="newEventMode">
         <option value="blank">空の会場から作成</option>
+        <option value="template">会場テンプレートから作成</option>
         <option value="duplicate">選択中イベントを複製</option>
       </select>
     </label>
+    <label>会場テンプレート<select id="newEventTemplate"></select></label>
     <p class="dialog-hint">複製では会場レイアウトと出店者情報もコピーします。</p>
     <div class="dialog-actions">
       <button value="cancel" class="btn ghost">キャンセル</button>

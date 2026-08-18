@@ -6,5 +6,7 @@
   "time": "10:30-16:30",
   "venue_name": "Sample Civic Hall",
   "status": "upcoming",
-  "description": "複数イベント表示確認用のサンプルマルシェです。"
+  "description": "複数イベント表示確認用のサンプルマルシェです。",
+  "prefecture": "埼玉県",
+  "city": "さいたま市"
 }

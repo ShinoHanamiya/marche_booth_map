@@ -6,5 +6,7 @@
   "time": "10:00-16:00",
   "venue_name": "Sample Hall",
   "status": "upcoming",
-  "description": "花とハンドメイドをテーマにしたサンプルマルシェです。"
+  "description": "花とハンドメイドをテーマにしたサンプルマルシェです。",
+  "prefecture": "群馬県",
+  "city": "高崎市"
 }

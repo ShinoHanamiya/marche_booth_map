@@ -48,7 +48,7 @@
   }
 
   const state = {
-    events: [], currentEventId: null, eventInfo: null, eventStatusFilter: "all",
+    events: [], currentEventId: null, eventInfo: null, eventStatusFilter: "all", eventQuery: "", eventPrefecture: "all", eventDateFrom: "", eventDateTo: "",
     exhibitors: [], venue: null, filtered: [], category: "すべて", query: "", selectedTags: new Set(),
     viewMode: "all", favorites: new Set(), visited: new Set(),
     selectedBooth: null, rotation: 0,
@@ -57,7 +57,7 @@
 
   async function init() {
     Object.assign(els, {
-      eventPicker: $("eventPicker"), eventList: $("eventList"), appContent: $("appContent"),
+      eventPicker: $("eventPicker"), eventList: $("eventList"), appContent: $("appContent"), eventSearchInput: $("eventSearchInput"), eventPrefectureFilter: $("eventPrefectureFilter"), eventDateFrom: $("eventDateFrom"), eventDateTo: $("eventDateTo"), clearEventFiltersBtn: $("clearEventFiltersBtn"), eventResultSummary: $("eventResultSummary"),
       eventName: $("eventName"), eventMeta: $("eventMeta"), searchInput: $("searchInput"), categoryFilters: $("categoryFilters"), tagFilters: $("tagFilters"),
       resultCount: $("resultCount"), clearFiltersBtn: $("clearFiltersBtn"), exhibitorList: $("exhibitorList"), mapContent: $("mapContent"), mapRotationLayer: $("mapRotationLayer"),
       venueMap: $("venueMap"), mapViewport: $("mapViewport"), zoomInBtn: $("zoomInBtn"), zoomOutBtn: $("zoomOutBtn"), resetViewBtn: $("resetViewBtn"),
@@ -89,6 +89,23 @@
       document.querySelectorAll("[data-event-status]").forEach(x => x.classList.toggle("active", x === btn));
       renderEventPicker();
     }));
+    const prefectures = [...new Set(state.events.map(e => String(e.prefecture || "").trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ja"));
+    if (els.eventPrefectureFilter) {
+      els.eventPrefectureFilter.innerHTML = '<option value="all">すべての都道府県</option>' + prefectures.map(p => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join("");
+      els.eventPrefectureFilter.addEventListener("change", () => { state.eventPrefecture = els.eventPrefectureFilter.value; renderEventPicker(); });
+    }
+    if (els.eventSearchInput) els.eventSearchInput.addEventListener("input", () => { state.eventQuery = els.eventSearchInput.value; renderEventPicker(); });
+    if (els.eventDateFrom) els.eventDateFrom.addEventListener("change", () => { state.eventDateFrom = els.eventDateFrom.value; renderEventPicker(); });
+    if (els.eventDateTo) els.eventDateTo.addEventListener("change", () => { state.eventDateTo = els.eventDateTo.value; renderEventPicker(); });
+    if (els.clearEventFiltersBtn) els.clearEventFiltersBtn.addEventListener("click", () => {
+      state.eventQuery = ""; state.eventPrefecture = "all"; state.eventDateFrom = ""; state.eventDateTo = ""; state.eventStatusFilter = "all";
+      if (els.eventSearchInput) els.eventSearchInput.value = "";
+      if (els.eventPrefectureFilter) els.eventPrefectureFilter.value = "all";
+      if (els.eventDateFrom) els.eventDateFrom.value = "";
+      if (els.eventDateTo) els.eventDateTo.value = "";
+      document.querySelectorAll("[data-event-status]").forEach(x => x.classList.toggle("active", x.dataset.eventStatus === "all"));
+      renderEventPicker();
+    });
   }
   function statusLabel(status) {
     return ({ upcoming:"開催予定", ongoing:"開催中", past:"終了" })[status] || "イベント";
@@ -97,14 +114,33 @@
     if (!e.date_start) return "開催日未登録";
     return e.date_end && e.date_end !== e.date_start ? `${e.date_start} ～ ${e.date_end}` : e.date_start;
   }
+  function eventMatchesDate(e) {
+    const start = e.date_start || "";
+    const end = e.date_end || start;
+    if (state.eventDateFrom && end && end < state.eventDateFrom) return false;
+    if (state.eventDateTo && start && start > state.eventDateTo) return false;
+    return true;
+  }
   function renderEventPicker() {
     els.appContent.hidden = true;
     els.eventPicker.hidden = false;
-    const list = state.events.filter(e => state.eventStatusFilter === "all" || e.status === state.eventStatusFilter);
+    const q = normalize(state.eventQuery);
+    const list = state.events.filter(e => {
+      if (state.eventStatusFilter !== "all" && e.status !== state.eventStatusFilter) return false;
+      if (state.eventPrefecture !== "all" && e.prefecture !== state.eventPrefecture) return false;
+      if (!eventMatchesDate(e)) return false;
+      if (q) {
+        const hay = normalize([e.event_id,e.name,e.venue_name,e.prefecture,e.city,e.description].join(" "));
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    }).sort((a,b) => (a.date_start || "9999-99-99").localeCompare(b.date_start || "9999-99-99") || String(a.name||"").localeCompare(String(b.name||""),"ja"));
+    if (els.eventResultSummary) els.eventResultSummary.textContent = `${list.length} / ${state.events.length} イベント`;
     els.eventList.innerHTML = list.length ? list.map(e => {
       const u = new URL(window.location.href); u.search = ""; u.hash = ""; u.searchParams.set("event", e.event_id);
-      return `<article class="event-card"><span class="event-status-badge">${escapeHtml(statusLabel(e.status))}</span><div class="event-date">${escapeHtml(eventDateLabel(e))}</div><h2>${escapeHtml(e.name || e.event_id)}</h2><div class="event-venue">📍 ${escapeHtml(e.venue_name || "会場未登録")}</div>${e.description?`<div class="event-description">${escapeHtml(e.description)}</div>`:""}<a class="event-open" href="${escapeHtml(u.toString())}">マップを見る</a></article>`;
-    }).join("") : '<div class="event-empty">該当するイベントはありません。</div>';
+      const area = [e.prefecture,e.city].filter(Boolean).join(" ");
+      return `<article class="event-card"><span class="event-status-badge">${escapeHtml(statusLabel(e.status))}</span><div class="event-date">${escapeHtml(eventDateLabel(e))}</div><h2>${escapeHtml(e.name || e.event_id)}</h2><div class="event-venue">📍 ${escapeHtml(e.venue_name || "会場未登録")}</div>${area?`<div class="event-area">${escapeHtml(area)}</div>`:""}${e.description?`<div class="event-description">${escapeHtml(e.description)}</div>`:""}<a class="event-open" href="${escapeHtml(u.toString())}">マップを見る</a></article>`;
+    }).join("") : '<div class="event-empty">条件に一致するイベントはありません。</div>';
   }
   async function loadEvent(eventId) {
     const registry = state.events.find(e => e.event_id === eventId);

@@ -1,0 +1,49 @@
+{
+  "viewBox": [
+    0,
+    0,
+    1600,
+    900
+  ],
+  "facilities": [
+    {
+      "type": "entrance",
+      "label": "入口",
+      "x": 720,
+      "y": 25,
+      "width": 160,
+      "height": 60
+    },
+    {
+      "type": "facility",
+      "label": "受付",
+      "x": 80,
+      "y": 90,
+      "width": 130,
+      "height": 70
+    },
+    {
+      "type": "facility",
+      "label": "WC",
+      "x": 1390,
+      "y": 90,
+      "width": 110,
+      "height": 70
+    }
+  ],
+  "aisles": [
+    {
+      "x": 250,
+      "y": 230,
+      "width": 1100,
+      "height": 70
+    },
+    {
+      "x": 250,
+      "y": 560,
+      "width": 1100,
+      "height": 70
+    }
+  ],
+  "booths": []
+}

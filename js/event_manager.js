@@ -9,7 +9,9 @@
     bundles: new Map(),
     selectedId: "",
     rootHandle: null,
-    directMode: false
+    directMode: false,
+    venueTemplates: [],
+    templateCache: new Map()
   };
   const els = {};
 
@@ -17,9 +19,9 @@
 
   async function init() {
     Object.assign(els, {
-      modeDescription: $("modeDescription"), folderStatus: $("folderStatus"), eventList: $("eventList"), eventCount: $("eventCount"), eventSearch: $("eventSearch"), statusFilter: $("statusFilter"),
-      selectedEventLabel: $("selectedEventLabel"), emptyState: $("emptyState"), eventForm: $("eventForm"), eventId: $("eventId"), eventName: $("eventName"), dateStart: $("dateStart"), dateEnd: $("dateEnd"), eventTime: $("eventTime"), eventStatus: $("eventStatus"), venueName: $("venueName"), officialUrl: $("officialUrl"), eventDescription: $("eventDescription"), eventPathPreview: $("eventPathPreview"),
-      openLayoutBtn: $("openLayoutBtn"), openViewBtn: $("openViewBtn"), validationResult: $("validationResult"), newEventDialog: $("newEventDialog"), newEventId: $("newEventId"), newEventName: $("newEventName"), newEventMode: $("newEventMode"), toast: $("toast")
+      modeDescription: $("modeDescription"), folderStatus: $("folderStatus"), eventList: $("eventList"), eventCount: $("eventCount"), eventSearch: $("eventSearch"), statusFilter: $("statusFilter"), prefectureFilter: $("prefectureFilter"),
+      selectedEventLabel: $("selectedEventLabel"), emptyState: $("emptyState"), eventForm: $("eventForm"), eventId: $("eventId"), eventName: $("eventName"), dateStart: $("dateStart"), dateEnd: $("dateEnd"), eventTime: $("eventTime"), eventStatus: $("eventStatus"), prefecture: $("prefecture"), city: $("city"), venueName: $("venueName"), officialUrl: $("officialUrl"), eventDescription: $("eventDescription"), eventPathPreview: $("eventPathPreview"),
+      openLayoutBtn: $("openLayoutBtn"), openViewBtn: $("openViewBtn"), validationResult: $("validationResult"), newEventDialog: $("newEventDialog"), newEventId: $("newEventId"), newEventName: $("newEventName"), newEventMode: $("newEventMode"), newEventTemplate: $("newEventTemplate"), venueTemplateSelect: $("venueTemplateSelect"), templateDescription: $("templateDescription"), toast: $("toast")
     });
     bindEvents();
     await loadPublished();
@@ -31,13 +33,20 @@
     $("newEventBtn").addEventListener("click", openNewDialog);
     els.eventSearch.addEventListener("input", renderEventList);
     els.statusFilter.addEventListener("change", renderEventList);
+    els.prefectureFilter.addEventListener("change", renderEventList);
     $("saveEventBtn").addEventListener("click", saveSelectedMetadata);
     $("duplicateEventBtn").addEventListener("click", () => openNewDialog("duplicate"));
     $("deleteEventBtn").addEventListener("click", deleteSelectedEvent);
     $("downloadEventBtn").addEventListener("click", () => downloadSelectedFiles(false));
     $("downloadAllEventFilesBtn").addEventListener("click", () => downloadSelectedFiles(true));
     $("downloadEventsBtn").addEventListener("click", () => downloadJson("events.json", state.events));
+    $("autoStatusBtn").addEventListener("click", autoUpdateStatuses);
     $("validateAllBtn").addEventListener("click", validateAllEvents);
+    $("applyTemplateBtn").addEventListener("click", applySelectedTemplate);
+    $("saveTemplateBtn").addEventListener("click", saveCurrentVenueAsTemplate);
+    $("downloadTemplatesBtn").addEventListener("click", () => downloadJson("venue_templates.json", state.venueTemplates));
+    els.venueTemplateSelect.addEventListener("change", updateTemplateDescription);
+    els.newEventMode.addEventListener("change", updateNewEventTemplateState);
     els.openLayoutBtn.addEventListener("click", () => open(`editor.html?event=${encodeURIComponent(state.selectedId)}`, "_blank"));
     els.openViewBtn.addEventListener("click", () => open(`index.html?event=${encodeURIComponent(state.selectedId)}`, "_blank"));
     els.eventId.addEventListener("input", updatePathPreview);
@@ -54,10 +63,12 @@
       const data = await r.json();
       if (!Array.isArray(data)) throw new Error("events.json は配列である必要があります");
       state.events = data.map(normalizeSummary);
+      await loadPublishedTemplates();
       state.bundles.clear();
       state.directMode = false;
       state.rootHandle = null;
       setFolderStatus(false);
+      renderPrefectureFilter();
       renderEventList();
       if (state.events.length) await selectEvent(state.events[0].event_id);
       else clearSelection();
@@ -86,7 +97,7 @@
       toast("プロジェクトフォルダを接続しました");
     } catch (err) {
       if (err?.name === "AbortError") return;
-      alert("フォルダを接続できませんでした。\n\n" + err.message + "\n\nmarche_booth_map_v1_9 フォルダそのものを選択してください。");
+      alert("フォルダを接続できませんでした。\n\n" + err.message + "\n\nmarche_booth_map_v1_10 フォルダそのものを選択してください。");
     }
   }
 
@@ -109,13 +120,115 @@
       const data = await readJsonFile(state.rootHandle, ["data", "events.json"]);
       if (!Array.isArray(data)) throw new Error("data/events.json は配列である必要があります");
       state.events = data.map(normalizeSummary);
+      await loadFolderTemplates();
       state.bundles.clear();
+      renderPrefectureFilter();
       renderEventList();
       if (state.events.length) await selectEvent(state.events.some(x => x.event_id === state.selectedId) ? state.selectedId : state.events[0].event_id);
       else clearSelection();
     } catch (err) {
       alert("プロジェクトフォルダから読み込めませんでした。\n" + err.message);
     }
+  }
+
+  async function loadPublishedTemplates() {
+    try {
+      const r = await fetch(cfg.venueTemplatesFile, { cache: "no-store" });
+      state.venueTemplates = r.ok ? await r.json() : [];
+      if (!Array.isArray(state.venueTemplates)) state.venueTemplates = [];
+    } catch (_) { state.venueTemplates = []; }
+    state.templateCache.clear(); renderTemplateSelects(); updateTemplateDescription();
+  }
+
+  async function loadFolderTemplates() {
+    try {
+      const data = await readJsonFile(state.rootHandle, ["data", "venue_templates.json"]);
+      state.venueTemplates = Array.isArray(data) ? data : [];
+    } catch (_) { state.venueTemplates = []; }
+    state.templateCache.clear(); renderTemplateSelects(); updateTemplateDescription();
+  }
+
+  function renderPrefectureFilter() {
+    const current = els.prefectureFilter?.value || "all";
+    const values = [...new Set(state.events.map(e => e.prefecture).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"ja"));
+    els.prefectureFilter.innerHTML = '<option value="all">すべての都道府県</option>' + values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join("");
+    els.prefectureFilter.value = values.includes(current) ? current : "all";
+  }
+
+  function renderTemplateSelects() {
+    const options = state.venueTemplates.length
+      ? state.venueTemplates.map(t => `<option value="${esc(t.template_id)}">${esc(t.name || t.template_id)}</option>`).join("")
+      : '<option value="">テンプレートなし</option>';
+    [els.venueTemplateSelect, els.newEventTemplate].forEach(el => { if (el) el.innerHTML = options; });
+    updateTemplateDescription();
+  }
+
+  function updateTemplateDescription() {
+    if (!els.templateDescription) return;
+    const t = state.venueTemplates.find(x => x.template_id === els.venueTemplateSelect.value);
+    els.templateDescription.textContent = t ? (t.description || `${t.name} / ${t.file || t.template_id + ".json"}`) : "テンプレートが登録されていません。";
+  }
+
+  function updateNewEventTemplateState() {
+    if (!els.newEventTemplate) return;
+    els.newEventTemplate.disabled = els.newEventMode.value !== "template" || !state.venueTemplates.length;
+  }
+
+  async function loadVenueTemplate(id) {
+    if (!id) throw new Error("会場テンプレートを選択してください");
+    if (state.templateCache.has(id)) return state.templateCache.get(id);
+    const meta = state.venueTemplates.find(t => t.template_id === id);
+    if (!meta) throw new Error(`テンプレート ${id} が見つかりません`);
+    let data;
+    if (state.directMode) data = await readJsonFile(state.rootHandle, ["data", "venue_templates", meta.file || `${id}.json`]);
+    else {
+      const r = await fetch(`${cfg.venueTemplatesBasePath}/${encodeURIComponent(meta.file || `${id}.json`)}`, {cache:"no-store"});
+      if (!r.ok) throw new Error(`テンプレートファイルを読み込めません (${r.status})`);
+      data = await r.json();
+    }
+    state.templateCache.set(id, data); return data;
+  }
+
+  async function applySelectedTemplate() {
+    if (!state.selectedId) return alert("イベントを選択してください。");
+    const id = els.venueTemplateSelect.value;
+    const meta = state.venueTemplates.find(t => t.template_id === id);
+    if (!meta) return alert("会場テンプレートを選択してください。");
+    if (!confirm(`「${meta.name}」を現在のイベントへ適用します。\n現在の会場レイアウトは置き換わります。出店者情報は残ります。よろしいですか？`)) return;
+    const bundle = await loadBundle(state.selectedId);
+    bundle.venue = deepCopy(await loadVenueTemplate(id));
+    state.bundles.set(state.selectedId, bundle);
+    if (state.directMode) await writeJsonFile(state.rootHandle, ["data","events",state.selectedId,"venue.json"], bundle.venue, true);
+    else downloadJson("venue.json", bundle.venue);
+    toast(state.directMode ? "会場テンプレートを適用して保存しました" : "テンプレート適用済み venue.json を保存しました");
+  }
+
+  async function saveCurrentVenueAsTemplate() {
+    if (!state.selectedId) return alert("イベントを選択してください。");
+    const name = prompt("テンプレート名を入力してください", `${(await loadBundle(state.selectedId)).event.venue_name || "会場"} テンプレート`);
+    if (!name) return;
+    const proposed = name.normalize("NFKC").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"") || `venue_${Date.now()}`;
+    let id = prompt("テンプレートIDを入力してください（英数字・_・-）", proposed);
+    if (!id) return;
+    id = id.trim();
+    if (!/^[A-Za-z0-9_-]+$/.test(id)) return alert("テンプレートIDは英数字・_・- で入力してください。");
+    if (state.venueTemplates.some(t=>t.template_id===id)) return alert("同じテンプレートIDが既に存在します。");
+    const description = prompt("説明（任意）", "") || "";
+    const bundle = await loadBundle(state.selectedId);
+    const file = `${id}.json`;
+    state.venueTemplates.push({template_id:id,name,description,file});
+    state.templateCache.set(id, deepCopy(bundle.venue));
+    if (state.directMode) {
+      await writeJsonFile(state.rootHandle,["data","venue_templates",file],bundle.venue,true);
+      await writeJsonFile(state.rootHandle,["data","venue_templates.json"],state.venueTemplates,true);
+      toast("会場テンプレートを保存しました");
+    } else {
+      downloadJson(file,bundle.venue);
+      setTimeout(()=>downloadJson("venue_templates.json",state.venueTemplates),180);
+      toast("テンプレートJSONと一覧JSONを保存しました。data/venue_templates/へ配置してください");
+    }
+    renderTemplateSelects();
+    els.venueTemplateSelect.value=id; updateTemplateDescription();
   }
 
   function normalizeSummary(e) {
@@ -126,7 +239,9 @@
       date_end: e.date_end || e.date_start || "",
       venue_name: e.venue_name || "",
       status: ["upcoming", "ongoing", "past"].includes(e.status) ? e.status : "upcoming",
-      description: e.description || ""
+      description: e.description || "",
+      prefecture: e.prefecture || "",
+      city: e.city || ""
     };
   }
 
@@ -140,7 +255,9 @@
       venue_name: m.venue_name || "",
       status: ["upcoming", "ongoing", "past"].includes(m.status) ? m.status : "upcoming",
       official_url: m.official_url || "",
-      description: m.description || ""
+      description: m.description || "",
+      prefecture: m.prefecture || "",
+      city: m.city || ""
     };
   }
 
@@ -202,6 +319,8 @@
     els.dateEnd.value = meta.date_end;
     els.eventTime.value = meta.time;
     els.eventStatus.value = meta.status;
+    els.prefecture.value = meta.prefecture || "";
+    els.city.value = meta.city || "";
     els.venueName.value = meta.venue_name;
     els.officialUrl.value = meta.official_url || "";
     els.eventDescription.value = meta.description;
@@ -211,7 +330,7 @@
   function readFormMeta() {
     return normalizeMeta({
       event_id: els.eventId.value.trim(), name: els.eventName.value.trim(), date_start: els.dateStart.value, date_end: els.dateEnd.value,
-      time: els.eventTime.value.trim(), status: els.eventStatus.value, venue_name: els.venueName.value.trim(), official_url: els.officialUrl.value.trim(), description: els.eventDescription.value.trim()
+      time: els.eventTime.value.trim(), status: els.eventStatus.value, prefecture: els.prefecture.value.trim(), city: els.city.value.trim(), venue_name: els.venueName.value.trim(), official_url: els.officialUrl.value.trim(), description: els.eventDescription.value.trim()
     }, els.eventId.value.trim());
   }
 
@@ -222,10 +341,12 @@
   function renderEventList() {
     const q = els.eventSearch.value.trim().toLowerCase();
     const status = els.statusFilter.value;
+    const prefecture = els.prefectureFilter.value;
     const list = state.events.filter(e => {
       if (status !== "all" && e.status !== status) return false;
+      if (prefecture !== "all" && e.prefecture !== prefecture) return false;
       if (!q) return true;
-      return [e.event_id, e.name, e.venue_name, e.description].join(" ").toLowerCase().includes(q);
+      return [e.event_id, e.name, e.venue_name, e.prefecture, e.city, e.description].join(" ").toLowerCase().includes(q);
     });
     els.eventCount.textContent = `${state.events.length}件`;
     els.eventList.innerHTML = "";
@@ -249,6 +370,8 @@
     els.newEventMode.value = mode === "duplicate" ? "duplicate" : "blank";
     if (!state.selectedId) els.newEventMode.value = "blank";
     els.newEventMode.querySelector('option[value="duplicate"]').disabled = !state.selectedId;
+    renderTemplateSelects();
+    updateNewEventTemplateState();
     els.newEventDialog.showModal();
     setTimeout(() => els.newEventId.focus(), 30);
   }
@@ -265,12 +388,16 @@
       const source = await loadBundle(state.selectedId);
       bundle = deepCopy(source);
       bundle.event = { ...bundle.event, event_id: id, name };
+    } else if (els.newEventMode.value === "template") {
+      const venue = await loadVenueTemplate(els.newEventTemplate.value);
+      bundle = { event: normalizeMeta({ event_id: id, name, status: "upcoming" }, id), venue: deepCopy(venue), exhibitors: [] };
     } else {
       bundle = { event: normalizeMeta({ event_id: id, name, status: "upcoming" }, id), venue: blankVenue(), exhibitors: [] };
     }
     state.bundles.set(id, bundle);
     upsertSummary(bundle.event);
     if (state.directMode) await persistBundle(id, bundle, true);
+    renderPrefectureFilter();
     renderEventList();
     els.newEventDialog.close();
     await selectEvent(id);
@@ -293,6 +420,7 @@
       toast("編集内容を反映しました。event.json / events.json をダウンロードして更新してください");
     }
     els.selectedEventLabel.textContent = `${meta.name} / ${state.selectedId}`;
+    renderPrefectureFilter();
     renderEventList();
   }
 
@@ -341,6 +469,33 @@
       writeJsonFile(state.rootHandle, ["data", "events", id, "exhibitors.json"], bundle.exhibitors, true)
     ]);
     if (includeIndex) await writeJsonFile(state.rootHandle, ["data", "events.json"], state.events, true);
+  }
+
+  async function autoUpdateStatuses() {
+    const today = new Date();
+    const y = today.getFullYear(); const m = String(today.getMonth()+1).padStart(2,"0"); const d = String(today.getDate()).padStart(2,"0");
+    const key = `${y}-${m}-${d}`;
+    let changed = 0;
+    for (const summary of state.events) {
+      const start = summary.date_start || "";
+      const end = summary.date_end || start;
+      let next = summary.status;
+      if (end && end < key) next = "past";
+      else if (start && start <= key && (!end || end >= key)) next = "ongoing";
+      else if (start && start > key) next = "upcoming";
+      if (next !== summary.status) {
+        summary.status = next; changed++;
+        try {
+          const bundle = await loadBundle(summary.event_id);
+          bundle.event.status = next;
+          if (state.directMode) await writeJsonFile(state.rootHandle,["data","events",summary.event_id,"event.json"],bundle.event,true);
+        } catch (_) {}
+      }
+    }
+    if (state.directMode) await writeJsonFile(state.rootHandle,["data","events.json"],state.events,true);
+    renderEventList();
+    if (state.selectedId && state.bundles.has(state.selectedId)) fillForm(state.bundles.get(state.selectedId).event);
+    toast(changed ? `${changed}件の状態を日付から更新しました` : "状態変更はありませんでした");
   }
 
   async function validateAllEvents() {

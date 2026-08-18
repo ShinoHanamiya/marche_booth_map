@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f8eef3">
-  <title>Marche Booth Map v1.9</title>
+  <title>Marche Booth Map v1.10</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -20,6 +20,14 @@
       <button class="event-tab" type="button" data-event-status="ongoing">開催中</button>
       <button class="event-tab" type="button" data-event-status="past">過去</button>
     </div>
+    <div class="event-search-panel">
+      <label class="event-search-box">🔎 <input id="eventSearchInput" type="search" placeholder="イベント名・会場・地域で検索"></label>
+      <select id="eventPrefectureFilter"><option value="all">すべての都道府県</option></select>
+      <label class="date-filter">開始日 <input id="eventDateFrom" type="date"></label>
+      <label class="date-filter">終了日 <input id="eventDateTo" type="date"></label>
+      <button id="clearEventFiltersBtn" class="event-clear-btn" type="button">条件をクリア</button>
+    </div>
+    <div id="eventResultSummary" class="event-result-summary"></div>
     <div id="eventList" class="event-list"></div>
   </section>
 

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Marche Booth Map v1.9 編集者マニュアル</title>
+<title>Marche Booth Map v1.10 編集者マニュアル</title>
 <style>body{font-family:"Yu Gothic UI","Meiryo",sans-serif;line-height:1.85;color:#433840;background:#fffafc;margin:0}.wrap{max-width:1000px;margin:auto;padding:36px 20px 70px}h1,h2,h3{color:#7c4d60}h1{border-bottom:3px solid #efd4df;padding-bottom:12px}h2{margin-top:38px;border-left:5px solid #d883a5;padding-left:12px}code,pre{font-family:Consolas,monospace;background:#f7eff3}code{padding:2px 5px;border-radius:5px}pre{padding:14px;overflow:auto;border-radius:12px;border:1px solid #eadde4}table{width:100%;border-collapse:collapse}th,td{border:1px solid #e3d4dc;padding:9px;vertical-align:top}th{background:#f8eaf0}.note{background:#fff1f6;border:1px solid #efc9d8;padding:14px;border-radius:12px}.ok{background:#f1f7f4;border:1px solid #cfe4da;padding:14px;border-radius:12px}.step{background:white;border:1px solid #eadde4;border-radius:14px;padding:15px;margin:12px 0}a{color:#a34c70}</style></head>
 <body><div class="wrap">
-<h1>Marche Booth Map v1.9 編集者マニュアル</h1>
+<h1>Marche Booth Map v1.10 編集者マニュアル</h1>
 <p>複数マルシェの管理と、各会場レイアウト・出店者情報の編集方法を説明します。</p>
 <div class="note"><strong>公開時の注意：</strong>本アプリは有志が作成した非商用アプリです。掲載しているお店情報・リンク等には誤りや変更が含まれる場合があります。最新・正確な情報は各出店者・主催者の公式情報をご確認ください。</div>
 
@@ -11,65 +11,73 @@
 <div class="step"><code>start_editor.bat</code> をダブルクリックします。通常は <code>http://localhost:8000/event_manager.html</code> が開きます。</div>
 <p>JSONを読み込むため、HTMLファイルの直接ダブルクリックではなくローカルHTTPサーバーから利用してください。</p>
 
-<h2>2. v1.9の編集フロー</h2>
+<h2>2. v1.10の編集フロー</h2>
 <ol><li>イベント管理画面を開く</li><li>プロジェクトフォルダを接続する（推奨）</li><li>イベントを新規作成・複製・選択する</li><li>イベント情報を編集する</li><li>「会場レイアウト編集」からEditorを開く</li><li>ブース・設備・出店者を編集する</li><li>ローカル表示を確認する</li><li>GitHubへcommit / pushする</li></ol>
 
 <h2>3. プロジェクトフォルダ接続</h2>
 <p>Chrome / Edgeでは、イベント管理画面の「プロジェクトフォルダを接続」からローカルファイルへ直接保存できます。</p>
-<ol><li>ボタンを押します。</li><li>展開した <code>marche_booth_map_v1_9</code> フォルダそのものを選択します。</li><li>ブラウザのアクセス許可を承認します。</li><li>表示が「接続中」になれば完了です。</li></ol>
+<ol><li>ボタンを押します。</li><li>展開した <code>marche_booth_map_v1_10</code> フォルダそのものを選択します。</li><li>ブラウザのアクセス許可を承認します。</li><li>表示が「接続中」になれば完了です。</li></ol>
 <div class="note">対応していないブラウザではJSONダウンロード方式を利用できます。GitHub Pages上のファイルを直接書き換える機能ではありません。編集対象はユーザーが選択したローカルフォルダです。</div>
 
 <h2>4. 新規イベント</h2>
 <p>「＋ 新規イベント」を押し、イベントID・イベント名・作成方法を指定します。</p>
-<table><tr><th>項目</th><th>説明</th></tr><tr><td>イベントID</td><td>フォルダ名・URLに使用します。半角英数字、<code>_</code>、<code>-</code>を使用してください。</td></tr><tr><td>空の会場から作成</td><td>1000×700の基本会場と入口のみを作成します。</td></tr><tr><td>選択中イベントを複製</td><td>event.json、venue.json、exhibitors.jsonをコピーします。</td></tr></table>
+<table><tr><th>項目</th><th>説明</th></tr><tr><td>イベントID</td><td>フォルダ名・URLに使用します。半角英数字、<code>_</code>、<code>-</code>を使用してください。</td></tr><tr><td>空の会場から作成</td><td>1000×700の基本会場と入口のみを作成します。</td></tr><tr><td>会場テンプレートから作成</td><td>登録済みの会場レイアウトを使って新規イベントを作成します。出店者情報は空で開始します。</td></tr><tr><td>選択中イベントを複製</td><td>event.json、venue.json、exhibitors.jsonをコピーします。</td></tr></table>
 <p>フォルダ接続中は <code>data/events/&lt;event_id&gt;/</code> が自動作成され、<code>events.json</code> も更新されます。</p>
 
 <h2>5. イベント情報</h2>
 <p>イベント管理画面または会場Editorで以下を編集できます。</p>
-<table><tr><th>項目</th><th>保存先</th></tr><tr><td>イベント名</td><td>event.json / events.json</td></tr><tr><td>開始日・終了日</td><td>event.json / events.json</td></tr><tr><td>開催時間</td><td>event.json</td></tr><tr><td>状態</td><td>event.json / events.json</td></tr><tr><td>会場名</td><td>event.json / events.json</td></tr><tr><td>公式URL</td><td>event.json</td></tr><tr><td>説明</td><td>event.json / events.json</td></tr></table>
+<table><tr><th>項目</th><th>保存先</th></tr><tr><td>イベント名</td><td>event.json / events.json</td></tr><tr><td>開始日・終了日</td><td>event.json / events.json</td></tr><tr><td>開催時間</td><td>event.json</td></tr><tr><td>状態</td><td>event.json / events.json</td></tr><tr><td>都道府県・市区町村</td><td>event.json / events.json。Viewの地域検索に利用します。</td></tr><tr><td>会場名</td><td>event.json / events.json</td></tr><tr><td>公式URL</td><td>event.json</td></tr><tr><td>説明</td><td>event.json / events.json</td></tr></table>
 <p>状態は <code>upcoming</code>（開催予定）、<code>ongoing</code>（開催中）、<code>past</code>（過去）の3種類です。</p>
 
 <h2>6. イベント複製・削除</h2>
 <p>定期開催や同じ会場を再利用する場合は「イベントを複製」が便利です。会場レイアウトと出店者情報も複製されます。</p>
 <p>削除は確認後に実行されます。フォルダ接続中はイベントフォルダも削除されるため、必要なら事前にバックアップしてください。</p>
 
-<h2>7. 会場Editorを開く</h2>
+
+<h2>7. 会場テンプレート</h2>
+<p><code>data/venue_templates.json</code> にテンプレート一覧、<code>data/venue_templates/</code> に会場JSONを保存します。</p>
+<ul><li>新規イベント作成時にテンプレートを選択できます。</li><li>「選択イベントへ適用」で既存イベントのvenue.jsonを置き換えられます。出店者情報は残るため、ブースIDとの整合性を確認してください。</li><li>「現在の会場をテンプレート保存」で、選択中イベントの会場を再利用できます。</li></ul>
+<div class="note">フォルダ未接続時はテンプレートJSONと <code>venue_templates.json</code> がダウンロードされます。テンプレートJSONは <code>data/venue_templates/</code> に配置してください。</div>
+
+<h2>8. 過去イベント・状態の自動更新</h2>
+<p>Event Managerの「日付から状態を自動更新」を使うと、ブラウザの現在日付と開始日・終了日を比較して <code>upcoming / ongoing / past</code> を更新できます。フォルダ接続中は各 <code>event.json</code> と <code>events.json</code> に保存されます。</p>
+<h2>9. 会場Editorを開く</h2>
 <p>イベント管理画面の「会場レイアウト編集」を押すと、次の形式で対象イベントが開きます。</p>
 <pre>editor.html?event=sample_flower_marche_2026</pre>
 <p>v1.8以前のように <code>config.js</code> をイベントごとに書き換える必要はありません。</p>
 
-<h2>8. EditorのJSON</h2>
+<h2>10. EditorのJSON</h2>
 <p>上部から以下の3ファイルを読み込み・保存できます。</p>
 <ul><li><code>event.json</code>：イベント情報</li><li><code>venue.json</code>：会場レイアウト</li><li><code>exhibitors.json</code>：出店者情報</li></ul>
 <p>「3ファイル保存」では3ファイルを順番にダウンロードします。</p>
 
-<h2>9. ブース編集</h2>
+<h2>11. ブース編集</h2>
 <table><tr><th>操作</th><th>動作</th></tr><tr><td>クリック</td><td>単一選択</td></tr><tr><td>ドラッグ</td><td>移動</td></tr><tr><td>右下ハンドル</td><td>リサイズ</td></tr><tr><td>Ctrl / ⌘＋クリック</td><td>複数選択</td></tr><tr><td>空白ドラッグ</td><td>範囲選択</td></tr><tr><td>Delete / Backspace</td><td>選択物を削除</td></tr><tr><td>Ctrl+C / Ctrl+V</td><td>コピー / 貼り付け</td></tr><tr><td>Ctrl+Z / Ctrl+Y</td><td>Undo / Redo</td></tr></table>
 
-<h2>10. 一括生成・整列</h2>
+<h2>12. 一括生成・整列</h2>
 <p>行数・列数・ブースサイズ・間隔・開始座標を指定してブースを一括生成できます。複数選択したブースは、左/右/上/下/中央揃え、横/縦等間隔、同サイズ化ができます。</p>
 
-<h2>11. 会場サイズ・背景・レイヤー</h2>
+<h2>13. 会場サイズ・背景・レイヤー</h2>
 <ul><li>会場サイズ：小1000×700、中1600×1000、大2200×1400のプリセット</li><li>配置物へ自動フィット</li><li>端で自動拡張</li><li>PNG/JPG/WebPを背景画像として読込</li><li>背景・通路・設備・ブースの表示/非表示・ロック</li></ul>
 <p>背景画像は編集用の下敷きで、venue.jsonには埋め込みません。</p>
 
-<h2>12. 出店者編集</h2>
+<h2>14. 出店者編集</h2>
 <p>ショップ名、カテゴリ、検索キーワード、タグ、説明、Instagram URL、ショップURL、メモを登録できます。Instagram URLは1行1URLで複数登録できます。</p>
 
-<h2>13. 自動保存</h2>
+<h2>15. 自動保存</h2>
 <p>Editorの作業内容は <code>event_id</code> ごとにlocalStorageへ自動保存されます。正式データはJSONとして保存してください。</p>
 
-<h2>14. JSONダウンロード方式</h2>
+<h2>16. JSONダウンロード方式</h2>
 <p>プロジェクトフォルダ接続を使わない場合は、イベント管理画面から <code>events.json</code> とイベントファイルを保存し、次の場所へ配置します。</p>
 <pre>data/events.json
 data/events/&lt;event_id&gt;/event.json
 data/events/&lt;event_id&gt;/venue.json
 data/events/&lt;event_id&gt;/exhibitors.json</pre>
 
-<h2>15. GitHub Pagesへの反映</h2>
+<h2>17. GitHub Pagesへの反映</h2>
 <ol><li>ローカルファイルを編集</li><li><code>start_local_server.bat</code> でViewを確認</li><li>GitHubへcommit / push</li><li>公開URLをCtrl+F5等で再読込して確認</li></ol>
 
-<h2>16. トラブル対処</h2>
+<h2>18. トラブル対処</h2>
 <table><tr><th>症状</th><th>対処</th></tr><tr><td>フォルダ接続できない</td><td>Chrome / Edgeを使用し、プロジェクトルートを選択してください。</td></tr><tr><td>新しいイベントがViewに出ない</td><td><code>data/events.json</code> に登録されているか確認してください。フォルダ接続中は保存時に自動更新します。</td></tr><tr><td>Editorで別イベントが開く</td><td>URLの <code>?event=...</code> を確認してください。</td></tr><tr><td>出店者詳細が出ない</td><td>venue.jsonのブースIDとexhibitors.jsonのbooth_idを一致させてください。</td></tr><tr><td>GitHubへ反映されない</td><td>ローカル変更をcommit / pushしたか、ブラウザキャッシュが残っていないか確認してください。</td></tr></table>
 
 <p><a href="../event_manager.html">← イベント管理へ戻る</a> / <a href="viewer_manual.html">閲覧者マニュアル</a></p>
