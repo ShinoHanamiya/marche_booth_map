@@ -1,1 +1,2950 @@
-[]
+[
+  {
+    "booth_id": "94",
+    "shop_name": "愛絲art atelier",
+    "categories": [
+      "イラスト"
+    ],
+    "description": "ペン画を中心に、心を込めたイラスト作品を届けるアートショップです。",
+    "keywords": [
+      "イラスト"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/art_atelier666/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/art_atelier666/"
+  },
+  {
+    "booth_id": "22",
+    "shop_name": "Atelier Flare",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "木工品やガーデニング雑貨、手づくり帽子、刺繍の耳飾りなどが並ぶ共同出店です。",
+    "keywords": [
+      "木工品",
+      "帽子",
+      "刺繍アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/atelier_flare/",
+      "https://www.instagram.com/__a_t_e_l_i_e_r__/",
+      "https://www.instagram.com/kakalotto617/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先の3アカウントを照合し、木工品・帽子・刺繍アクセサリーを扱う共同出店として修正",
+    "instagram_url": "https://www.instagram.com/atelier_flare/"
+  },
+  {
+    "booth_id": "4",
+    "shop_name": "☆ayuyu★",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "装いのアクセントになる、ハンドメイドアクセサリーやバッグを届けます。",
+    "keywords": [
+      "アクセサリー",
+      "バッグ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ayuyu_handmade/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ayuyu_handmade/"
+  },
+  {
+    "booth_id": "2",
+    "shop_name": "anmato",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "手描きの植木鉢やプレート、リメイク雑貨など、暮らしを彩る作品を手がけます。",
+    "keywords": [
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/andante.365/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/andante.365/"
+  },
+  {
+    "booth_id": "N1",
+    "shop_name": "eenie",
+    "categories": [
+      "食品"
+    ],
+    "description": "京都でケーキや焼き菓子を手がけ、マルシェのおやつや手土産にうれしいスイーツを届けます。",
+    "keywords": [
+      "ケーキ",
+      "焼き菓子"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/eenie.kyoto/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先の店舗情報に合わせ、焼き菓子のみの記載からケーキ・焼き菓子へ修正",
+    "instagram_url": "https://www.instagram.com/eenie.kyoto/"
+  },
+  {
+    "booth_id": "79",
+    "shop_name": "YEAH!!",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/yuu_yeah0908/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/yuu_yeah0908/"
+  },
+  {
+    "booth_id": "12",
+    "shop_name": "1993+",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "布のバッグやポーチを中心に、木・ガラス・布を使った手づくり雑貨を届ける共同出店です。",
+    "keywords": [
+      "布バッグ",
+      "ポーチ",
+      "木工・ガラス雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kei.19.chi/",
+      "https://www.instagram.com/kumiplus/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：公開プロフィールと出店者情報を照合し、衣料品中心の記載から布小物・木工・ガラス雑貨へ修正",
+    "instagram_url": "https://www.instagram.com/kei.19.chi/"
+  },
+  {
+    "booth_id": "9",
+    "shop_name": "犬吉商店",
+    "categories": [
+      "ペット"
+    ],
+    "description": "パラコード製の首輪・リード・ハーネスや、真鍮製の迷子札などを手がける犬具ショップです。",
+    "keywords": [
+      "パラコード犬具",
+      "首輪",
+      "リード",
+      "ハーネス"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/inuyoshi3216/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先・公開出店情報を確認し、ペット服からパラコード製犬具へ修正",
+    "instagram_url": "https://www.instagram.com/inuyoshi3216/"
+  },
+  {
+    "booth_id": "49",
+    "shop_name": "Urei~myuu",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "天然石の色や表情を生かした、手づくりのアクセサリーを届けます。",
+    "keywords": [
+      "天然石アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ureimyuu/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ureimyuu/"
+  },
+  {
+    "booth_id": "80",
+    "shop_name": "EMILY",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "植物とアンティーク調雑貨、古道具を扱い、グリーンとヴィンテージのある暮らしを提案します。",
+    "keywords": [
+      "植物",
+      "アンティーク調雑貨",
+      "古道具"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/emily.ta29/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先の現行プロフィールに合わせ、プリザーブドフラワーから植物・アンティーク調雑貨・古道具へ修正",
+    "instagram_url": "https://www.instagram.com/emily.ta29/"
+  },
+  {
+    "booth_id": "7",
+    "shop_name": "エリナミヤケ",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いや暮らしを彩る、アクセサリーと雑貨を手がけます。",
+    "keywords": [
+      "アクセサリー",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/erina_miyake/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/erina_miyake/"
+  },
+  {
+    "booth_id": "99",
+    "shop_name": "Oimo3D",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "3Dプリンターならではの形や発想を楽しめる、ユニークな雑貨を制作しています。",
+    "keywords": [
+      "3Dプリンター雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/oimo3d/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/oimo3d/"
+  },
+  {
+    "booth_id": "S1",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S2",
+    "shop_name": "OOTIMI FRIED LAB",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "揚げたてのポテトや揚げパンを、気軽に楽しめるフードショップです。",
+    "keywords": [
+      "ポテト",
+      "揚げパン"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_frlab/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_frlab/"
+  },
+  {
+    "booth_id": "26",
+    "shop_name": "奥村靴工房",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "手仕事で仕立てた革靴やバッグなど、長く使いたい革製品を手がける工房です。",
+    "keywords": [
+      "革靴",
+      "バッグ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/okumura_kutukoubou/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/okumura_kutukoubou/"
+  },
+  {
+    "booth_id": "77",
+    "shop_name": "お花と猫 *prerist miu*",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "花と猫をモチーフに、ハーバリウムや花雑貨を手がけるショップです。",
+    "keywords": [
+      "ハーバリウム",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/preristmiu/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/preristmiu/"
+  },
+  {
+    "booth_id": "32",
+    "shop_name": "織ori flowerzakka",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "花の魅力を暮らしに取り入れられる、やさしい雰囲気の花雑貨を届けます。",
+    "keywords": [
+      "花雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ori_flowerzakka/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ori_flowerzakka/"
+  },
+  {
+    "booth_id": "M1",
+    "shop_name": "carnival lock",
+    "categories": [
+      "食品"
+    ],
+    "description": "マルシェで気軽に楽しめる、たこ焼きや焼きそばを提供します。",
+    "keywords": [
+      "たこやき",
+      "やきそば"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/00ganmo/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/00ganmo/"
+  },
+  {
+    "booth_id": "3",
+    "shop_name": "KAGO×AMOとkotaniku",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "紙バンドで編んだかごやバッグと、粘土で表現した多肉植物の作品が並ぶ共同出店です。",
+    "keywords": [
+      "紙バンドかご",
+      "かごバッグ",
+      "粘土多肉"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kagoxamo/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先と公開出店情報を照合し、紙バンドかご・粘土多肉の共同出店として具体化",
+    "instagram_url": "https://www.instagram.com/kagoxamo/"
+  },
+  {
+    "booth_id": "N2",
+    "shop_name": "KAJI",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "アメリカで買い付けたアンティークやヴィンテージのキッチン・インテリア雑貨などを扱います。",
+    "keywords": [
+      "アンティーク雑貨",
+      "ヴィンテージ雑貨",
+      "キッチン雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kajisan.2020/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先のプロフィールに合わせ、一般的なハンドメイド雑貨からアンティーク・ヴィンテージ雑貨へ修正",
+    "instagram_url": "https://www.instagram.com/kajisan.2020/"
+  },
+  {
+    "booth_id": "88",
+    "shop_name": "●Kafuu.",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "インド刺繍リボンを使ったアクセサリーやストラップ、雑貨を手がけるショップです。",
+    "keywords": [
+      "インド刺繍",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kaf_uu/"
+    ],
+    "shop_url": "https://kafuu0214.base.shop/",
+    "note": "URL補完（2026-08-17公開検索で確認）",
+    "instagram_url": "https://www.instagram.com/kaf_uu/"
+  },
+  {
+    "booth_id": "S3",
+    "shop_name": "CAFE FROG",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "散策の合間に気軽に楽しめる、できたての軽食を提供します。",
+    "keywords": [
+      "軽食"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/cafe_frog/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/cafe_frog/"
+  },
+  {
+    "booth_id": "75",
+    "shop_name": "kiki",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "樹脂粘土の作品づくりと粘土教室を行い、手づくり市で親しまれるクレイ作家です。",
+    "keywords": [
+      "樹脂粘土",
+      "粘土細工",
+      "クレイアート"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kikimama3/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先のプロフィールに合わせ、一般的な雑貨から樹脂粘土・クレイ作品へ修正",
+    "instagram_url": "https://www.instagram.com/kikimama3/"
+  },
+  {
+    "booth_id": "M2",
+    "shop_name": "紀州甘辛屋",
+    "categories": [
+      "食品"
+    ],
+    "description": "生姜の風味を生かした、食卓で楽しめる食品や加工品を届けます。",
+    "keywords": [
+      "生姜食品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kishyuamakaraya/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kishyuamakaraya/"
+  },
+  {
+    "booth_id": "S4",
+    "shop_name": "Kitchencar Ado",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "野菜と具材を一皿で楽しめる、彩り豊かなタコライスを提供します。",
+    "keywords": [
+      "タコライス"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kitchencarado/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kitchencarado/"
+  },
+  {
+    "booth_id": "S5",
+    "shop_name": "Kim’ncurry",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "香り豊かなスパイスを楽しめる、こだわりのカリーを提供します。",
+    "keywords": [
+      "カリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kimncurrykimunkari/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kimncurrykimunkari/"
+  },
+  {
+    "booth_id": "53",
+    "shop_name": "Craft.JIN",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "木工作品やリメイク缶など、インテリアや植物のある暮らしを楽しくする作品を手がけます。",
+    "keywords": [
+      "木工",
+      "リメイク缶"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/craft.jin.201/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先と公開出店情報に合わせ、木工・リメイク缶へ具体化",
+    "instagram_url": "https://www.instagram.com/craft.jin.201/"
+  },
+  {
+    "booth_id": "96",
+    "shop_name": "Clarte 03",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/clarte_03/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/clarte_03/"
+  },
+  {
+    "booth_id": "14",
+    "shop_name": "grins",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "タフティング雑貨や本物のようなフェイクフードなど、遊び心ある作品を手がけます。",
+    "keywords": [
+      "雑貨",
+      "フェイクフード"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/grins_studio_tuft/",
+      "https://www.instagram.com/grins_fakefood/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/grins_studio_tuft/"
+  },
+  {
+    "booth_id": "52",
+    "shop_name": "クローリスの森",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "花や植物の魅力を生かした、暮らしに寄り添う花雑貨を届けるショップです。",
+    "keywords": [
+      "花雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/choris_2008/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/choris_2008/"
+  },
+  {
+    "booth_id": "92",
+    "shop_name": "K.PRESENCE",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "銀の質感を生かした、手仕事のシルバーアクセサリーを届けます。",
+    "keywords": [
+      "シルバーアクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/k.presence.accessory/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/k.presence.accessory/"
+  },
+  {
+    "booth_id": "S6",
+    "shop_name": "ケバブ屋　Motoさん",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "香ばしく焼いた肉と野菜を楽しめる、食べ応えあるケバブを提供します。",
+    "keywords": [
+      "ケバブ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kebabyamoto3/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kebabyamoto3/"
+  },
+  {
+    "booth_id": "51",
+    "shop_name": "kotokoto_uji＆Jan.",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "普段使いしやすいバッグや衣料品を、丁寧な手仕事で仕立てます。",
+    "keywords": [
+      "バッグ",
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kotokoto_uji/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kotokoto_uji/"
+  },
+  {
+    "booth_id": "S7",
+    "shop_name": "コフレドエメ",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "甘い香りともちもちの生地を楽しめる、出来たてクレープを提供します。",
+    "keywords": [
+      "クレープ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/coffret_de_aimer/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/coffret_de_aimer/"
+  },
+  {
+    "booth_id": "81",
+    "shop_name": "咲-saku-",
+    "categories": [
+      "食品"
+    ],
+    "description": "マルシェのおやつや手土産にうれしい、手づくりの焼き菓子を届けます。",
+    "keywords": [
+      "焼き菓子"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kashi.saku/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kashi.saku/"
+  },
+  {
+    "booth_id": "29",
+    "shop_name": "ZAKKA IVY",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "食卓や暮らしに馴染む、手仕事の表情豊かな陶器を届けます。",
+    "keywords": [
+      "陶器"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/zakka_ivy/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/zakka_ivy/"
+  },
+  {
+    "booth_id": "18",
+    "shop_name": "雑貨屋つきもも",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "暮らしに小さな楽しさを添える、ハンドメイド雑貨を届けるショップです。",
+    "keywords": [
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/zakka_tsukimomo/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/zakka_tsukimomo/"
+  },
+  {
+    "booth_id": "50",
+    "shop_name": "SAYA & SYUU",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いや暮らしを彩る、アクセサリーと雑貨を手がけます。",
+    "keywords": [
+      "アクセサリー",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/saya.syuu.443/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/saya.syuu.443/"
+  },
+  {
+    "booth_id": "85",
+    "shop_name": "SALASANA",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "日々のおしゃれを楽しめる、個性ある衣料品を届けるショップです。",
+    "keywords": [
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/salasana_yew/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/salasana_yew/"
+  },
+  {
+    "booth_id": "40",
+    "shop_name": "sunpo",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/sunpo_handmade/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/sunpo_handmade/"
+  },
+  {
+    "booth_id": "34",
+    "shop_name": "Shi___*ビーズ刺繍の耳飾り屋*",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "一粒ずつ丁寧に仕立てた、ビーズ刺繍の耳飾りを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/shi___cyan.k/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/shi___cyan.k/"
+  },
+  {
+    "booth_id": "74",
+    "shop_name": "chéri étincelle CANDLE/MAR",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "灯す時間と空間をやさしく彩る、ハンドメイドキャンドルを届けます。",
+    "keywords": [
+      "キャンドル"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/cheri_etincellecandle/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/cheri_etincellecandle/"
+  },
+  {
+    "booth_id": "43",
+    "shop_name": "刺しゅう屋 Kocco",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "刺繍を生かした衣料品や布作品を、丁寧な手仕事で仕立てるショップです。",
+    "keywords": [
+      "刺繍",
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kocco_sisyuu/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kocco_sisyuu/"
+  },
+  {
+    "booth_id": "M3",
+    "shop_name": "信楽窯焼きアップルパイ",
+    "categories": [
+      "食品"
+    ],
+    "description": "香ばしく焼き上げた生地とりんごを楽しめる、窯焼きアップルパイです。",
+    "keywords": [
+      "アップルパイ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/shigaraki.kamayaki.applepie/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/shigaraki.kamayaki.applepie/"
+  },
+  {
+    "booth_id": "38",
+    "shop_name": "sikio",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/sikio.store/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/sikio.store/"
+  },
+  {
+    "booth_id": "21",
+    "shop_name": "JACKIE",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "苔テラリウムを制作・販売し、ものづくりを楽しめるワークショップも行います。",
+    "keywords": [
+      "苔テラリウム",
+      "ワークショップ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/masa.jackie/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：紹介文とURL先に合わせ、誤っていたアクセサリーの検索キーワードを苔テラリウムへ修正",
+    "instagram_url": "https://www.instagram.com/masa.jackie/"
+  },
+  {
+    "booth_id": "62",
+    "shop_name": "Ja poika",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "世界各地から集めたカラフルな生地で、子ども服やベビー服、布小物を仕立てます。",
+    "keywords": [
+      "子供服",
+      "ベビー服",
+      "布小物"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/japoika/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先のプロフィールに合わせ、一般的な衣料品から海外生地の子供服・ベビー服へ修正",
+    "instagram_url": "https://www.instagram.com/japoika/"
+  },
+  {
+    "booth_id": "98",
+    "shop_name": "Su",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ktan210/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ktan210/"
+  },
+  {
+    "booth_id": "95",
+    "shop_name": "SweetBasket",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "多肉植物と、植物のある暮らしを楽しくする雑貨を届けるショップです。",
+    "keywords": [
+      "多肉植物",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/happysweetbasket/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/happysweetbasket/"
+  },
+  {
+    "booth_id": "71",
+    "shop_name": "SWING BY",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [],
+    "shop_url": "https://swingby-sun.com/",
+    "note": "",
+    "instagram_url": ""
+  },
+  {
+    "booth_id": "60",
+    "shop_name": "Zukku",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "ヴィンテージのミリタリー素材を再構築し、一点もののエプロンやバッグへ仕立てます。",
+    "keywords": [
+      "ミリタリーリメイク",
+      "エプロン",
+      "バッグ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/zukku_jutebag/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先のプロフィールに合わせ、ミリタリー素材のリメイク作品として具体化",
+    "instagram_url": "https://www.instagram.com/zukku_jutebag/"
+  },
+  {
+    "booth_id": "89",
+    "shop_name": "sopo！sopo！",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "刺繍の表情を楽しめるアクセサリーや小物を、丁寧な手仕事で仕立てます。",
+    "keywords": [
+      "刺繍",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/sopo_mf/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/sopo_mf/"
+  },
+  {
+    "booth_id": "S8",
+    "shop_name": "TAKIBI",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "爽やかな酸味と甘さを楽しめる、すっきりとしたレモネードを提供します。",
+    "keywords": [
+      "レモネード"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/takibi_hituzikai/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/takibi_hituzikai/"
+  },
+  {
+    "booth_id": "30",
+    "shop_name": "tamanegi",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "天然石の色や表情を生かした、手づくりのアクセサリーを届けます。",
+    "keywords": [
+      "天然石アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/tictic._.a_a/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/tictic._.a_a/"
+  },
+  {
+    "booth_id": "24",
+    "shop_name": "chimachima ＆ pompon",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "異なる作風のハンドメイド雑貨が一緒に楽しめる、にぎやかな共同出店です。",
+    "keywords": [
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/chimachimagallery/",
+      "https://www.instagram.com/pompon1045/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/chimachimagallery/"
+  },
+  {
+    "booth_id": "93",
+    "shop_name": "CHARMY×CANDY似顔絵",
+    "categories": [
+      "イラスト"
+    ],
+    "description": "その人らしさを楽しく描き出す、思い出に残る似顔絵を制作します。",
+    "keywords": [
+      "イラスト"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ai.sugiura/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ai.sugiura/"
+  },
+  {
+    "booth_id": "46",
+    "shop_name": "chaaab ☺",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "ベビーアイテムや日々に役立つ布雑貨など、親子で楽しめる作品を届けます。",
+    "keywords": [
+      "雑貨",
+      "ベビーアイテム"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/chaboxm/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/chaboxm/"
+  },
+  {
+    "booth_id": "78",
+    "shop_name": "Twins² ＆L’s make(ワーク)",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "ビーズアクセサリーと編み物小物が並び、ブレスレット作りやペイントベアーも楽しめます。",
+    "keywords": [
+      "ビーズアクセサリー",
+      "編み物小物",
+      "ワークショップ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/twins2_handmade/",
+      "https://www.instagram.com/ls_make.a/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先の出店内容に合わせ、販売品とワークショップ内容が分かる検索キーワードへ修正",
+    "instagram_url": "https://www.instagram.com/twins2_handmade/"
+  },
+  {
+    "booth_id": "97",
+    "shop_name": "tukuru woodwork",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "木の風合いを生かし、暮らしに馴染む木工雑貨を手づくりする工房です。",
+    "keywords": [
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/tukuruwoodwork/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/tukuruwoodwork/"
+  },
+  {
+    "booth_id": "54",
+    "shop_name": "ツブトイト.nappa",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "糸の色や質感を楽しめる、手編みの小物や作品を丁寧に仕立てます。",
+    "keywords": [
+      "編み物"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/tsubu.to.ito/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/tsubu.to.ito/"
+  },
+  {
+    "booth_id": "72",
+    "shop_name": "Tsumugi〜つむぎ〜",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/tsumugi_handmade0204/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/tsumugi_handmade0204/"
+  },
+  {
+    "booth_id": "S9",
+    "shop_name": "T add M",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "香ばしいパンと具材を楽しめる、出来たてのホットドッグを提供します。",
+    "keywords": [
+      "ホットドッグ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/t_add_m/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/t_add_m/"
+  },
+  {
+    "booth_id": "47",
+    "shop_name": "take-u",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "天然石の色や表情を生かした、手づくりのアクセサリーを届けます。",
+    "keywords": [
+      "天然石アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/teiku_yu_/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/teiku_yu_/"
+  },
+  {
+    "booth_id": "42",
+    "shop_name": "手しごと舎　ちくちく",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "布雑貨を中心に、日々の暮らしで使いたくなる手仕事の品を届けます。",
+    "keywords": [
+      "布雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/cepe_hand_made/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先に合わせ、空欄だった検索キーワードに布雑貨を追記",
+    "instagram_url": "https://www.instagram.com/cepe_hand_made/"
+  },
+  {
+    "booth_id": "57",
+    "shop_name": "tetote.AiCo.Ryu",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "アクセサリーとガラス細工、それぞれの手仕事が楽しめる共同出店です。",
+    "keywords": [
+      "アクセサリー",
+      "ガラス細工"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/aico.happy.peace/",
+      "https://www.instagram.com/boroglass.ryu.tetote/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/aico.happy.peace/"
+  },
+  {
+    "booth_id": "5",
+    "shop_name": "teri",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "天然石の個性を生かした、彩り豊かなアクセサリーを届けます。",
+    "keywords": [
+      "天然石",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/te__ri_/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/te__ri_/"
+  },
+  {
+    "booth_id": "M4",
+    "shop_name": "ドーナツハウスLOOP",
+    "categories": [
+      "食品"
+    ],
+    "description": "ふんわりとした手づくりドーナツを、おやつや手土産向けに届けます。",
+    "keywords": [
+      "ドーナツ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/donut_loop/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/donut_loop/"
+  },
+  {
+    "booth_id": "86",
+    "shop_name": "tococo",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "人や環境に配慮した、自然素材の日用雑貨を扱う暮らしのショップです。",
+    "keywords": [
+      "自然素材",
+      "日用雑貨",
+      "エコ雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/tococomarche/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先に合わせ、空欄だった検索キーワードに自然素材の日用雑貨を追記",
+    "instagram_url": "https://www.instagram.com/tococomarche/"
+  },
+  {
+    "booth_id": "M5",
+    "shop_name": "Tre cipressi",
+    "categories": [
+      "食品"
+    ],
+    "description": "イタリア各地から選んだオリーブオイルとバルサミコ酢を、テイスティングや量り売りで届ける専門店です。",
+    "keywords": [
+      "オリーブオイル",
+      "バルサミコ酢",
+      "イタリア食材"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/handmade_shop_trois3/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：ショップ名の公式情報を確認し、洋菓子からオリーブオイル・バルサミコ酢専門店へ修正。記載URLは別ショップのため要確認（URL自体は指定どおり変更なし）",
+    "instagram_url": "https://www.instagram.com/handmade_shop_trois3/"
+  },
+  {
+    "booth_id": "M6",
+    "shop_name": "TROIS「３」",
+    "categories": [
+      "食品"
+    ],
+    "description": "マルシェのおやつや手土産にうれしい、手づくりの焼き菓子を届けます。",
+    "keywords": [
+      "焼き菓子"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/handmade_shop_trois3/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/handmade_shop_trois3/"
+  },
+  {
+    "booth_id": "55",
+    "shop_name": "どんぐりさなえとアサコや。",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "帽子や小物など、作り手それぞれの個性が光る手仕事品を届ける共同出店です。",
+    "keywords": [
+      "帽子",
+      "ハンドメイド小物"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/donguri.sanae/",
+      "https://www.instagram.com/boushitokomonoya/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先に合わせ、空欄だった検索キーワードに帽子・ハンドメイド小物を追記",
+    "instagram_url": "https://www.instagram.com/donguri.sanae/"
+  },
+  {
+    "booth_id": "41",
+    "shop_name": "nano.nano.nanoko",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "子どもの毎日をかわいく彩る、手づくりの子供服を届けます。",
+    "keywords": [
+      "子供服"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/nano.nano.nanoko/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/nano.nano.nanoko/"
+  },
+  {
+    "booth_id": "N3",
+    "shop_name": "Nalu Nani",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "透明感や色彩を楽しめる、レジンアクセサリーを手づくりするショップです。",
+    "keywords": [
+      "レジンアクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/nalunani_lino/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/nalunani_lino/"
+  },
+  {
+    "booth_id": "69",
+    "shop_name": "Neiro",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "アクセサリーや小物の販売と、ものづくりを楽しめるワークショップを行います。",
+    "keywords": [
+      "アクセサリー",
+      "小物",
+      "ワークショップ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/neiro.88/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先に合わせ、空欄だった検索キーワードに販売品とワークショップを追記",
+    "instagram_url": "https://www.instagram.com/neiro.88/"
+  },
+  {
+    "booth_id": "33",
+    "shop_name": "nehaharo",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "日々のおしゃれを楽しめる、個性ある衣料品を届けるショップです。",
+    "keywords": [
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/nehaharo/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/nehaharo/"
+  },
+  {
+    "booth_id": "M7",
+    "shop_name": "農家の嫁ちゃん。",
+    "categories": [
+      "食品"
+    ],
+    "description": "お米のおいしさを気軽に味わえる、手づくりのライスバーガーを届けます。",
+    "keywords": [
+      "ライスバーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/noukano.yomechan_shiga/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/noukano.yomechan_shiga/"
+  },
+  {
+    "booth_id": "66",
+    "shop_name": "NOWANA",
+    "categories": [
+      "ペット"
+    ],
+    "description": "愛犬との毎日を楽しく彩る、実用的でかわいいペットグッズを届けます。",
+    "keywords": [
+      "ペットグッズ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/nowana.2024/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/nowana.2024/"
+  },
+  {
+    "booth_id": "68",
+    "shop_name": "Hanako＆yrt works",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "雑貨とアクセサリー、それぞれの作風を一度に楽しめる共同出店です。",
+    "keywords": [
+      "雑貨",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/anzu.8822/",
+      "https://www.instagram.com/aito_loppis/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/anzu.8822/"
+  },
+  {
+    "booth_id": "M8",
+    "shop_name": "Hanachan bagel",
+    "categories": [
+      "食品"
+    ],
+    "description": "食事にもおやつにも楽しめる、丁寧に焼き上げたパンを届けます。",
+    "keywords": [
+      "パン"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hanachan_bagel1/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/hanachan_bagel1/"
+  },
+  {
+    "booth_id": "M9",
+    "shop_name": "Hanon",
+    "categories": [
+      "食品"
+    ],
+    "description": "素材と味わいを大切にした、マルシェで楽しめるお弁当を届けます。",
+    "keywords": [
+      "弁当"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hanon_583/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/hanon_583/"
+  },
+  {
+    "booth_id": "67",
+    "shop_name": "Vamosワークス",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "観葉植物と、植物のある空間を楽しくするハンドメイド雑貨を届けます。",
+    "keywords": [
+      "雑貨",
+      "観葉植物"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/vamos.works/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/vamos.works/"
+  },
+  {
+    "booth_id": "73",
+    "shop_name": "ぱんだ屋.3",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "日々のおしゃれを楽しめる、個性ある衣料品を届けるショップです。",
+    "keywords": [
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/pandaya.3/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/pandaya.3/"
+  },
+  {
+    "booth_id": "M10",
+    "shop_name": "HANDMADE SWEETS KAORU",
+    "categories": [
+      "食品"
+    ],
+    "description": "見ても食べても楽しい、繊細なデザインのアイシングクッキーを手づくりします。",
+    "keywords": [
+      "アイシングクッキー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ka0ru33/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ka0ru33/"
+  },
+  {
+    "booth_id": "36",
+    "shop_name": "handmade 123",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/_123.handmade_/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/_123.handmade_/"
+  },
+  {
+    "booth_id": "63",
+    "shop_name": "beauty atelier Éclat",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "指先をきれいに彩るネイルサービスで、気軽なおしゃれ時間を届けます。",
+    "keywords": [
+      "ネイル"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/kiyotan2026/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/kiyotan2026/"
+  },
+  {
+    "booth_id": "87",
+    "shop_name": "BIRALO",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/biralo_since2019/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/biralo_since2019/"
+  },
+  {
+    "booth_id": "59",
+    "shop_name": "HIRO’s  STORE",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "オーバーオールを中心に、サイズやジャンルを幅広くそろえた古着・アパレルを販売します。",
+    "keywords": [
+      "古着",
+      "オーバーオール",
+      "アパレル"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hiros_store/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先と公開出店情報に合わせ、一般的な衣料品から古着・オーバーオールへ具体化",
+    "instagram_url": "https://www.instagram.com/hiros_store/"
+  },
+  {
+    "booth_id": "25",
+    "shop_name": "felice（ワークショップ）",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "雑貨やアクセサリーのものづくりを、気軽に楽しめるワークショップです。",
+    "keywords": [
+      "雑貨",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/felice_0087/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/felice_0087/"
+  },
+  {
+    "booth_id": "M11",
+    "shop_name": "ブラウニー母さん",
+    "categories": [
+      "食品"
+    ],
+    "description": "マルシェのおやつや手土産にうれしい、手づくりの焼き菓子を届けます。",
+    "keywords": [
+      "焼き菓子"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/brownie.kasan/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/brownie.kasan/"
+  },
+  {
+    "booth_id": "31",
+    "shop_name": "プラスn",
+    "categories": [
+      "ペット"
+    ],
+    "description": "愛犬のおしゃれと快適さに寄り添う、ハンドメイドのペット服を届けます。",
+    "keywords": [
+      "ペット衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/plus._n/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/plus._n/"
+  },
+  {
+    "booth_id": "90",
+    "shop_name": "freely",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "デニムをアップサイクルしたトートバッグやポーチ、アクセサリーを手がけます。",
+    "keywords": [
+      "デニムバッグ",
+      "ポーチ",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/xxfreelymadexx/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先に合わせ、空欄だった検索キーワードにデニム作品の内容を追記",
+    "instagram_url": "https://www.instagram.com/xxfreelymadexx/"
+  },
+  {
+    "booth_id": "37",
+    "shop_name": "Plume ･ 羊毛フェルトprairie",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "布雑貨や羊毛フェルトなど、温かな手触りの作品が並ぶ共同出店です。",
+    "keywords": [
+      "雑貨",
+      "羊毛フェルト"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/plume.810/",
+      "https://www.instagram.com/ma.prairie/",
+      "https://www.instagram.com/asfleur.akko/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/plume.810/"
+  },
+  {
+    "booth_id": "M12",
+    "shop_name": "フルーツシャワー",
+    "categories": [
+      "食品"
+    ],
+    "description": "果物のおいしさをぎゅっと閉じ込めた、彩り豊かなドライフルーツを届けます。",
+    "keywords": [
+      "ドライフルーツ"
+    ],
+    "tags": [],
+    "instagram_urls": [],
+    "shop_url": "https://014262.net/?category_id=5f1e1f0bd7e1d857e517f3a9",
+    "note": "",
+    "instagram_url": ""
+  },
+  {
+    "booth_id": "64",
+    "shop_name": "Floulou＆ochobin",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "子どもの毎日をかわいく彩る、手づくりの子供服を届けます。",
+    "keywords": [
+      "子供服"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/_floulou_/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/_floulou_/"
+  },
+  {
+    "booth_id": "15",
+    "shop_name": "フローラ竜王・竜王園芸",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "観葉植物や園芸雑貨を通して、植物のある暮らしを提案するショップです。",
+    "keywords": [
+      "観葉植物",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/yasuto0116/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/yasuto0116/"
+  },
+  {
+    "booth_id": "S10",
+    "shop_name": "Buna t’et’a",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "エスプレッソドリンクを中心に、こだわりのスペシャルティコーヒーを届ける移動カフェです。",
+    "keywords": [
+      "スペシャルティコーヒー",
+      "エスプレッソドリンク"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/buna.teta/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先と公式サイトに合わせ、一般的なカフェ表記からスペシャルティコーヒー専門店へ具体化",
+    "instagram_url": "https://www.instagram.com/buna.teta/"
+  },
+  {
+    "booth_id": "83",
+    "shop_name": "hemu + ck☆w",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "ヘアアクセサリーとデコ小物が並び、かわいい作品づくりも楽しめる共同出店です。",
+    "keywords": [
+      "ヘアアクセサリー",
+      "デコ小物",
+      "ワークショップ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hemu_handmade_accessory/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先に合わせ、空欄だった検索キーワードに販売品とワークショップを追記",
+    "instagram_url": "https://www.instagram.com/hemu_handmade_accessory/"
+  },
+  {
+    "booth_id": "13",
+    "shop_name": "★Curage",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "クラゲをモチーフに、手縫いのビーズ刺繍で仕立てるアクセサリーやパグ雑貨を届けます。",
+    "keywords": [
+      "ビーズ刺繍",
+      "クラゲアクセサリー",
+      "パグ雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hoshicurage/"
+    ],
+    "shop_url": "",
+    "note": "2026-08-18修正：URL先のプロフィールに合わせ、クラゲのビーズ刺繍アクセサリーとパグ雑貨へ具体化",
+    "instagram_url": "https://www.instagram.com/hoshicurage/"
+  },
+  {
+    "booth_id": "S11",
+    "shop_name": "ポンテ",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "ふんわり卵とソースを楽しめる、出来たてのオムライスを提供します。",
+    "keywords": [
+      "オムライス"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/cafeponte2020/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/cafeponte2020/"
+  },
+  {
+    "booth_id": "44",
+    "shop_name": "marukei雑花店",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "多肉植物と、植物のある暮らしを彩る個性豊かな雑貨を届けます。",
+    "keywords": [
+      "多肉植物",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/marukei_zakka/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/marukei_zakka/"
+  },
+  {
+    "booth_id": "39",
+    "shop_name": "MARCO",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "日々のおしゃれを楽しめる、個性ある衣料品を届けるショップです。",
+    "keywords": [
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/m.a.r.c.o_store/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/m.a.r.c.o_store/"
+  },
+  {
+    "booth_id": "45",
+    "shop_name": "maro ＆ Taste_natsu",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "アクセサリーや雑貨など、二つの作風を一緒に楽しめる共同出店です。",
+    "keywords": [
+      "アクセサリー",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/maro.jrt/",
+      "https://www.instagram.com/taste_natsu/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/maro.jrt/"
+  },
+  {
+    "booth_id": "6",
+    "shop_name": "mii accessory",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いや暮らしを彩る、アクセサリーと雑貨を手がけます。",
+    "keywords": [
+      "アクセサリー",
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/mii_mii_0331/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/mii_mii_0331/"
+  },
+  {
+    "booth_id": "M13",
+    "shop_name": "MIHO’S HERB CHICKEN",
+    "categories": [
+      "食品"
+    ],
+    "description": "ハーブの香りを生かしたチキン料理やお弁当を届けるフードショップです。",
+    "keywords": [
+      "弁当"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/mihorou_o/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/mihorou_o/"
+  },
+  {
+    "booth_id": "S12",
+    "shop_name": "ミヤモトショウテン",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "散策の合間に気軽に楽しめる、できたての軽食を提供します。",
+    "keywords": [
+      "軽食"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/miyamoto_shouten/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/miyamoto_shouten/"
+  },
+  {
+    "booth_id": "S13",
+    "shop_name": "夢限屋 Pink Pink & Cocoku",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "甘い香りともちもちの生地を楽しめる、出来たてクレープを提供します。",
+    "keywords": [
+      "クレープ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/pinkpink_crepe/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/pinkpink_crepe/"
+  },
+  {
+    "booth_id": "27",
+    "shop_name": "May＆Umika;",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "日々の暮らしや装いを彩る、ハンドメイド雑貨とアクセサリーを届けます。",
+    "keywords": [
+      "雑貨",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/may.handmade1999/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/may.handmade1999/"
+  },
+  {
+    "booth_id": "S14",
+    "shop_name": "めるんパンナ",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "香ばしい外側ともっちりした食感を楽しめる、手づくりカヌレを届けます。",
+    "keywords": [
+      "カヌレ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/merun___panna/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/merun___panna/"
+  },
+  {
+    "booth_id": "84",
+    "shop_name": "moja",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "ハンドメイドアクセサリーやドリンクホルダーなど、日常に楽しさを添える作品を手がけます。",
+    "keywords": [
+      "アクセサリー",
+      "ドリンクホルダー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/moja.sakaguchi/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先に合わせ、空欄だった検索キーワードに作品内容を追記",
+    "instagram_url": "https://www.instagram.com/moja.sakaguchi/"
+  },
+  {
+    "booth_id": "S15",
+    "shop_name": "U’s kitchen",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "ソースと麺の味わいを楽しめる、出来たてのパスタを提供します。",
+    "keywords": [
+      "パスタ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/uskitchen_food_truck/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/uskitchen_food_truck/"
+  },
+  {
+    "booth_id": "11",
+    "shop_name": "Yo Crafts",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "銀の素材感と手仕事の表情を楽しめる、シルバーアクセサリーを制作します。",
+    "keywords": [
+      "シルバーアクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/yocrafts2021/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/yocrafts2021/"
+  },
+  {
+    "booth_id": "65",
+    "shop_name": "Rice",
+    "categories": [
+      "その他"
+    ],
+    "description": "公開情報から出店内容を確認できなかったため、当日のブースで作品をご確認ください。",
+    "keywords": [],
+    "tags": [],
+    "instagram_urls": [],
+    "shop_url": "",
+    "note": "同名候補が多く、公式URLおよび出店内容を特定できず（2026-08-17確認）",
+    "instagram_url": ""
+  },
+  {
+    "booth_id": "17",
+    "shop_name": "Rus-thot",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "時を重ねた風合いや一点ものとの出会いを楽しめる、ヴィンテージ雑貨を扱います。",
+    "keywords": [
+      "ヴィンテージ雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/taro__mama/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/taro__mama/"
+  },
+  {
+    "booth_id": "70",
+    "shop_name": "Little Closet/D*1clat Jewel",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "ドールのおしゃれを楽しめる、小さなお洋服や装飾アイテムを手がけます。",
+    "keywords": [
+      "人形用お洋服"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/little._.closet/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/little._.closet/"
+  },
+  {
+    "booth_id": "48",
+    "shop_name": "Lueur",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "色のにじみや偶然の表情が美しい、アルコールインクアートを楽しめます。",
+    "keywords": [
+      "アルコールインクアート"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/lueur_art__/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/lueur_art__/"
+  },
+  {
+    "booth_id": "61",
+    "shop_name": "Lumiere accessory",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/lumiere_accessory.s/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/lumiere_accessory.s/"
+  },
+  {
+    "booth_id": "35",
+    "shop_name": "Ru-Ru-GALLERY",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "日々の暮らしに小さな楽しさを添える、ハンドメイド雑貨を届けます。",
+    "keywords": [
+      "雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ru_rururu_/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ru_rururu_/"
+  },
+  {
+    "booth_id": "76",
+    "shop_name": "ray silver works",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "銀の質感を生かし、一つずつ手仕事で仕立てるシルバーアクセサリーです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ray_silver_works/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ray_silver_works/"
+  },
+  {
+    "booth_id": "91",
+    "shop_name": "raindrops",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "革や帆布、楽しい柄布を使った、かわいくポップながま口バッグや小物を手がけます。",
+    "keywords": [
+      "がま口バッグ",
+      "ポーチ",
+      "布小物"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/raindrops_tekaraumareru/"
+    ],
+    "shop_url": "",
+    "note": "URL補完（2026-08-17公開検索で確認）／2026-08-18修正：URL先に合わせ、空欄だった検索キーワードにがま口バッグ・布小物を追記",
+    "instagram_url": "https://www.instagram.com/raindrops_tekaraumareru/"
+  },
+  {
+    "booth_id": "23",
+    "shop_name": "retrogirls",
+    "categories": [
+      "アクセサリー"
+    ],
+    "description": "日々の装いを彩る、ハンドメイドアクセサリーを手がけるショップです。",
+    "keywords": [
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www-fallback.instagram.com/retrogirls2023/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www-fallback.instagram.com/retrogirls2023/"
+  },
+  {
+    "booth_id": "1",
+    "shop_name": "rose a tete denim",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "デニムの風合いを生かした、普段使いしやすいバッグや小物を手がけます。",
+    "keywords": [
+      "デニム小物",
+      "バッグ"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/rose_a_tete.denim/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/rose_a_tete.denim/"
+  },
+  {
+    "booth_id": "56",
+    "shop_name": "warai",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "日々の暮らしや装いを彩る、ハンドメイド雑貨とアクセサリーを届けます。",
+    "keywords": [
+      "雑貨",
+      "アクセサリー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/warai75/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/warai75/"
+  },
+  {
+    "booth_id": "100",
+    "shop_name": "わんだふるタイム",
+    "categories": [
+      "ペット"
+    ],
+    "description": "愛犬との楽しい時間に寄り添う、ペットフードや関連アイテムを届けます。",
+    "keywords": [
+      "ペットフード"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/colorful_cord_wt/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/colorful_cord_wt/"
+  },
+  {
+    "booth_id": "JM",
+    "shop_name": "JUNK & MIK",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "革製品と衣料品、それぞれの個性ある手仕事を楽しめる共同出店です。",
+    "keywords": [
+      "革製品",
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hirokojunk/",
+      "https://www.instagram.com/mik___kumi/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/hirokojunk/"
+  },
+  {
+    "booth_id": "RG1",
+    "shop_name": "Cocco coffee & flower",
+    "categories": [
+      "雑貨"
+    ],
+    "description": "香り豊かなコーヒーと花雑貨を一緒に楽しめる、くつろぎのショップです。",
+    "keywords": [
+      "コーヒー",
+      "花雑貨"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/cocco_coffee/",
+      "https://www.instagram.com/cocco_flower/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/cocco_coffee/"
+  },
+  {
+    "booth_id": "RG2",
+    "shop_name": "Rabbit Garden",
+    "categories": [
+      "食品"
+    ],
+    "description": "洋菓子とガーデニングの楽しみが並ぶ、カフェのような共同出店です。",
+    "keywords": [
+      "洋菓子",
+      "ガーデニング"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/rabbitgarden_cafe/",
+      "https://www.instagram.com/rabbitgarden_mamin/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/rabbitgarden_cafe/"
+  },
+  {
+    "booth_id": "S2",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S3",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S4",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S5",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S6",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S7",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S8",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S9",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S10",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S11",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S12",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S13",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S14",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "S15",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M1",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M2",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M3",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M4",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M5",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M6",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M7",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M8",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M9",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M10",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M11",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M12",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "M13",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "JM",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "RG1",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "RG2",
+    "shop_name": "OOTIMI BURGER",
+    "categories": [
+      "キッチンカー"
+    ],
+    "description": "食べ応えのある手づくりバーガーを、キッチンカーから出来たてで届けます。",
+    "keywords": [
+      "バーガー"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/ootimi_burger/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/ootimi_burger/"
+  },
+  {
+    "booth_id": "N1",
+    "shop_name": "JUNK & MIK",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "革製品と衣料品、それぞれの個性ある手仕事を楽しめる共同出店です。",
+    "keywords": [
+      "革製品",
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hirokojunk/",
+      "https://www.instagram.com/mik___kumi/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/hirokojunk/"
+  },
+  {
+    "booth_id": "N2",
+    "shop_name": "JUNK & MIK",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "革製品と衣料品、それぞれの個性ある手仕事を楽しめる共同出店です。",
+    "keywords": [
+      "革製品",
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hirokojunk/",
+      "https://www.instagram.com/mik___kumi/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/hirokojunk/"
+  },
+  {
+    "booth_id": "N3",
+    "shop_name": "JUNK & MIK",
+    "categories": [
+      "衣料品"
+    ],
+    "description": "革製品と衣料品、それぞれの個性ある手仕事を楽しめる共同出店です。",
+    "keywords": [
+      "革製品",
+      "衣料品"
+    ],
+    "tags": [],
+    "instagram_urls": [
+      "https://www.instagram.com/hirokojunk/",
+      "https://www.instagram.com/mik___kumi/"
+    ],
+    "shop_url": "",
+    "note": "",
+    "instagram_url": "https://www.instagram.com/hirokojunk/"
+  }
+]
