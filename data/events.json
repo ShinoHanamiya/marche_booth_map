@@ -5,9 +5,20 @@
     "date_start": "2026-09-05",
     "date_end": "2026-09-05",
     "venue_name": "野洲川親水公園",
-    "status": "upcoming",
+    "status": "past",
     "description": "",
     "prefecture": "滋賀県",
     "city": "湖南市"
+  },
+  {
+    "event_id": "gyuupoke_dragon_19th",
+    "name": "ギュウポケ in ドラゴン 19th",
+    "date_start": "2026-11-28",
+    "date_end": "2026-11-29",
+    "venue_name": "竜王町総合運動公園",
+    "status": "upcoming",
+    "description": "",
+    "prefecture": "滋賀県",
+    "city": "竜王町"
   }
 ]
